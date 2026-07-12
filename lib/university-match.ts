@@ -18,10 +18,6 @@ export const DEFAULT_FILTERS: UniversityFilters = {
   budget: MAX_BUDGET,
 };
 
-export type SortMode = "match" | "qs" | "the";
-
-export const DEFAULT_SORT: SortMode = "match";
-
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
@@ -63,22 +59,6 @@ export function passesHardFilters(
     uni.majors.includes(filters.major as Major);
   const budgetOk = uni.tuitionMin <= filters.budget;
   return countryOk && majorOk && budgetOk;
-}
-
-export function sortUniversityResults<
-  T extends { uni: University; match: number }
->(results: T[], mode: SortMode): T[] {
-  const sorted = [...results];
-  sorted.sort((a, b) => {
-    if (mode === "qs") {
-      return a.uni.qsRank - b.uni.qsRank || b.match - a.match;
-    }
-    if (mode === "the") {
-      return a.uni.theRank - b.uni.theRank || b.match - a.match;
-    }
-    return b.match - a.match || a.uni.qsRank - b.uni.qsRank;
-  });
-  return sorted;
 }
 
 export const DIFFICULTY_STYLES: Record<Difficulty, string> = {

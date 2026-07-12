@@ -40,10 +40,7 @@ export function UniversityCard({
             {uni.country}
           </span>
           <span className="rounded-pill border border-line bg-soft px-2.5 py-1 font-label text-[10.5px] font-semibold tracking-[0.04em] text-ink">
-            QS #{uni.qsRank}
-          </span>
-          <span className="rounded-pill border border-line bg-soft px-2.5 py-1 font-label text-[10.5px] font-semibold tracking-[0.04em] text-ink">
-            THE #{uni.theRank}
+            World #{uni.worldRanking}
           </span>
           <span
             className={`rounded-pill border px-2.5 py-1 font-label text-[10.5px] font-semibold tracking-[0.04em] ${DIFFICULTY_STYLES[uni.difficulty]}`}

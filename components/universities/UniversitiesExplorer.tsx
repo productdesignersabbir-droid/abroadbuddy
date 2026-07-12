@@ -4,21 +4,12 @@ import { useMemo, useState } from "react";
 import type { University } from "@/data/universities";
 import {
   DEFAULT_FILTERS,
-  DEFAULT_SORT,
   computeMatch,
   passesHardFilters,
-  sortUniversityResults,
-  type SortMode,
 } from "@/lib/university-match";
 import { FilterBar } from "@/components/universities/FilterBar";
 import { UniversityCard } from "@/components/universities/UniversityCard";
 import { UniversityDetailsModal } from "@/components/universities/UniversityDetailsModal";
-
-const SORT_OPTIONS: { value: SortMode; label: string }[] = [
-  { value: "match", label: "Best match" },
-  { value: "qs", label: "QS rank" },
-  { value: "the", label: "THE rank" },
-];
 
 export function UniversitiesExplorer({
   universities,
@@ -26,55 +17,37 @@ export function UniversitiesExplorer({
   universities: University[];
 }) {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [sort, setSort] = useState<SortMode>(DEFAULT_SORT);
   const [selected, setSelected] = useState<University | null>(null);
 
   const results = useMemo(() => {
-    const matched = universities
+    return universities
       .filter((uni) => passesHardFilters(uni, filters))
-      .map((uni) => ({ uni, match: computeMatch(uni, filters) }));
-    return sortUniversityResults(matched, sort);
-  }, [universities, filters, sort]);
+      .map((uni) => ({ uni, match: computeMatch(uni, filters) }))
+      .sort((a, b) => b.match - a.match || a.uni.worldRanking - b.uni.worldRanking);
+  }, [universities, filters]);
 
   return (
     <section className="bg-soft py-14">
       <div className="mx-auto max-w-7xl px-6">
         <FilterBar filters={filters} onChange={setFilters} />
 
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex items-center justify-between">
           <p className="font-body text-sm text-sub">
             <span className="font-semibold text-ink">{results.length}</span>{" "}
             {results.length === 1 ? "university" : "universities"} match your
             filters
-            {(filters.country !== DEFAULT_FILTERS.country ||
-              filters.major !== DEFAULT_FILTERS.major ||
-              filters.budget !== DEFAULT_FILTERS.budget) && (
-              <button
-                type="button"
-                onClick={() => setFilters(DEFAULT_FILTERS)}
-                className="ml-3 font-label text-[11.5px] font-semibold uppercase tracking-[0.06em] text-blue"
-              >
-                Reset filters
-              </button>
-            )}
           </p>
-
-          <div className="inline-flex items-center gap-1 self-start rounded-pill border border-line bg-white p-1">
-            {SORT_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setSort(option.value)}
-                className={`rounded-pill px-3.5 py-1.5 font-label text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
-                  sort === option.value
-                    ? "bg-blue text-white"
-                    : "text-sub hover:text-ink"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+          {(filters.country !== DEFAULT_FILTERS.country ||
+            filters.major !== DEFAULT_FILTERS.major ||
+            filters.budget !== DEFAULT_FILTERS.budget) && (
+            <button
+              type="button"
+              onClick={() => setFilters(DEFAULT_FILTERS)}
+              className="font-label text-[11.5px] font-semibold uppercase tracking-[0.06em] text-blue"
+            >
+              Reset filters
+            </button>
+          )}
         </div>
 
         {results.length > 0 ? (

@@ -85,10 +85,7 @@ export function UniversityDetailsModal({
               {uni.country}
             </span>
             <span className="rounded-pill border border-line bg-soft px-2.75 py-1.25 font-label text-[10.5px] font-semibold tracking-[0.04em] text-ink">
-              QS #{uni.qsRank}
-            </span>
-            <span className="rounded-pill border border-line bg-soft px-2.75 py-1.25 font-label text-[10.5px] font-semibold tracking-[0.04em] text-ink">
-              THE #{uni.theRank}
+              World #{uni.worldRanking}
             </span>
             <span
               className={`rounded-pill border px-2.75 py-1.25 font-label text-[10.5px] font-semibold tracking-[0.04em] ${DIFFICULTY_STYLES[uni.difficulty]}`}
@@ -101,7 +98,7 @@ export function UniversityDetailsModal({
             {uni.description}
           </p>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div className="rounded-xl border border-line bg-soft px-3.5 py-3">
               <div className="font-label text-[10px] uppercase tracking-[0.08em] text-sub">
                 Tuition
@@ -120,18 +117,10 @@ export function UniversityDetailsModal({
             </div>
             <div className="rounded-xl border border-line bg-soft px-3.5 py-3">
               <div className="font-label text-[10px] uppercase tracking-[0.08em] text-sub">
-                QS rank
+                World rank
               </div>
               <div className="mt-1 font-display text-sm font-bold text-ink">
-                #{uni.qsRank}
-              </div>
-            </div>
-            <div className="rounded-xl border border-line bg-soft px-3.5 py-3">
-              <div className="font-label text-[10px] uppercase tracking-[0.08em] text-sub">
-                THE rank
-              </div>
-              <div className="mt-1 font-display text-sm font-bold text-ink">
-                #{uni.theRank}
+                #{uni.worldRanking}
               </div>
             </div>
           </div>
