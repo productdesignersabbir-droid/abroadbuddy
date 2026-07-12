@@ -28,6 +28,7 @@
       "Bash(curl -s -o /dev/null -w '%{http_code}' 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=100')",
       "Bash(curl -sv -o /tmp/housing_imgs/test1.jpg \"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&q=60&auto=format&fit=crop\")",
       "Bash(curl -s -o __TRACKED_VAR__.jpg 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=300&q=60&auto=format&fit=crop')",
+      "Bash(curl -s -o header-__TRACKED_VAR__.jpg 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=300&q=60&auto=format&fit=crop')",
       "Bash(rm -rf /tmp/housing_imgs)",
       "Bash(mkdir -p /tmp/coach_imgs)",
       "Bash(curl -s -o __TRACKED_VAR__.jpg 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=200&q=60&auto=format&fit=crop&facepad=2')",
@@ -45,7 +46,24 @@
       "Bash(curl -s -o /tmp/hdr2/1.jpg \"https://images.unsplash.com/photo-1543269865-cbf427effbad?w=300&q=60&auto=format&fit=crop\")",
       "Bash(curl -s -o /tmp/hdr2/2.jpg \"https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&q=60&auto=format&fit=crop\")",
       "Bash(curl -s -o /tmp/hdr2/3.jpg \"https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=300&q=60&auto=format&fit=crop\")",
-      "Bash(grep -rn \"1524178232363\" --include=\"*.ts\" --include=\"*.tsx\" /Users/sabbirhossien/Downloads/abroadbuddy 2>/dev/null; echo done; rm -rf /tmp/hdr2)"
+      "Bash(curl -s -o /tmp/hdr2/4.jpg \"https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(grep -rn \"1524178232363\" --include=\"*.ts\" --include=\"*.tsx\" /Users/sabbirhossien/Downloads/abroadbuddy 2>/dev/null; echo done; rm -rf /tmp/hdr2)",
+      "WebSearch",
+      "Bash(git checkout *)",
+      "Bash(mkdir -p /tmp/rank_imgs)",
+      "Bash(curl -s -o /tmp/rank_imgs/1.jpg \"https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o /tmp/rank_imgs/2.jpg \"https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o /tmp/rank_imgs/3.jpg \"https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o a.jpg \"https://images.unsplash.com/photo-1523289333742-be1143f6b766?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o b.jpg \"https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o c.jpg \"https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o d.jpg \"https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o e.jpg \"https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o f.jpg \"https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o g.jpg \"https://images.unsplash.com/photo-1627556592933-ffe99c1cd9eb?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o h.jpg \"https://images.unsplash.com/photo-1583468982228-19f19164aee2?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o i.jpg \"https://images.unsplash.com/photo-1562774053-701939374585?w=400&q=70&auto=format&fit=crop\")",
+      "Bash(curl -s -o j.jpg \"https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?w=400&q=70&auto=format&fit=crop\")"
     ]
   }
 }
