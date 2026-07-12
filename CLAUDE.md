@@ -1,7 +1,7 @@
-# AbroadBuddy — Project Brief (CLAUDE.md)
+# EasiAbroad — Project Brief (CLAUDE.md)
 
 ## What this is
-AbroadBuddy is a one-stop web platform helping **Bangladeshi students** plan and
+EasiAbroad is a one-stop web platform helping **Bangladeshi students** plan and
 execute their study-abroad journey. This build is an **investor MVP**: it should
 look and feel like a real product, with all pages navigable, using placeholder/
 sample data (no real backend required yet). Real data + auth come later.

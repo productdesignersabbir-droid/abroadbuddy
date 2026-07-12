@@ -23,9 +23,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AbroadBuddy — Your whole study-abroad journey, one platform",
+  title: "EasiAbroad — Your whole study-abroad journey, one platform",
   description:
-    "AbroadBuddy helps Bangladeshi students find universities, build applications, meet mentors and know the lab culture before they commit.",
+    "EasiAbroad helps Bangladeshi students find universities, build applications, meet mentors and know the lab culture before they commit.",
 };
 
 export default function RootLayout({

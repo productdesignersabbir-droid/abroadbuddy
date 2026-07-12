@@ -10,7 +10,7 @@ export function Logo() {
         </svg>
       </div>
       <span className="font-display text-xl font-bold tracking-[-0.02em] text-ink">
-        Abroad<span className="text-blue">Buddy</span>
+        Easi<span className="text-blue">Abroad</span>
       </span>
     </Link>
   );

@@ -133,7 +133,7 @@ export function Features() {
         <SectionHead
           kicker="Everything, in one place"
           title="One platform for the entire journey"
-          sub="From your first shortlist to your first day on campus — AbroadBuddy replaces a dozen scattered tabs, agents and group chats."
+          sub="From your first shortlist to your first day on campus — EasiAbroad replaces a dozen scattered tabs, agents and group chats."
         />
         <div className="mt-12 grid grid-cols-1 gap-4.5 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f, i) => (

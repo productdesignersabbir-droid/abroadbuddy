@@ -98,7 +98,7 @@ export function LabSpotlight() {
         >
           <div className="inline-flex items-center gap-2.25 rounded-pill border border-red/20 bg-red/8 px-3.25 py-1.75 font-label text-[12.5px] font-medium uppercase tracking-[0.04em] text-ink">
             <span className="inline-block h-1.75 w-1.75 rounded-full bg-red" />
-            The AbroadBuddy difference
+            The EasiAbroad difference
           </div>
           <h2 className="mt-4.5 font-display text-[clamp(28px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.025em] text-ink">
             Know the lab <span className="text-red">before</span> you commit.

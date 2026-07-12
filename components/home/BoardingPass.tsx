@@ -25,7 +25,7 @@ export function BoardingPass() {
             BOARDING&nbsp;PASS
           </span>
           <span className="font-label text-[11.5px] tracking-[0.12em] opacity-90">
-            ABROADBUDDY
+            EASIABROAD
           </span>
         </div>
 
