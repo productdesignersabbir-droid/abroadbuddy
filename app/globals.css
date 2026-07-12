@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --color-ink: #0b1220;
+  --color-blue: #1e4fff;
+  --color-blue-deep: #0b2fe8;
+  --color-red: #ff3b47;
+  --color-paper: #ffffff;
+  --color-soft: #f5f7fc;
+  --color-softer: #eef2fb;
+  --color-line: #e2e8f5;
+  --color-sub: #5a6577;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-blue: var(--color-blue);
+  --color-blue-deep: var(--color-blue-deep);
+  --color-red: var(--color-red);
+  --color-paper: var(--color-paper);
+  --color-soft: var(--color-soft);
+  --color-softer: var(--color-softer);
+  --color-line: var(--color-line);
+  --color-sub: var(--color-sub);
+
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-label: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --radius-card: 18px;
+  --radius-button: 11px;
+  --radius-pill: 99px;
+
+  --animate-marquee: marquee 22s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-33.333%);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-red);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee {
+    animation: none !important;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
