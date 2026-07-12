@@ -23,7 +23,7 @@ export function FallbackImage({
       <div
         role="img"
         aria-label={alt}
-        className={`bg-linear-to-br from-blue/15 via-soft to-red/10 ${className}`}
+        className={`absolute inset-0 h-full w-full bg-linear-to-br from-blue/15 via-soft to-red/10 ${className}`}
       />
     );
   }

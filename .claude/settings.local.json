@@ -24,7 +24,28 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git config *)",
-      "Bash(git remote *)"
+      "Bash(git remote *)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=100')",
+      "Bash(curl -sv -o /tmp/housing_imgs/test1.jpg \"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o __TRACKED_VAR__.jpg 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=300&q=60&auto=format&fit=crop')",
+      "Bash(rm -rf /tmp/housing_imgs)",
+      "Bash(mkdir -p /tmp/coach_imgs)",
+      "Bash(curl -s -o __TRACKED_VAR__.jpg 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=200&q=60&auto=format&fit=crop&facepad=2')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' 'https://images.unsplash.com/photo-__TRACKED_VAR__?w=800&q=80&auto=format&fit=crop')",
+      "Bash(mkdir -p /tmp/ielts_header)",
+      "Bash(curl -s -o /tmp/ielts_header/1.jpg \"https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o /tmp/ielts_header/2.jpg \"https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o 3.jpg \"https://images.unsplash.com/photo-1596496181848-3091d4878b24?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o 4.jpg \"https://images.unsplash.com/photo-1554774853-b415df9eeb92?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o 5.jpg \"https://images.unsplash.com/photo-1517842645767-c639042777db?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o 6.jpg \"https://images.unsplash.com/photo-1590650046871-92c887180603?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o 7.jpg \"https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(rm -rf /tmp/coach_imgs /tmp/coach_imgs2 /tmp/ielts_header; echo done)",
+      "Bash(mkdir -p /tmp/hdr2)",
+      "Bash(curl -s -o /tmp/hdr2/1.jpg \"https://images.unsplash.com/photo-1543269865-cbf427effbad?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o /tmp/hdr2/2.jpg \"https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(curl -s -o /tmp/hdr2/3.jpg \"https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=300&q=60&auto=format&fit=crop\")",
+      "Bash(grep -rn \"1524178232363\" --include=\"*.ts\" --include=\"*.tsx\" /Users/sabbirhossien/Downloads/abroadbuddy 2>/dev/null; echo done; rm -rf /tmp/hdr2)"
     ]
   }
 }
