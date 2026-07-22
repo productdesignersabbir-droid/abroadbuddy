@@ -49,8 +49,9 @@ sample data (no real backend required yet). Real data + auth come later.
 5. `/lab-kemon` — **Lab Kemon**: professor ratings, lab culture, funding/stipend reviews, search + detail view
 6. `/stories` — **Journey Stories**: feed of study-abroad stories, filter by country/field, upload your own, reactions (V1 = post + read + filter + react)
 7. `/conferences` — **Conference Calendar**: local & international conferences, research fests, paper deadlines
-8. `/resources` — **Housing & Flights**: abroad housing, flight fare info, cost-of-living
-9. `/ielts` — **IELTS Mock Test** + expert marketplace (IELTS, GRE, etc.)
+8. `/scholarships` — **Scholarship Calendar**: month-wise upcoming scholarships, calendar + list view, filter by country/CGPA/degree level/funding type, detail page per scholarship
+9. `/resources` — **Housing & Flights**: abroad housing, flight fare info, cost-of-living
+10. `/ielts` — **IELTS Mock Test** + expert marketplace (IELTS, GRE, etc.)
 
 Shared: top nav (links to all above), footer, consistent page header pattern.
 

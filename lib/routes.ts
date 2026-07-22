@@ -49,6 +49,13 @@ export const ROUTES: RouteInfo[] = [
       "Track local and global conferences, research fests and paper deadlines.",
   },
   {
+    href: "/scholarships",
+    label: "Scholarship Calendar",
+    navLabel: "Scholarships",
+    description:
+      "Browse upcoming scholarships month by month, filter by country and CGPA, and never miss a deadline.",
+  },
+  {
     href: "/resources",
     label: "Housing & Flights",
     navLabel: "Housing & Flights",
