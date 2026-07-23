@@ -30,7 +30,7 @@ export function Footer() {
         {exploreCols.map((col, i) => (
           <div key={i}>
             <div className="font-label text-[11.5px] uppercase tracking-[0.1em] text-white/50">
-              {i === 0 ? "Explore" : "Prepare"}
+              {i === 0 ? "Explore" : "Resources"}
             </div>
             <ul className="mt-3.5 grid gap-2.5 list-none p-0">
               {col.map((r) => (

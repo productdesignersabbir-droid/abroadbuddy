@@ -118,8 +118,84 @@ export const SAMPLE_BAND_SCORES: BandScoreSample[] = [
   { section: "Speaking", band: 7.0 },
 ];
 
-export type ExamType = "IELTS" | "GRE" | "TOEFL";
-export const EXAM_TYPES: ExamType[] = ["IELTS", "GRE", "TOEFL"];
+export type ExamType = "IELTS" | "GRE" | "TOEFL" | "GMAT";
+export const EXAM_TYPES: ExamType[] = ["IELTS", "GRE", "TOEFL", "GMAT"];
+
+export type ExamFormatSection = {
+  id: string;
+  title: string;
+  description: string;
+  durationMinutes: number;
+  questionCount: number;
+};
+
+export const GRE_SECTIONS: ExamFormatSection[] = [
+  {
+    id: "gre-verbal",
+    title: "Verbal Reasoning",
+    description:
+      "Two scored sections testing reading comprehension, text completion and sentence equivalence.",
+    durationMinutes: 41,
+    questionCount: 27,
+  },
+  {
+    id: "gre-quant",
+    title: "Quantitative Reasoning",
+    description:
+      "Two scored sections covering algebra, geometry, data analysis and arithmetic word problems.",
+    durationMinutes: 47,
+    questionCount: 27,
+  },
+  {
+    id: "gre-awa",
+    title: "Analytical Writing",
+    description:
+      "One \"Analyze an Issue\" essay task, scored separately on a 0-6 scale.",
+    durationMinutes: 30,
+    questionCount: 1,
+  },
+];
+
+export const GRE_TIPS: string[] = [
+  "Learn root words and prefixes instead of memorizing isolated vocabulary lists — it transfers better to unfamiliar words on test day.",
+  "For Quant, practice mental math and estimation so you can eliminate answer choices quickly instead of computing every option in full.",
+  "Time-box the Analytical Writing task: five minutes to outline, twenty to write, five to review. A clear structure scores higher than a clever one.",
+  "Take at least two full-length timed practice tests before your real exam so section-switching fatigue doesn't catch you off guard.",
+];
+
+export const GMAT_SECTIONS: ExamFormatSection[] = [
+  {
+    id: "gmat-quant",
+    title: "Quantitative Reasoning",
+    description:
+      "Problem solving questions across algebra, arithmetic and word problems, all multiple-choice.",
+    durationMinutes: 45,
+    questionCount: 21,
+  },
+  {
+    id: "gmat-verbal",
+    title: "Verbal Reasoning",
+    description:
+      "Reading comprehension and critical reasoning questions. Sentence correction was removed in the Focus Edition.",
+    durationMinutes: 45,
+    questionCount: 23,
+  },
+  {
+    id: "gmat-data-insights",
+    title: "Data Insights",
+    description:
+      "Multi-source reasoning, table analysis, graphics interpretation and two-part analysis in one integrated section.",
+    durationMinutes: 45,
+    questionCount: 20,
+  },
+];
+
+export const GMAT_TIPS: string[] = [
+  "The GMAT Focus Edition lets you bookmark and edit up to three answers per section — plan which questions you're likely to want to revisit.",
+  "Data Insights rewards reading the question stem before the data table or graphic, so you scan for what actually matters instead of everything.",
+  "Unlike the old GMAT, there's no separate essay section — put that saved prep time into more Quant and Data Insights practice sets instead.",
+  "Schools superscore the GMAT Focus less often than the old format, so treat every sitting as the one that counts and avoid an early, unprepared attempt.",
+];
 
 export type CoachSessionType = "1:1" | "Group";
 export const COACH_SESSION_TYPES: CoachSessionType[] = ["1:1", "Group"];
@@ -215,12 +291,40 @@ export const COACHES: Coach[] = [
     photoSrc:
       "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=300&q=80&auto=format&fit=facearea&facepad=2&h=300",
     photoAlt: "Portrait of Nabil Ahsan, full mock exam coach",
-    examTypes: ["IELTS", "GRE", "TOEFL"],
+    examTypes: ["IELTS", "GRE", "TOEFL", "GMAT"],
     specialty: "Full mock exams",
     sessionTypes: ["1:1", "Group"],
-    bio: "Nabil runs full-length timed mock exams across IELTS, GRE and TOEFL, then reviews every section with you to build a targeted study plan.",
+    bio: "Nabil runs full-length timed mock exams across IELTS, GRE, TOEFL and GMAT, then reviews every section with you to build a targeted study plan.",
     rating: 5.0,
     reviewCount: 54,
     price: 28,
+  },
+  {
+    id: "adiba-rahman",
+    name: "Adiba Rahman",
+    photoSrc:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&q=80&auto=format&fit=facearea&facepad=2&h=300",
+    photoAlt: "Portrait of Adiba Rahman, GMAT Data Insights coach",
+    examTypes: ["GMAT"],
+    specialty: "Data Insights",
+    sessionTypes: ["1:1", "Group"],
+    bio: "An MBA admit with a 685 GMAT Focus score, Adiba coaches the Data Insights section specifically — multi-source reasoning, table analysis and two-part analysis under time pressure.",
+    rating: 4.8,
+    reviewCount: 28,
+    price: 26,
+  },
+  {
+    id: "shafin-islam",
+    name: "Shafin Islam",
+    photoSrc:
+      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80&auto=format&fit=facearea&facepad=2&h=300",
+    photoAlt: "Portrait of Shafin Islam, GMAT Quant coach",
+    examTypes: ["GMAT"],
+    specialty: "Quant & data sufficiency",
+    sessionTypes: ["1:1"],
+    bio: "Shafin specializes in data sufficiency traps and quant pacing for the GMAT Focus Edition, helping working professionals prep efficiently around a job.",
+    rating: 4.7,
+    reviewCount: 21,
+    price: 25,
   },
 ];

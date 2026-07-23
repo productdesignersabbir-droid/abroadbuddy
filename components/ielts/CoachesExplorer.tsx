@@ -27,7 +27,7 @@ export function CoachesExplorer({ coaches }: { coaches: Coach[] }) {
         <div>
           <h2 className="font-display text-xl font-bold text-ink">Hire an expert coach</h2>
           <p className="font-body text-[13px] text-sub">
-            Book 1:1 or group sessions for IELTS, GRE and TOEFL prep.
+            Book 1:1 or group sessions for IELTS, GRE, GMAT and TOEFL prep.
           </p>
         </div>
       </div>

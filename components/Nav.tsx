@@ -2,10 +2,137 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ROUTES } from "@/lib/routes";
+import { useEffect, useRef, useState } from "react";
+import { NAV_ENTRIES, isNavGroup, type NavGroup } from "@/lib/routes";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/Button";
+
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+      className={`shrink-0 transition-transform duration-150 ${open ? "rotate-180" : ""}`}
+    >
+      <path
+        d="M6 9l6 6 6-6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function isGroupActive(group: NavGroup, pathname: string) {
+  return group.items.some((item) => pathname === item.href);
+}
+
+function DesktopNavGroup({ group, active }: { group: NavGroup; active: boolean }) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onBlur={(e) => {
+        if (!containerRef.current?.contains(e.relatedTarget as Node)) {
+          setOpen(false);
+        }
+      }}
+    >
+      <button
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+        onFocus={() => setOpen(true)}
+        className={`flex items-center gap-1 rounded-[10px] px-3 py-2 font-body text-sm font-medium transition-colors hover:bg-soft ${
+          active ? "text-blue" : "text-ink"
+        }`}
+      >
+        {group.label}
+        <ChevronIcon open={open} />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full z-50 w-64 pt-2">
+          <div className="overflow-hidden rounded-card border border-line bg-white p-1.5 shadow-[0_18px_40px_-18px_rgba(11,18,32,0.28)]">
+            {group.items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="block rounded-[10px] px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors hover:bg-soft"
+              >
+                {item.navLabel}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MobileNavGroup({ group, active }: { group: NavGroup; active: boolean }) {
+  const [open, setOpen] = useState(active);
+
+  return (
+    <li>
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`flex w-full items-center justify-between rounded-[10px] px-3 py-2.5 font-body text-[15px] font-medium hover:bg-soft ${
+          active ? "text-blue" : "text-ink"
+        }`}
+      >
+        {group.label}
+        <ChevronIcon open={open} />
+      </button>
+      {open && (
+        <ul className="ml-3 grid gap-1 border-l border-line pl-3">
+          {group.items.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="block rounded-[10px] px-3 py-2 font-body text-sm font-medium text-ink hover:bg-soft"
+              >
+                {item.navLabel}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -37,15 +164,25 @@ export function Nav() {
         <Logo />
 
         <nav className="hidden items-center gap-0.5 xl:flex">
-          {ROUTES.map((r) => (
-            <Link
-              key={r.href}
-              href={r.href}
-              className="rounded-[10px] px-3 py-2 font-body text-sm font-medium text-ink transition-colors hover:bg-soft"
-            >
-              {r.navLabel}
-            </Link>
-          ))}
+          {NAV_ENTRIES.map((entry) =>
+            isNavGroup(entry) ? (
+              <DesktopNavGroup
+                key={entry.label}
+                group={entry}
+                active={isGroupActive(entry, pathname ?? "")}
+              />
+            ) : (
+              <Link
+                key={entry.href}
+                href={entry.href}
+                className={`rounded-[10px] px-3 py-2 font-body text-sm font-medium transition-colors hover:bg-soft ${
+                  pathname === entry.href ? "text-blue" : "text-ink"
+                }`}
+              >
+                {entry.navLabel}
+              </Link>
+            )
+          )}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -85,16 +222,26 @@ export function Nav() {
       {open && (
         <nav className="border-t border-line bg-white px-6 py-4 xl:hidden">
           <ul className="grid gap-1">
-            {ROUTES.map((r) => (
-              <li key={r.href}>
-                <Link
-                  href={r.href}
-                  className="block rounded-[10px] px-3 py-2.5 font-body text-[15px] font-medium text-ink hover:bg-soft"
-                >
-                  {r.navLabel}
-                </Link>
-              </li>
-            ))}
+            {NAV_ENTRIES.map((entry) =>
+              isNavGroup(entry) ? (
+                <MobileNavGroup
+                  key={entry.label}
+                  group={entry}
+                  active={isGroupActive(entry, pathname ?? "")}
+                />
+              ) : (
+                <li key={entry.href}>
+                  <Link
+                    href={entry.href}
+                    className={`block rounded-[10px] px-3 py-2.5 font-body text-[15px] font-medium hover:bg-soft ${
+                      pathname === entry.href ? "text-blue" : "text-ink"
+                    }`}
+                  >
+                    {entry.navLabel}
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
           <div className="mt-4 sm:hidden">
             <Button href="/" variant="primary" className="w-full">
