@@ -48,6 +48,14 @@ export const LAB_KEMON_ROUTE: RouteInfo = {
     "Read professor ratings, lab culture and funding reviews before you commit.",
 };
 
+export const RESEARCH_MENTORING_ROUTE: RouteInfo = {
+  href: "/research-mentoring",
+  label: "1:1 Research Mentoring",
+  navLabel: "Research Mentoring",
+  description:
+    "Book a paid 1:1 session with a research mentor, from topic selection to publication.",
+};
+
 export const STORIES_ROUTE: RouteInfo = {
   href: "/stories",
   label: "Journey Stories",
@@ -128,6 +136,7 @@ export const ROUTES: RouteInfo[] = [
   TOOLS_ROUTE,
   MENTORS_ROUTE,
   LAB_KEMON_ROUTE,
+  RESEARCH_MENTORING_ROUTE,
   STORIES_ROUTE,
   VISA_STORIES_ROUTE,
   RESOURCES_ROUTE,
@@ -144,6 +153,7 @@ export const NAV_ENTRIES: NavEntry[] = [
   TOOLS_ROUTE,
   MENTORS_ROUTE,
   LAB_KEMON_ROUTE,
+  RESEARCH_MENTORING_ROUTE,
   STORIES_AND_INFO_GROUP,
   CONFERENCES_ROUTE,
   SCHOLARSHIPS_ROUTE,
