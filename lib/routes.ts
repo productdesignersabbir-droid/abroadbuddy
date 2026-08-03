@@ -35,7 +35,7 @@ export const TOOLS_ROUTE: RouteInfo = {
 export const MENTORS_ROUTE: RouteInfo = {
   href: "/mentors",
   label: "Find My Mentor",
-  navLabel: "Mentors",
+  navLabel: "Higher Study Mentoring",
   description:
     "Book 1:1 or group sessions with students and alumni who've walked your exact path.",
 };
@@ -51,7 +51,7 @@ export const LAB_KEMON_ROUTE: RouteInfo = {
 export const RESEARCH_MENTORING_ROUTE: RouteInfo = {
   href: "/research-mentoring",
   label: "1:1 Research Mentoring",
-  navLabel: "Research Mentoring",
+  navLabel: "1:1 Research Mentorship",
   description:
     "Book a paid 1:1 session with a research mentor, from topic selection to publication.",
 };
@@ -120,6 +120,11 @@ export const GMAT_ROUTE: RouteInfo = {
     "Understand the GMAT Focus Edition format, get study tips, and book a specialist coach.",
 };
 
+export const MENTORSHIP_GROUP: NavGroup = {
+  label: "Mentorship",
+  items: [MENTORS_ROUTE, RESEARCH_MENTORING_ROUTE],
+};
+
 export const STORIES_AND_INFO_GROUP: NavGroup = {
   label: "Stories & Information",
   items: [STORIES_ROUTE, VISA_STORIES_ROUTE, RESOURCES_ROUTE],
@@ -135,8 +140,8 @@ export const ROUTES: RouteInfo[] = [
   UNIVERSITIES_ROUTE,
   TOOLS_ROUTE,
   MENTORS_ROUTE,
-  LAB_KEMON_ROUTE,
   RESEARCH_MENTORING_ROUTE,
+  LAB_KEMON_ROUTE,
   STORIES_ROUTE,
   VISA_STORIES_ROUTE,
   RESOURCES_ROUTE,
@@ -151,9 +156,8 @@ export const ROUTES: RouteInfo[] = [
 export const NAV_ENTRIES: NavEntry[] = [
   UNIVERSITIES_ROUTE,
   TOOLS_ROUTE,
-  MENTORS_ROUTE,
+  MENTORSHIP_GROUP,
   LAB_KEMON_ROUTE,
-  RESEARCH_MENTORING_ROUTE,
   STORIES_AND_INFO_GROUP,
   CONFERENCES_ROUTE,
   SCHOLARSHIPS_ROUTE,
