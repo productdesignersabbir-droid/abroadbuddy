@@ -1,18 +1,22 @@
 import { Hero } from "@/components/home/Hero";
-import { TrustBar } from "@/components/home/TrustBar";
+import { Problem } from "@/components/home/Problem";
 import { Features } from "@/components/home/Features";
+import { JourneyTicket } from "@/components/home/JourneyTicket";
+import { Steps } from "@/components/home/Steps";
 import { RankingPlatforms } from "@/components/home/RankingPlatforms";
-import { LabSpotlight } from "@/components/home/LabSpotlight";
+import { FAQ } from "@/components/home/FAQ";
 import { CTA } from "@/components/home/CTA";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <TrustBar />
+      <Problem />
       <Features />
+      <JourneyTicket />
+      <Steps />
       <RankingPlatforms />
-      <LabSpotlight />
+      <FAQ />
       <CTA />
     </>
   );

@@ -1,26 +1,45 @@
+import type { ReactNode } from "react";
+import { Kicker } from "@/components/PageHeader";
+
 export function SectionHead({
   kicker,
   title,
   sub,
-  kickerColor = "text-blue",
+  center = false,
 }: {
   kicker: string;
-  title: string;
+  title: ReactNode;
   sub?: string;
-  kickerColor?: string;
+  center?: boolean;
 }) {
-  return (
-    <div className="max-w-160">
-      <div
-        className={`font-label text-[12.5px] font-semibold uppercase tracking-[0.08em] ${kickerColor}`}
-      >
-        {kicker}
+  if (center) {
+    return (
+      <div className="mx-auto max-w-180 text-center">
+        <Kicker>{kicker}</Kicker>
+        <h2 className="mt-5 font-display text-[clamp(38px,5vw,66px)] leading-[1.04] tracking-[-0.035em] text-ink">
+          {title}
+        </h2>
+        {sub && (
+          <p className="mx-auto mt-5 max-w-130 font-body text-[17px] leading-relaxed text-sub">
+            {sub}
+          </p>
+        )}
       </div>
-      <h2 className="mt-3 font-display text-[clamp(28px,3.4vw,40px)] font-bold leading-[1.1] tracking-[-0.025em] text-ink">
-        {title}
-      </h2>
+    );
+  }
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+      <div>
+        <Kicker>{kicker}</Kicker>
+        <h2 className="mt-5 font-display text-[clamp(38px,5vw,66px)] leading-[1.04] tracking-[-0.035em] text-ink">
+          {title}
+        </h2>
+      </div>
       {sub && (
-        <p className="mt-4 font-body text-lg leading-relaxed text-sub">{sub}</p>
+        <p className="max-w-110 font-body text-[17px] leading-relaxed text-sub lg:justify-self-end lg:pb-2">
+          {sub}
+        </p>
       )}
     </div>
   );

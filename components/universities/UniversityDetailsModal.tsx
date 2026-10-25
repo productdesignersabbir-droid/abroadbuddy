@@ -103,7 +103,7 @@ export function UniversityDetailsModal({
               <div className="font-label text-[10px] uppercase tracking-[0.08em] text-sub">
                 Tuition
               </div>
-              <div className="mt-1 font-display text-sm font-bold text-ink">
+              <div className="mt-1 font-body text-sm font-semibold text-ink">
                 {formatTuition(uni.tuitionMin, uni.tuitionMax)}
               </div>
             </div>
@@ -111,7 +111,7 @@ export function UniversityDetailsModal({
               <div className="font-label text-[10px] uppercase tracking-[0.08em] text-sub">
                 Min. CGPA
               </div>
-              <div className="mt-1 font-display text-sm font-bold text-ink">
+              <div className="mt-1 font-body text-sm font-semibold text-ink">
                 {uni.minCgpa.toFixed(2)}
               </div>
             </div>
@@ -119,7 +119,7 @@ export function UniversityDetailsModal({
               <div className="font-label text-[10px] uppercase tracking-[0.08em] text-sub">
                 World rank
               </div>
-              <div className="mt-1 font-display text-sm font-bold text-ink">
+              <div className="mt-1 font-body text-sm font-semibold text-ink">
                 #{uni.worldRanking}
               </div>
             </div>

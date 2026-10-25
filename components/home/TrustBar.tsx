@@ -1,10 +1,9 @@
 const ITEMS = [
-  "IELTS Prep",
-  "GRE Coaching",
-  "SOP & LOR",
-  "Scholarships",
-  "Visa Guidance",
-  "Housing",
+  "Study Abroad Readiness",
+  "University Finder",
+  "Find your Professor",
+  "Scholarship Calendar",
+  "Conference Calendar",
 ];
 
 export function TrustBar() {

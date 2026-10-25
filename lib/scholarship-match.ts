@@ -1,13 +1,20 @@
-import { SCHOLARSHIPS, type Scholarship } from "@/data/scholarships";
+import {
+  SCHOLARSHIPS,
+  type Scholarship,
+  type ScholarshipCountry,
+} from "@/data/scholarships";
 
 export type ScholarshipFilters = {
   country: string;
+  region: string;
   degreeLevel: string;
   fundingType: string;
   cgpa: number;
+  closingSoonOnly: boolean;
 };
 
 export const ALL_COUNTRIES = "All Countries";
+export const ALL_REGIONS = "All Regions";
 export const ALL_DEGREE_LEVELS = "All Levels";
 export const ALL_FUNDING_TYPES = "All Funding Types";
 
@@ -16,10 +23,28 @@ export const MAX_CGPA = 4;
 
 export const DEFAULT_FILTERS: ScholarshipFilters = {
   country: ALL_COUNTRIES,
+  region: ALL_REGIONS,
   degreeLevel: ALL_DEGREE_LEVELS,
   fundingType: ALL_FUNDING_TYPES,
   cgpa: MAX_CGPA,
+  closingSoonOnly: false,
 };
+
+export const REGIONS = ["North America", "Europe", "Oceania", "Global"] as const;
+export type Region = (typeof REGIONS)[number];
+
+const COUNTRY_REGION: Record<ScholarshipCountry, Region> = {
+  USA: "North America",
+  Canada: "North America",
+  UK: "Europe",
+  Germany: "Europe",
+  Australia: "Oceania",
+  "Multiple Countries": "Global",
+};
+
+export function regionOf(country: ScholarshipCountry): Region {
+  return COUNTRY_REGION[country];
+}
 
 /** Deadlines within this many days are called out as "closing soon". Scholarship
  * applications take longer to prepare than a conference submission, so this
@@ -38,8 +63,11 @@ export function passesScholarshipFilters(
   const fundingOk =
     filters.fundingType === ALL_FUNDING_TYPES ||
     scholarship.fundingType === filters.fundingType;
+  const regionOk =
+    filters.region === ALL_REGIONS || regionOf(scholarship.country) === filters.region;
   const cgpaOk = scholarship.minCgpa <= filters.cgpa;
-  return countryOk && levelOk && fundingOk && cgpaOk;
+  const closingOk = !filters.closingSoonOnly || isClosingSoon(scholarship.deadline);
+  return countryOk && regionOk && levelOk && fundingOk && cgpaOk && closingOk;
 }
 
 export function sortScholarshipsByDeadline(scholarships: Scholarship[]) {
@@ -118,6 +146,25 @@ export function groupByMonth(scholarships: Scholarship[]): MonthGroup[] {
   return Array.from(groups.values());
 }
 
+/** Scholarships run every year, so a deadline that has passed moves to the
+ * same date next year — the list always shows the next upcoming round. */
+function nextRoundDeadline(dateIso: string) {
+  const d = new Date(dateIso);
+  while (daysUntil(d.toISOString().slice(0, 10)) < 0) {
+    d.setFullYear(d.getFullYear() + 1);
+  }
+  return d.toISOString().slice(0, 10);
+}
+
+export function withUpcomingDeadlines(scholarships: Scholarship[]): Scholarship[] {
+  return scholarships.map((s) => ({ ...s, deadline: nextRoundDeadline(s.deadline) }));
+}
+
 export function findScholarship(id: string) {
-  return SCHOLARSHIPS.find((s) => s.id === id);
+  const found = SCHOLARSHIPS.find((s) => s.id === id);
+  return found && withUpcomingDeadlines([found])[0];
+}
+
+export function officialSiteHost(url: string) {
+  return new URL(url).hostname.replace(/^www\./, "");
 }

@@ -1,143 +1,96 @@
-"use client";
-
 import Link from "next/link";
-import { useReveal } from "@/lib/use-reveal";
 import { SectionHead } from "@/components/home/SectionHead";
-import {
-  IconSearch,
-  IconDoc,
-  IconMentor,
-  IconLab,
-  IconStory,
-  IconCal,
-  IconPlane,
-  IconTest,
-} from "@/components/home/icons";
+import { Accent } from "@/components/PageHeader";
+import { FallbackImage } from "@/components/ui/FallbackImage";
+
+const img = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=900&q=80&auto=format&fit=crop`;
 
 const FEATURES = [
   {
-    tag: "01",
-    title: "University Match",
-    desc: "Get a ranked shortlist based on your CGPA, major, target country and budget — not guesswork.",
-    accent: "blue" as const,
-    icon: IconSearch,
+    title: "Study Abroad Readiness",
+    desc: "Answer five questions and get a readiness score with a to-do list of what to work on next.",
+    href: "/readiness",
+    imageSrc: img("1544717305-2782549b5136"),
+    imageAlt: "Smiling student holding an orange folder",
+    span: "lg:col-span-3",
+  },
+  {
+    title: "University Finder",
+    desc: "A ranked shortlist based on your CGPA, major, target country and budget — not guesswork.",
     href: "/universities",
+    imageSrc: img("1562774053-701939374585"),
+    imageAlt: "University building with a wide green lawn",
+    span: "lg:col-span-3",
   },
   {
-    tag: "02",
-    title: "AI CV · SOP · LOR",
-    desc: "Generate strong drafts in minutes, or hire a vetted specialist to write them with you.",
-    accent: "red" as const,
-    icon: IconDoc,
-    href: "/tools",
-  },
-  {
-    tag: "03",
-    title: "Find My Mentor",
-    desc: "Book 1:1 or group sessions with students and alumni who've walked your exact path.",
-    accent: "blue" as const,
-    icon: IconMentor,
-    href: "/mentors",
-  },
-  {
-    tag: "04",
-    title: "Lab Kemon",
-    desc: "Rate and read reviews on labs, professors and funding — know the culture before you apply.",
-    accent: "red" as const,
-    icon: IconLab,
+    title: "Find your Professor",
+    desc: "Read professor ratings, lab culture and funding reviews before you reach out.",
     href: "/lab-kemon",
+    imageSrc: img("1522202176988-66273c2fd55f"),
+    imageAlt: "Students discussing research around a laptop",
+    span: "lg:col-span-2",
   },
   {
-    tag: "05",
-    title: "Journey Stories",
-    desc: "Read real study-abroad journeys, filter by country or field, and share your own.",
-    accent: "blue" as const,
-    icon: IconStory,
-    href: "/stories",
+    title: "Scholarship Calendar",
+    desc: "Every upcoming deadline in one calendar, with official links for each scholarship.",
+    href: "/scholarships",
+    imageSrc: img("1523580846011-d3a5bc25702b"),
+    imageAlt: "Graduate in a cap looking out at a ceremony",
+    span: "lg:col-span-2",
   },
   {
-    tag: "06",
     title: "Conference Calendar",
-    desc: "Track local and global conferences, research fests and paper deadlines in one place.",
-    accent: "red" as const,
-    icon: IconCal,
+    desc: "Local and global conferences, research fests and paper deadlines in one place.",
     href: "/conferences",
-  },
-  {
-    tag: "07",
-    title: "Housing & Flights",
-    desc: "Compare abroad housing, flight fares and living costs before you pack your bags.",
-    accent: "blue" as const,
-    icon: IconPlane,
-    href: "/resources",
-  },
-  {
-    tag: "08",
-    title: "IELTS Mock Tests",
-    desc: "Practice free mock tests, then hire expert coaches for IELTS, GRE and beyond.",
-    accent: "red" as const,
-    icon: IconTest,
-    href: "/ielts",
+    imageSrc: img("1540575467063-178a50c2df87"),
+    imageAlt: "Audience at a research conference",
+    span: "lg:col-span-2",
   },
 ];
 
-const ACCENT_HEX: Record<"blue" | "red", string> = {
-  blue: "#1E4FFF",
-  red: "#FF3B47",
-};
-
-const ACCENT_SOFT: Record<"blue" | "red", string> = {
-  blue: "rgba(30,79,255,.10)",
-  red: "rgba(255,59,71,.10)",
-};
-
-function FeatureCard({ f, i }: { f: (typeof FEATURES)[number]; i: number }) {
-  const [ref, seen] = useReveal<HTMLAnchorElement>();
-  const Icon = f.icon;
-  return (
-    <Link
-      ref={ref}
-      href={f.href}
-      style={{
-        transitionDelay: `${i * 60}ms`,
-        opacity: seen ? 1 : 0,
-        transform: seen ? "translateY(0)" : "translateY(16px)",
-      }}
-      className="group block rounded-card border border-line bg-white px-5.5 py-6 pb-6.5 no-underline shadow-[0_2px_6px_rgba(11,18,32,0.04)] transition-[opacity,transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,18,32,0.22)]"
-    >
-      <div className="flex items-start justify-between">
-        <div
-          className="grid h-11.5 w-11.5 place-items-center rounded-[13px]"
-          style={{ background: ACCENT_SOFT[f.accent], color: ACCENT_HEX[f.accent] }}
-        >
-          <Icon color={ACCENT_HEX[f.accent]} />
-        </div>
-        <span className="font-label text-[13px] font-bold text-[#C3CCDE]">
-          {f.tag}
-        </span>
-      </div>
-      <h3 className="mt-4.5 font-display text-[19px] font-semibold tracking-[-0.01em] text-ink">
-        {f.title}
-      </h3>
-      <p className="mt-2.25 font-body text-[14.5px] leading-relaxed text-sub">
-        {f.desc}
-      </p>
-    </Link>
-  );
-}
-
 export function Features() {
   return (
-    <section className="bg-soft py-22">
+    <section id="features" className="bg-paper py-24">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead
-          kicker="Everything, in one place"
-          title="One platform for the entire journey"
-          sub="From your first shortlist to your first day on campus — EasiAbroad replaces a dozen scattered tabs, agents and group chats."
+          kicker="What we cover"
+          title={
+            <>
+              Every <Accent>step</Accent>,
+              <br />
+              covered.
+            </>
+          }
+          sub="From your first shortlist to your first conference paper — five free tools, built for Bangladeshi students."
         />
-        <div className="mt-12 grid grid-cols-1 gap-4.5 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map((f, i) => (
-            <FeatureCard key={f.tag} f={f} i={i} />
+
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-6">
+          {FEATURES.map((f) => (
+            <Link
+              key={f.href}
+              href={f.href}
+              className={`group flex flex-col rounded-[30px] bg-white p-2.5 no-underline ${f.span}`}
+            >
+              <div
+                className={`relative overflow-hidden rounded-[22px] ${
+                  f.span === "lg:col-span-3" ? "h-64 lg:h-80" : "h-60"
+                }`}
+              >
+                <FallbackImage
+                  src={f.imageSrc}
+                  alt={f.imageAlt}
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
+                />
+              </div>
+              <div className="px-3.5 pb-4 pt-5">
+                <h3 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-ink">
+                  {f.title}
+                </h3>
+                <p className="mt-2 font-body text-[15px] leading-relaxed text-sub">{f.desc}</p>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

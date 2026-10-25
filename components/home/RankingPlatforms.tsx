@@ -2,6 +2,7 @@
 
 import { useReveal } from "@/lib/use-reveal";
 import { SectionHead } from "@/components/home/SectionHead";
+import { Accent } from "@/components/PageHeader";
 import { FallbackImage } from "@/components/ui/FallbackImage";
 import { IconExternalLink } from "@/components/conferences/icons";
 
@@ -48,9 +49,9 @@ function PlatformCard({
         opacity: seen ? 1 : 0,
         transform: seen ? "translateY(0)" : "translateY(16px)",
       }}
-      className="flex flex-col overflow-hidden rounded-card border border-line bg-white shadow-[0_2px_6px_rgba(11,18,32,0.04)] transition-[opacity,transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(11,18,32,0.22)]"
+      className="flex flex-col overflow-hidden rounded-[30px] bg-white p-2.5 transition-[opacity,transform] duration-300 hover:-translate-y-1"
     >
-      <div className="relative h-44 w-full">
+      <div className="relative h-48 w-full overflow-hidden rounded-[22px]">
         <FallbackImage
           src={platform.imageSrc}
           alt={platform.imageAlt}
@@ -59,7 +60,7 @@ function PlatformCard({
         />
       </div>
       <div className="flex flex-1 flex-col p-5.5">
-        <h3 className="font-display text-lg font-bold leading-snug text-ink">
+        <h3 className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
           {platform.name}
         </h3>
         <p className="mt-2.25 font-body text-[14px] leading-relaxed text-sub">
@@ -70,7 +71,7 @@ function PlatformCard({
             href={platform.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 rounded-button bg-blue px-4 py-2.5 font-body text-sm font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)] transition-transform duration-150 hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-1.5 rounded-button bg-ink px-4.5 py-2.5 font-body text-sm text-white transition-colors hover:bg-blue"
           >
             Visit rankings
             <IconExternalLink color="#FFFFFF" />
@@ -83,11 +84,15 @@ function PlatformCard({
 
 export function RankingPlatforms() {
   return (
-    <section className="bg-paper py-22">
+    <section className="bg-paper py-24">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead
           kicker="Global rankings"
-          title="Top universities, ranked by the platforms that matter"
+          title={
+            <>
+              Cross-check with the <Accent>rankings</Accent> that matter
+            </>
+          }
           sub="Cross-check your shortlist against the world's most trusted university ranking systems before you commit."
         />
         <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

@@ -115,7 +115,7 @@ export function LabDetailsModal({
                 <button
                   type="button"
                   onClick={() => setShowWriteNote((v) => !v)}
-                  className="rounded-button border-[1.5px] border-line px-3.5 py-1.75 font-body text-[12.5px] font-semibold text-ink transition-colors hover:border-blue/50"
+                  className="rounded-[12px] border-[1.5px] border-line px-3.5 py-1.75 font-body text-[12.5px] font-semibold text-ink transition-colors hover:border-blue/50"
                 >
                   Write a review
                 </button>

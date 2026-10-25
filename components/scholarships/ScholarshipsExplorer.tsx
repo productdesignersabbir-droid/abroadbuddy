@@ -4,12 +4,16 @@ import { useMemo, useState } from "react";
 import type { Scholarship } from "@/data/scholarships";
 import {
   DEFAULT_FILTERS,
-  isClosingSoon,
+  REGIONS,
   passesScholarshipFilters,
+  regionOf,
   sortScholarshipsByDeadline,
+  withUpcomingDeadlines,
+  type Region,
 } from "@/lib/scholarship-match";
 import { ScholarshipFilterBar } from "@/components/scholarships/ScholarshipFilterBar";
 import { ScholarshipClosingSoonStrip } from "@/components/scholarships/ScholarshipClosingSoonStrip";
+import { ScholarshipStats } from "@/components/scholarships/ScholarshipStats";
 import { ScholarshipCalendarView } from "@/components/scholarships/ScholarshipCalendarView";
 import { ScholarshipListView } from "@/components/scholarships/ScholarshipListView";
 
@@ -20,37 +24,64 @@ const VIEW_OPTIONS: { value: ViewMode; label: string }[] = [
   { value: "list", label: "List view" },
 ];
 
-export function ScholarshipsExplorer({ scholarships }: { scholarships: Scholarship[] }) {
+export function ScholarshipsExplorer({
+  scholarships: rawScholarships,
+}: {
+  scholarships: Scholarship[];
+}) {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [view, setView] = useState<ViewMode>("calendar");
 
-  const closingSoon = useMemo(
-    () =>
-      sortScholarshipsByDeadline(
-        scholarships.filter((s) => isClosingSoon(s.deadline))
-      ).slice(0, 3),
+  const scholarships = useMemo(
+    () => withUpcomingDeadlines(rawScholarships),
+    [rawScholarships]
+  );
+
+  const nextDeadlines = useMemo(
+    () => sortScholarshipsByDeadline(scholarships).slice(0, 4),
     [scholarships]
   );
+
+  const regionCounts = useMemo(() => {
+    const counts = Object.fromEntries(REGIONS.map((r) => [r, 0])) as Record<Region, number>;
+    for (const s of scholarships) counts[regionOf(s.country)] += 1;
+    return counts;
+  }, [scholarships]);
 
   const results = useMemo(() => {
     const filtered = scholarships.filter((s) => passesScholarshipFilters(s, filters));
     return sortScholarshipsByDeadline(filtered);
   }, [scholarships, filters]);
 
-  const isDirty =
-    filters.country !== DEFAULT_FILTERS.country ||
-    filters.degreeLevel !== DEFAULT_FILTERS.degreeLevel ||
-    filters.fundingType !== DEFAULT_FILTERS.fundingType ||
-    filters.cgpa !== DEFAULT_FILTERS.cgpa;
+  const isDirty = (Object.keys(DEFAULT_FILTERS) as (keyof typeof DEFAULT_FILTERS)[]).some(
+    (key) => filters[key] !== DEFAULT_FILTERS[key]
+  );
 
   return (
     <section className="bg-soft py-14">
       <div className="mx-auto max-w-7xl px-6">
-        <ScholarshipClosingSoonStrip scholarships={closingSoon} />
+        <ScholarshipStats scholarships={scholarships} />
 
-        <div className="mt-6">
-          <ScholarshipFilterBar filters={filters} onChange={setFilters} />
+        <div className="mt-8">
+          <ScholarshipClosingSoonStrip scholarships={nextDeadlines} />
         </div>
+
+        <div className="mt-8">
+          <ScholarshipFilterBar
+            filters={filters}
+            onChange={setFilters}
+            regionCounts={regionCounts}
+            total={scholarships.length}
+          />
+        </div>
+
+        <p className="mt-4 flex items-start gap-2 rounded-xl border border-[#F5D58A] bg-[#FFF8E6] px-4 py-3 font-body text-[13px] leading-relaxed text-[#6B4E00]">
+          <span aria-hidden>⚠️</span>
+          <span>
+            Dates and funding can change every year. Always confirm the details on the
+            official website before you apply.
+          </span>
+        </p>
 
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-body text-sm text-sub">
@@ -93,7 +124,7 @@ export function ScholarshipsExplorer({ scholarships }: { scholarships: Scholarsh
           </div>
         ) : (
           <div className="mt-6 rounded-card border border-dashed border-line bg-white px-6 py-14 text-center">
-            <p className="font-display text-lg font-bold text-ink">
+            <p className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
               No scholarships match those filters
             </p>
             <p className="mt-2 font-body text-sm text-sub">
@@ -102,7 +133,7 @@ export function ScholarshipsExplorer({ scholarships }: { scholarships: Scholarsh
             <button
               type="button"
               onClick={() => setFilters(DEFAULT_FILTERS)}
-              className="mt-5 rounded-button bg-blue px-5 py-2.5 font-body text-sm font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)]"
+              className="mt-5 rounded-button bg-blue px-5 py-2.5 font-body text-sm font-semibold text-white"
             >
               Reset filters
             </button>

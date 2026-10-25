@@ -12,8 +12,8 @@ export function UniversityCard({
   onViewDetails: () => void;
 }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-card border border-line bg-white shadow-[0_2px_6px_rgba(11,18,32,0.04)] transition-shadow duration-200 hover:shadow-[0_18px_40px_-18px_rgba(11,18,32,0.22)]">
-      <div className="relative h-40 w-full">
+    <div className="flex flex-col overflow-hidden rounded-[28px] bg-white p-2">
+      <div className="relative h-44 w-full overflow-hidden rounded-[20px]">
         <FallbackImage
           src={uni.imageSrc}
           alt={uni.imageAlt}
@@ -27,11 +27,11 @@ export function UniversityCard({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col px-3.5 pb-3.5 pt-4.5">
         <div className="font-label text-[11px] uppercase tracking-[0.08em] text-sub">
           {uni.city}
         </div>
-        <h3 className="mt-1 font-display text-lg font-bold leading-snug text-ink">
+        <h3 className="mt-1 font-display text-[25px] leading-tight tracking-[-0.02em] text-ink">
           {uni.name}
         </h3>
 
@@ -59,14 +59,14 @@ export function UniversityCard({
               <div className="font-label text-[10px] uppercase tracking-[0.08em] text-sub">
                 Tuition
               </div>
-              <div className="font-display text-[15px] font-bold text-ink">
+              <div className="font-body text-[15px] font-semibold text-ink">
                 {formatTuition(uni.tuitionMin, uni.tuitionMax)}
               </div>
             </div>
             <button
               type="button"
               onClick={onViewDetails}
-              className="rounded-button bg-blue px-4 py-2.25 font-body text-sm font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)] transition-transform duration-150 hover:-translate-y-0.5"
+              className="rounded-button bg-blue px-4 py-2.25 font-body text-sm font-semibold text-white transition-transform duration-150 hover:-translate-y-0.5"
             >
               View details
             </button>

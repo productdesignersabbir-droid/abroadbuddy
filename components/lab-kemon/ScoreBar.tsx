@@ -14,7 +14,7 @@ export function ScoreBar({
       <div>
         <div className="flex items-center justify-between">
           <span className="font-body text-sm font-medium text-ink">{label}</span>
-          <span className="font-display text-sm font-bold text-ink">
+          <span className="font-body text-sm font-semibold text-ink">
             {value.toFixed(1)}
           </span>
         </div>

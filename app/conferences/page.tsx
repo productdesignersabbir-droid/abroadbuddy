@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/PageHeader";
+import { Accent, PageHeader } from "@/components/PageHeader";
 import { ConferencesExplorer } from "@/components/conferences/ConferencesExplorer";
 import { CONFERENCES } from "@/data/conferences";
 
@@ -7,10 +7,14 @@ export default function ConferencesPage() {
     <>
       <PageHeader
         kicker="Conference Calendar"
-        title="Local and global conferences, research fests and paper deadlines"
+        title={
+          <>
+            Where your research meets the <Accent>world</Accent>
+          </>
+        }
         description="Track submission deadlines for conferences and journals across Bangladesh and abroad, so you never miss a call for papers."
-        imageSrc="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80&auto=format&fit=crop"
-        imageAlt="Speaker presenting on stage at a conference in front of a large audience"
+        imageSrc="https://images.unsplash.com/photo-1559223607-a43c990c692c?w=1200&q=80&auto=format&fit=crop"
+        imageAlt="Audience listening at a research conference"
       />
       <ConferencesExplorer conferences={CONFERENCES} />
     </>

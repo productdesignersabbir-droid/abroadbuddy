@@ -5,11 +5,12 @@
   --color-blue: #1e4fff;
   --color-blue-deep: #0b2fe8;
   --color-red: #ff3b47;
-  --color-paper: #ffffff;
-  --color-soft: #f5f7fc;
-  --color-softer: #eef2fb;
-  --color-line: #e2e8f5;
-  --color-sub: #5a6577;
+  /* Warm editorial neutrals (after the Visaro reference) under our blue/red brand. */
+  --color-paper: #faf7f3;
+  --color-soft: #f3efe9;
+  --color-softer: #ebe6de;
+  --color-line: #e6e0d6;
+  --color-sub: #64676d;
 }
 
 @theme inline {
@@ -23,15 +24,73 @@
   --color-line: var(--color-line);
   --color-sub: var(--color-sub);
 
-  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
-  --font-body: var(--font-inter), system-ui, sans-serif;
-  --font-label: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-display: var(--font-caslon), Georgia, serif;
+  --font-body: var(--font-stack-sans), system-ui, sans-serif;
+  --font-label: var(--font-stack-sans), system-ui, sans-serif;
 
-  --radius-card: 18px;
-  --radius-button: 11px;
+  --radius-card: 24px;
+  --radius-button: 99px;
   --radius-pill: 99px;
 
   --animate-marquee: marquee 22s linear infinite;
+  --animate-rise: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-ticket: ticket 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-drift: drift 12s ease-in-out infinite alternate;
+  --animate-fly: fly 2.8s ease-in-out infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  @keyframes ticket {
+    from {
+      opacity: 0;
+      transform: translateY(40px) rotate(4deg) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-0.6deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(0.6deg);
+    }
+  }
+
+  @keyframes drift {
+    from {
+      transform: translate(0, 0) scale(1);
+    }
+    to {
+      transform: translate(-40px, 30px) scale(1.15);
+    }
+  }
+
+  @keyframes fly {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(6px);
+    }
+  }
 
   @keyframes marquee {
     from {
@@ -45,6 +104,13 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* The display serif only ships in weight 500 — keep headings there instead of
+   letting the browser fake a bold. */
+.font-display {
+  font-weight: 500 !important;
+  font-synthesis: none;
 }
 
 body {

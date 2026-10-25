@@ -5,25 +5,130 @@ import {
   ALL_COUNTRIES,
   ALL_DEGREE_LEVELS,
   ALL_FUNDING_TYPES,
+  ALL_REGIONS,
   MAX_CGPA,
   MIN_CGPA,
+  REGIONS,
+  type Region,
   type ScholarshipFilters,
 } from "@/lib/scholarship-match";
 
+type QuickFilter = {
+  label: string;
+  isOn: (f: ScholarshipFilters) => boolean;
+  toggle: (f: ScholarshipFilters) => ScholarshipFilters;
+};
+
+// One-tap shortcuts for the most common searches. Each one flips a filter in
+// the selects below, so the two always stay in sync.
+const QUICK_FILTERS: QuickFilter[] = [
+  {
+    label: "Fully funded",
+    isOn: (f) => f.fundingType === "Fully Funded",
+    toggle: (f) => ({
+      ...f,
+      fundingType: f.fundingType === "Fully Funded" ? ALL_FUNDING_TYPES : "Fully Funded",
+    }),
+  },
+  {
+    label: "Master's",
+    isOn: (f) => f.degreeLevel === "Master's",
+    toggle: (f) => ({
+      ...f,
+      degreeLevel: f.degreeLevel === "Master's" ? ALL_DEGREE_LEVELS : "Master's",
+    }),
+  },
+  {
+    label: "PhD",
+    isOn: (f) => f.degreeLevel === "PhD",
+    toggle: (f) => ({
+      ...f,
+      degreeLevel: f.degreeLevel === "PhD" ? ALL_DEGREE_LEVELS : "PhD",
+    }),
+  },
+  {
+    label: "Closing soon",
+    isOn: (f) => f.closingSoonOnly,
+    toggle: (f) => ({ ...f, closingSoonOnly: !f.closingSoonOnly }),
+  },
+];
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 rounded-pill border-[1.5px] px-3.5 py-1.5 font-body text-[13px] font-semibold transition-colors ${
+        active
+          ? "border-blue bg-blue text-white"
+          : "border-line bg-white text-ink hover:border-blue/40"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 const fieldLabel = "font-label text-[11px] uppercase tracking-[0.08em] text-sub";
 const selectClass =
-  "mt-2 w-full rounded-button border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
+  "mt-2 w-full rounded-[12px] border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
 
 export function ScholarshipFilterBar({
   filters,
   onChange,
+  regionCounts,
+  total,
 }: {
   filters: ScholarshipFilters;
   onChange: (next: ScholarshipFilters) => void;
+  regionCounts: Record<Region, number>;
+  total: number;
 }) {
   return (
-    <div className="rounded-card border border-line bg-white p-5.5 shadow-[0_2px_6px_rgba(11,18,32,0.04)] sm:p-6.5">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="rounded-card bg-white p-5.5 sm:p-6.5">
+      <div className="flex flex-col gap-4 border-b border-line pb-5.5 lg:flex-row lg:items-center lg:justify-between">
+        <div role="group" aria-label="Quick filters" className="flex flex-wrap gap-2">
+          {QUICK_FILTERS.map((q) => (
+            <Chip key={q.label} active={q.isOn(filters)} onClick={() => onChange(q.toggle(filters))}>
+              {q.label}
+            </Chip>
+          ))}
+        </div>
+
+        <div role="group" aria-label="Region" className="flex flex-wrap gap-2">
+          <Chip
+            active={filters.region === ALL_REGIONS}
+            onClick={() => onChange({ ...filters, region: ALL_REGIONS })}
+          >
+            All regions <span className="opacity-60">{total}</span>
+          </Chip>
+          {REGIONS.filter((r) => regionCounts[r] > 0).map((region) => (
+            <Chip
+              key={region}
+              active={filters.region === region}
+              onClick={() =>
+                onChange({
+                  ...filters,
+                  region: filters.region === region ? ALL_REGIONS : region,
+                })
+              }
+            >
+              {region} <span className="opacity-60">{regionCounts[region]}</span>
+            </Chip>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5.5 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <label htmlFor="scholarshipCountry" className={fieldLabel}>
             Country
@@ -86,7 +191,7 @@ export function ScholarshipFilterBar({
             <label htmlFor="scholarshipCgpa" className={fieldLabel}>
               Your CGPA
             </label>
-            <span className="font-display text-sm font-bold text-blue">
+            <span className="font-body text-sm font-semibold text-blue">
               {filters.cgpa.toFixed(2)}
             </span>
           </div>

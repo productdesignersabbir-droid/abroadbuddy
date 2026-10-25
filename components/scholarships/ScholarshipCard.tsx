@@ -1,7 +1,13 @@
 import Link from "next/link";
 import type { Scholarship } from "@/data/scholarships";
-import { formatDate, formatDaysLeftLabel, isClosingSoon } from "@/lib/scholarship-match";
+import {
+  formatDate,
+  formatDaysLeftLabel,
+  isClosingSoon,
+  officialSiteHost,
+} from "@/lib/scholarship-match";
 import { IconCap, IconCoins } from "@/components/scholarships/icons";
+import { IconExternalLink } from "@/components/conferences/icons";
 
 const FUNDING_STYLES: Record<Scholarship["fundingType"], string> = {
   "Fully Funded": "bg-blue/10 text-blue",
@@ -13,7 +19,7 @@ export function ScholarshipCard({ scholarship }: { scholarship: Scholarship }) {
   const urgent = isClosingSoon(scholarship.deadline);
 
   return (
-    <div className="flex flex-col gap-5 rounded-card border border-line bg-white p-5.5 shadow-[0_2px_6px_rgba(11,18,32,0.04)] transition-shadow duration-200 hover:shadow-[0_18px_40px_-18px_rgba(11,18,32,0.22)] sm:flex-row sm:items-center sm:justify-between sm:p-6">
+    <div className="flex flex-col gap-5 rounded-card bg-white p-5.5 transition-colors duration-200 sm:flex-row sm:items-center sm:justify-between sm:p-6">
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span
@@ -26,7 +32,7 @@ export function ScholarshipCard({ scholarship }: { scholarship: Scholarship }) {
           </span>
         </div>
 
-        <h3 className="mt-3 font-display text-base font-bold leading-snug text-ink">
+        <h3 className="mt-3 font-display text-[25px] leading-tight tracking-[-0.02em] text-ink">
           {scholarship.name}
         </h3>
         <p className="mt-0.5 font-body text-[13px] text-sub">{scholarship.provider}</p>
@@ -67,7 +73,7 @@ export function ScholarshipCard({ scholarship }: { scholarship: Scholarship }) {
             {formatDate(scholarship.deadline)}
           </div>
           <div
-            className={`mt-1 font-display text-sm font-bold ${urgent ? "text-red" : "text-ink"}`}
+            className={`mt-1 font-body text-sm font-semibold ${urgent ? "text-red" : "text-ink"}`}
           >
             {formatDaysLeftLabel(scholarship.deadline)}
           </div>
@@ -75,10 +81,20 @@ export function ScholarshipCard({ scholarship }: { scholarship: Scholarship }) {
 
         <Link
           href={`/scholarships/${scholarship.id}`}
-          className="inline-flex items-center justify-center gap-1.5 rounded-button bg-blue px-4 py-2.5 font-body text-sm font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)] transition-transform duration-150 hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center gap-1.5 rounded-button bg-blue px-4 py-2.5 font-body text-sm font-semibold text-white transition-transform duration-150 hover:-translate-y-0.5"
         >
           View details
         </Link>
+        <a
+          href={scholarship.applyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-1.5 truncate font-body text-[12.5px] font-semibold text-blue hover:underline"
+        >
+          {officialSiteHost(scholarship.applyUrl)}
+          <IconExternalLink />
+          <span className="sr-only">(official website, opens in a new tab)</span>
+        </a>
       </div>
     </div>
   );

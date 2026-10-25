@@ -5,7 +5,13 @@ import { PageHeader } from "@/components/PageHeader";
 import { CheckIcon } from "@/components/home/icons";
 import { IconCap, IconCoins } from "@/components/scholarships/icons";
 import { SCHOLARSHIPS, type Scholarship } from "@/data/scholarships";
-import { findScholarship, formatDate, formatDaysLeftLabel, isClosingSoon } from "@/lib/scholarship-match";
+import {
+  findScholarship,
+  formatDate,
+  formatDaysLeftLabel,
+  isClosingSoon,
+  officialSiteHost,
+} from "@/lib/scholarship-match";
 
 export function generateStaticParams() {
   return SCHOLARSHIPS.map((s) => ({ id: s.id }));
@@ -27,8 +33,8 @@ export async function generateMetadata({
 
 function InfoCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-card border border-line bg-white p-5.5 shadow-[0_2px_6px_rgba(11,18,32,0.04)] sm:p-6.5">
-      <h2 className="font-display text-lg font-bold text-ink">{title}</h2>
+    <div className="rounded-card bg-white p-5.5 sm:p-6.5">
+      <h2 className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">{title}</h2>
       <div className="mt-3.5">{children}</div>
     </div>
   );
@@ -117,7 +123,7 @@ export default async function ScholarshipDetailPage({
               {formatDate(scholarship.deadline)}
             </div>
             <div
-              className={`mt-1 font-display text-sm font-bold ${urgent ? "text-red" : "text-ink"}`}
+              className={`mt-1 font-body text-sm font-semibold ${urgent ? "text-red" : "text-ink"}`}
             >
               {formatDaysLeftLabel(scholarship.deadline)}
             </div>
@@ -127,11 +133,23 @@ export default async function ScholarshipDetailPage({
             href={scholarship.applyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-button bg-blue px-5.5 py-3.25 font-body text-[15px] font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)] transition-transform duration-150 hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center gap-2 rounded-button bg-blue px-5.5 py-3.25 font-body text-[15px] font-semibold text-white transition-transform duration-150 hover:-translate-y-0.5"
           >
             Apply on official site
           </a>
         </div>
+        <p className="mt-4 max-w-140 rounded-xl border border-[#F5D58A] bg-[#FFF8E6] px-4 py-3 font-body text-[13px] leading-relaxed text-[#6B4E00]">
+          Dates and funding can change every year. Always confirm the details on{" "}
+          <a
+            href={scholarship.applyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline"
+          >
+            {officialSiteHost(scholarship.applyUrl)}
+          </a>{" "}
+          before you apply.
+        </p>
       </PageHeader>
 
       <section className="bg-soft py-14">
@@ -148,7 +166,7 @@ export default async function ScholarshipDetailPage({
               <div className="flex items-center gap-1.5 font-label text-[10px] uppercase tracking-[0.08em] text-sub">
                 <IconCap /> Min. CGPA
               </div>
-              <div className="mt-1.5 font-display text-lg font-bold text-ink">
+              <div className="mt-1.5 font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
                 {scholarship.minCgpa.toFixed(2)}
               </div>
             </div>
@@ -156,7 +174,7 @@ export default async function ScholarshipDetailPage({
               <div className="flex items-center gap-1.5 font-label text-[10px] uppercase tracking-[0.08em] text-sub">
                 <IconCoins /> Funding
               </div>
-              <div className="mt-1.5 font-display text-sm font-bold leading-snug text-ink">
+              <div className="mt-1.5 font-body text-sm font-semibold leading-snug text-ink">
                 {scholarship.amount}
               </div>
             </div>
@@ -200,8 +218,8 @@ export default async function ScholarshipDetailPage({
             </InfoCard>
           </div>
 
-          <div className="mt-8 flex flex-col items-center gap-3 rounded-card border border-line bg-white px-6 py-8 text-center">
-            <p className="font-display text-lg font-bold text-ink">
+          <div className="mt-8 flex flex-col items-center gap-3 rounded-card bg-white px-6 py-8 text-center">
+            <p className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
               Ready to start your application?
             </p>
             <p className="max-w-100 font-body text-sm text-sub">
@@ -212,7 +230,7 @@ export default async function ScholarshipDetailPage({
               href={scholarship.applyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center justify-center gap-2 rounded-button bg-blue px-5.5 py-3 font-body text-sm font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)] transition-transform duration-150 hover:-translate-y-0.5"
+              className="mt-2 inline-flex items-center justify-center gap-2 rounded-button bg-blue px-5.5 py-3 font-body text-sm font-semibold text-white transition-transform duration-150 hover:-translate-y-0.5"
             >
               Apply on official site
             </a>

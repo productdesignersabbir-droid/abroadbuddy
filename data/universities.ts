@@ -61,8 +61,8 @@ export const UNIVERSITIES: University[] = [
     tuitionMax: 62000,
     difficulty: "Highly Competitive",
     imageSrc:
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80&auto=format&fit=crop",
-    imageAlt: "Graduation caps thrown in the air on a university campus",
+      "https://images.unsplash.com/photo-1574958269340-fa927503f3dd?w=800&q=80&auto=format&fit=crop",
+    imageAlt: "Modern glass university building at dusk",
     description:
       "A global leader in engineering and computer science, with unmatched research funding and a famously hands-on culture.",
     highlights: [

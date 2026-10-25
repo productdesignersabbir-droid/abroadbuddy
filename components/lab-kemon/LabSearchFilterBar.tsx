@@ -6,7 +6,7 @@ import { ALL_COUNTRIES, ALL_FIELDS, type LabFilters } from "@/lib/lab-match";
 const fieldLabel =
   "font-label text-[11px] uppercase tracking-[0.08em] text-sub";
 const selectClass =
-  "mt-2 w-full rounded-button border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
+  "mt-2 w-full rounded-[12px] border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
 
 export function LabSearchFilterBar({
   filters,
@@ -16,7 +16,7 @@ export function LabSearchFilterBar({
   onChange: (next: LabFilters) => void;
 }) {
   return (
-    <div className="rounded-card border border-line bg-white p-5.5 shadow-[0_2px_6px_rgba(11,18,32,0.04)] sm:p-6.5">
+    <div className="rounded-card bg-white p-5.5 sm:p-6.5">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-2">
           <label htmlFor="labSearch" className={fieldLabel}>
@@ -45,7 +45,7 @@ export function LabSearchFilterBar({
               value={filters.search}
               onChange={(e) => onChange({ ...filters, search: e.target.value })}
               placeholder="e.g. MIT, Prof. Vasquez..."
-              className="w-full rounded-button border-[1.5px] border-line bg-white py-2.5 pl-10 pr-3.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue"
+              className="w-full rounded-[12px] border-[1.5px] border-line bg-white py-2.5 pl-10 pr-3.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue"
             />
           </div>
         </div>

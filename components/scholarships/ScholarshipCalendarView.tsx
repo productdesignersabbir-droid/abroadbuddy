@@ -11,6 +11,7 @@ import {
   formatMonthLabel,
   isClosingSoon,
   sortScholarshipsByDeadline,
+  withUpcomingDeadlines,
 } from "@/lib/scholarship-match";
 import { IconChevronLeft, IconChevronRight } from "@/components/scholarships/icons";
 
@@ -27,7 +28,7 @@ function firstWeekdayOfMonth(year: number, month: number) {
 /** Picks a sensible starting month: the earliest upcoming deadline in the full
  * dataset, or the earliest deadline overall if everything is already past. */
 function defaultStartMonth() {
-  const sorted = sortScholarshipsByDeadline(SCHOLARSHIPS);
+  const sorted = sortScholarshipsByDeadline(withUpcomingDeadlines(SCHOLARSHIPS));
   const upcoming = sorted.find((s) => daysUntil(s.deadline) >= 0) ?? sorted[0];
   const d = upcoming ? new Date(upcoming.deadline) : new Date();
   return { year: d.getFullYear(), month: d.getMonth() };
@@ -38,7 +39,7 @@ function ScholarshipRow({ scholarship }: { scholarship: Scholarship }) {
   return (
     <Link
       href={`/scholarships/${scholarship.id}`}
-      className="flex items-center justify-between gap-3 rounded-xl border border-line bg-white px-4 py-3 no-underline transition-shadow duration-150 hover:shadow-[0_10px_24px_-12px_rgba(11,18,32,0.2)]"
+      className="flex items-center justify-between gap-3 rounded-xl border border-line bg-white px-4 py-3 no-underline transition-colors duration-150 hover:bg-soft"
     >
       <div className="min-w-0">
         <p className="truncate font-body text-[13.5px] font-semibold text-ink">
@@ -112,7 +113,7 @@ export function ScholarshipCalendarView({ scholarships }: { scholarships: Schola
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.3fr_1fr]">
-      <div className="rounded-card border border-line bg-white p-5 sm:p-6">
+      <div className="rounded-card bg-white p-5 sm:p-6">
         <div className="flex items-center justify-between">
           <button
             type="button"
@@ -122,7 +123,7 @@ export function ScholarshipCalendarView({ scholarships }: { scholarships: Schola
           >
             <IconChevronLeft />
           </button>
-          <h3 className="font-display text-lg font-bold text-ink">
+          <h3 className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
             {formatMonthLabel(year, month)}
           </h3>
           <button
@@ -223,7 +224,7 @@ export function ScholarshipCalendarView({ scholarships }: { scholarships: Schola
               <button
                 type="button"
                 onClick={() => jumpToItem(nearestMonthWithItems)}
-                className="mt-4 rounded-button bg-blue px-4 py-2 font-body text-sm font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)]"
+                className="mt-4 rounded-button bg-blue px-4 py-2 font-body text-sm font-semibold text-white"
               >
                 Jump to next deadline
               </button>

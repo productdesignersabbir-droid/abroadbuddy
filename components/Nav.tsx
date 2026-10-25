@@ -72,7 +72,7 @@ function DesktopNavGroup({ group, active }: { group: NavGroup; active: boolean }
         aria-expanded={open}
         onClick={() => setOpen(true)}
         onFocus={() => setOpen(true)}
-        className={`flex items-center gap-1 rounded-[10px] px-3 py-2 font-body text-sm font-medium transition-colors hover:bg-soft ${
+        className={`flex items-center gap-1 rounded-[10px] px-3 py-2 font-body text-sm font-medium transition-colors hover:bg-softer ${
           active ? "text-blue" : "text-ink"
         }`}
       >
@@ -88,7 +88,7 @@ function DesktopNavGroup({ group, active }: { group: NavGroup; active: boolean }
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="block rounded-[10px] px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors hover:bg-soft"
+                className="block rounded-[10px] px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors hover:bg-softer"
               >
                 {item.navLabel}
               </Link>
@@ -109,7 +109,7 @@ function MobileNavGroup({ group, active }: { group: NavGroup; active: boolean })
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center justify-between rounded-[10px] px-3 py-2.5 font-body text-[15px] font-medium hover:bg-soft ${
+        className={`flex w-full items-center justify-between rounded-[10px] px-3 py-2.5 font-body text-[15px] font-medium hover:bg-softer ${
           active ? "text-blue" : "text-ink"
         }`}
       >
@@ -122,7 +122,7 @@ function MobileNavGroup({ group, active }: { group: NavGroup; active: boolean })
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="block rounded-[10px] px-3 py-2 font-body text-sm font-medium text-ink hover:bg-soft"
+                className="block rounded-[10px] px-3 py-2 font-body text-sm font-medium text-ink hover:bg-softer"
               >
                 {item.navLabel}
               </Link>
@@ -135,7 +135,6 @@ function MobileNavGroup({ group, active }: { group: NavGroup; active: boolean })
 }
 
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const [lastPathname, setLastPathname] = useState(pathname);
@@ -145,22 +144,9 @@ export function Nav() {
     if (open) setOpen(false);
   }
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className={`sticky top-0 z-50 border-b transition-all duration-200 ${
-        scrolled
-          ? "border-line bg-white/85 backdrop-blur-md"
-          : "border-transparent bg-white/0"
-      }`}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <header className="sticky top-0 z-50 px-4 pt-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between rounded-[18px] border border-line bg-soft/90 py-2.5 pl-4.5 pr-2.5 backdrop-blur-md">
         <Logo />
 
         <nav className="hidden items-center gap-0.5 xl:flex">
@@ -175,7 +161,7 @@ export function Nav() {
               <Link
                 key={entry.href}
                 href={entry.href}
-                className={`rounded-[10px] px-3 py-2 font-body text-sm font-medium transition-colors hover:bg-soft ${
+                className={`rounded-pill px-3 py-2 font-body text-[14.5px] transition-colors hover:text-blue ${
                   pathname === entry.href ? "text-blue" : "text-ink"
                 }`}
               >
@@ -185,10 +171,10 @@ export function Nav() {
           )}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <div className="hidden sm:block">
-            <Button href="/" variant="primary">
-              Get started
+            <Button href="/readiness" variant="dark" className="py-2 text-sm">
+              Check my readiness
             </Button>
           </div>
           <button
@@ -196,20 +182,20 @@ export function Nav() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="grid h-10 w-10 place-items-center rounded-[10px] border border-line xl:hidden"
+            className="grid h-9.5 w-9.5 place-items-center rounded-[10px] bg-blue text-white xl:hidden"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
               {open ? (
                 <path
                   d="M6 6l12 12M18 6L6 18"
-                  stroke="#0B1220"
+                  stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                 />
               ) : (
                 <path
                   d="M4 7h16M4 12h16M4 17h16"
-                  stroke="#0B1220"
+                  stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                 />
@@ -220,7 +206,7 @@ export function Nav() {
       </div>
 
       {open && (
-        <nav className="border-t border-line bg-white px-6 py-4 xl:hidden">
+        <nav className="mx-auto mt-2 max-w-7xl rounded-[18px] border border-line bg-soft px-4 py-4 xl:hidden">
           <ul className="grid gap-1">
             {NAV_ENTRIES.map((entry) =>
               isNavGroup(entry) ? (
@@ -233,7 +219,7 @@ export function Nav() {
                 <li key={entry.href}>
                   <Link
                     href={entry.href}
-                    className={`block rounded-[10px] px-3 py-2.5 font-body text-[15px] font-medium hover:bg-soft ${
+                    className={`block rounded-[10px] px-3 py-2.5 font-body text-[15px] font-medium hover:bg-softer ${
                       pathname === entry.href ? "text-blue" : "text-ink"
                     }`}
                   >
@@ -244,8 +230,8 @@ export function Nav() {
             )}
           </ul>
           <div className="mt-4 sm:hidden">
-            <Button href="/" variant="primary" className="w-full">
-              Get started
+            <Button href="/readiness" variant="dark" className="w-full">
+              Check my readiness
             </Button>
           </div>
         </nav>

@@ -104,7 +104,7 @@ export function LabSpotlight() {
             Know the lab <span className="text-red">before</span> you commit.
           </h2>
           <p className="mt-4.5 max-w-120 font-body text-[17px] leading-relaxed text-sub">
-            <strong className="text-ink">Lab Kemon</strong> lets you see professor
+            <strong className="text-ink">Find your Professor</strong> lets you see professor
             ratings, funding and stipend info, and honest reviews of lab culture —
             so you never walk into a supervisor mismatch after moving across the
             world.
@@ -120,7 +120,7 @@ export function LabSpotlight() {
             ))}
           </ul>
           <Button href="/lab-kemon" variant="primary" className="mt-7 px-5.5 py-3.25">
-            Explore Lab Kemon
+            Find your professor
           </Button>
         </div>
 

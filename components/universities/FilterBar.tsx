@@ -11,7 +11,7 @@ import {
 const fieldLabel =
   "font-label text-[11px] uppercase tracking-[0.08em] text-sub";
 const selectClass =
-  "mt-2 w-full rounded-button border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
+  "mt-2 w-full rounded-[12px] border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
 
 export function FilterBar({
   filters,
@@ -21,14 +21,14 @@ export function FilterBar({
   onChange: (next: UniversityFilters) => void;
 }) {
   return (
-    <div className="rounded-card border border-line bg-white p-5.5 shadow-[0_2px_6px_rgba(11,18,32,0.04)] sm:p-6.5">
+    <div className="rounded-card bg-white p-5.5 sm:p-6.5">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="flex items-baseline justify-between">
             <label htmlFor="cgpa" className={fieldLabel}>
               Your CGPA
             </label>
-            <span className="font-display text-base font-bold text-blue">
+            <span className="font-body text-base font-semibold text-blue">
               {filters.cgpa.toFixed(2)}
             </span>
           </div>
@@ -85,7 +85,7 @@ export function FilterBar({
             <label htmlFor="budget" className={fieldLabel}>
               Max budget / year
             </label>
-            <span className="font-display text-base font-bold text-blue">
+            <span className="font-body text-base font-semibold text-blue">
               {filters.budget >= MAX_BUDGET
                 ? "Any"
                 : `$${Math.round(filters.budget / 1000)}k`}

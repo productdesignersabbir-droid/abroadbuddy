@@ -63,7 +63,7 @@ export function UniversitiesExplorer({
           </div>
         ) : (
           <div className="mt-6 rounded-card border border-dashed border-line bg-white px-6 py-14 text-center">
-            <p className="font-display text-lg font-bold text-ink">
+            <p className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
               No universities match those filters
             </p>
             <p className="mt-2 font-body text-sm text-sub">
@@ -72,7 +72,7 @@ export function UniversitiesExplorer({
             <button
               type="button"
               onClick={() => setFilters(DEFAULT_FILTERS)}
-              className="mt-5 rounded-button bg-blue px-5 py-2.5 font-body text-sm font-semibold text-white shadow-[0_8px_20px_rgba(30,79,255,0.28)]"
+              className="mt-5 rounded-button bg-blue px-5 py-2.5 font-body text-sm font-semibold text-white"
             >
               Reset filters
             </button>

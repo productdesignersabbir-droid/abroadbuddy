@@ -18,8 +18,8 @@ export function isNavGroup(entry: NavEntry): entry is NavGroup {
 
 export const UNIVERSITIES_ROUTE: RouteInfo = {
   href: "/universities",
-  label: "University Search",
-  navLabel: "Universities",
+  label: "University Finder",
+  navLabel: "University Finder",
   description:
     "Filter by CGPA, country, major and budget to get a ranked shortlist of programs.",
 };
@@ -42,8 +42,8 @@ export const MENTORS_ROUTE: RouteInfo = {
 
 export const LAB_KEMON_ROUTE: RouteInfo = {
   href: "/lab-kemon",
-  label: "Lab Kemon",
-  navLabel: "Lab Kemon",
+  label: "Find your Professor",
+  navLabel: "Find your Professor",
   description:
     "Read professor ratings, lab culture and funding reviews before you commit.",
 };
@@ -83,7 +83,7 @@ export const RESOURCES_ROUTE: RouteInfo = {
 export const CONFERENCES_ROUTE: RouteInfo = {
   href: "/conferences",
   label: "Conference Calendar",
-  navLabel: "Conferences",
+  navLabel: "Conference Calendar",
   description:
     "Track local and global conferences, research fests and paper deadlines.",
 };
@@ -91,7 +91,7 @@ export const CONFERENCES_ROUTE: RouteInfo = {
 export const SCHOLARSHIPS_ROUTE: RouteInfo = {
   href: "/scholarships",
   label: "Scholarship Calendar",
-  navLabel: "Scholarships",
+  navLabel: "Scholarship Calendar",
   description:
     "Browse upcoming scholarships month by month, filter by country and CGPA, and never miss a deadline.",
 };
@@ -135,31 +135,23 @@ export const PREPARATION_GROUP: NavGroup = {
   items: [IELTS_ROUTE, GRE_ROUTE, GMAT_ROUTE],
 };
 
-// Every real page, flat — used for the footer and any full-site listing.
+export const READINESS_ROUTE: RouteInfo = {
+  href: "/readiness",
+  label: "Study Abroad Readiness",
+  navLabel: "Study Abroad Readiness",
+  description:
+    "Check how ready you are to apply abroad, and see exactly what to work on next.",
+};
+
+// The five features live on the site right now. Every other route above is
+// hidden from the nav, footer and home page but its page still exists — add it
+// back to these lists to bring it back.
 export const ROUTES: RouteInfo[] = [
+  READINESS_ROUTE,
   UNIVERSITIES_ROUTE,
-  TOOLS_ROUTE,
-  MENTORS_ROUTE,
-  RESEARCH_MENTORING_ROUTE,
   LAB_KEMON_ROUTE,
-  STORIES_ROUTE,
-  VISA_STORIES_ROUTE,
-  RESOURCES_ROUTE,
-  CONFERENCES_ROUTE,
   SCHOLARSHIPS_ROUTE,
-  IELTS_ROUTE,
-  GRE_ROUTE,
-  GMAT_ROUTE,
+  CONFERENCES_ROUTE,
 ];
 
-// Nav structure — some entries are single links, some are dropdown groups.
-export const NAV_ENTRIES: NavEntry[] = [
-  UNIVERSITIES_ROUTE,
-  TOOLS_ROUTE,
-  MENTORSHIP_GROUP,
-  LAB_KEMON_ROUTE,
-  STORIES_AND_INFO_GROUP,
-  CONFERENCES_ROUTE,
-  SCHOLARSHIPS_ROUTE,
-  PREPARATION_GROUP,
-];
+export const NAV_ENTRIES: NavEntry[] = ROUTES;

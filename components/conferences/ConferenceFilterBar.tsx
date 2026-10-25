@@ -10,7 +10,7 @@ import {
 
 const fieldLabel = "font-label text-[11px] uppercase tracking-[0.08em] text-sub";
 const selectClass =
-  "mt-2 w-full rounded-button border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
+  "mt-2 w-full rounded-[12px] border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-sm font-medium text-ink transition-colors focus-visible:border-blue";
 
 export function ConferenceFilterBar({
   filters,
@@ -20,7 +20,7 @@ export function ConferenceFilterBar({
   onChange: (next: ConferenceFilters) => void;
 }) {
   return (
-    <div className="rounded-card border border-line bg-white p-5.5 shadow-[0_2px_6px_rgba(11,18,32,0.04)] sm:p-6.5">
+    <div className="rounded-card bg-white p-5.5 sm:p-6.5">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         <div>
           <label htmlFor="conferenceField" className={fieldLabel}>
