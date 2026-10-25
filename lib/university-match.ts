@@ -106,6 +106,14 @@ export function fitReasons(uni: University, filters: UniversityFilters): FitReas
   ];
 }
 
+/** Ring colour for a fit score: green when strong, through amber, to red for a reach. */
+export function matchColor(match: number) {
+  if (match >= 85) return "#1F9D61";
+  if (match >= 70) return "#6DB33F";
+  if (match >= 55) return "#E8A317";
+  return "#E5484D";
+}
+
 export function matchLabel(match: number) {
   if (match >= 85) return "Strong fit";
   if (match >= 70) return "Good fit";

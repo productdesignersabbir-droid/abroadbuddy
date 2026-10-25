@@ -39,9 +39,11 @@ export function Hero() {
                     <span
                       key={f.name}
                       title={f.name}
-                      className={`grid h-5.5 w-5.5 place-items-center overflow-hidden rounded-full bg-white text-[15px] leading-none ring-2 ring-softer ${i ? "-ml-1.5" : ""}`}
+                      // Earlier flags sit on top, so Bangladesh leads the stack.
+                      style={{ zIndex: SOUTH_ASIA.length - i }}
+                      className={`relative grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-white text-[26px] leading-none shadow-[0_0_0_1px_rgba(11,18,32,0.18)] ring-2 ring-white ${i ? "-ml-1" : ""}`}
                     >
-                      {f.flag}
+                      <span className="block translate-y-[1px] scale-125">{f.flag}</span>
                     </span>
                   ))}
                 </span>

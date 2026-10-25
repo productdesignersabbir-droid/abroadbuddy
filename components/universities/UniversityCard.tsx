@@ -3,6 +3,7 @@ import {
   DIFFICULTY_STYLES,
   fitReasons,
   formatTuition,
+  matchColor,
   matchLabel,
   type UniversityFilters,
 } from "@/lib/university-match";
@@ -20,7 +21,7 @@ export function MatchRing({ match, size = 76 }: { match: number; size?: number }
           cy="36"
           r={r}
           fill="none"
-          stroke="var(--color-blue)"
+          stroke={matchColor(match)}
           strokeWidth="6"
           strokeLinecap="round"
           strokeDasharray={c}

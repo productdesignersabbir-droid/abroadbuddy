@@ -172,7 +172,7 @@ export function UniversityDetailsModal({
                 aria-controls="uni-tabpanel"
                 onClick={() => setTab(t)}
                 className={`shrink-0 rounded-pill px-4 py-2 font-body text-[14px] font-medium transition-colors ${
-                  tab === t ? "bg-ink text-white" : "text-sub hover:bg-soft hover:text-ink"
+                  tab === t ? "bg-[#EAF0FF] text-blue" : "text-sub hover:bg-soft hover:text-ink"
                 }`}
               >
                 {t}
@@ -211,7 +211,7 @@ export function UniversityDetailsModal({
                       <span
                         key={m}
                         className={`rounded-pill px-3 py-1.5 font-body text-[13px] font-medium ${
-                          m === filters.major ? "bg-ink text-white" : "bg-soft text-ink"
+                          m === filters.major ? "bg-[#EAF0FF] text-blue" : "bg-soft text-ink"
                         }`}
                       >
                         {m}
