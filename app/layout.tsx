@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Stack_Sans_Headline } from "next/font/google";
+import { Poppins, Stack_Sans_Headline } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
@@ -9,6 +9,13 @@ const stackSans = Stack_Sans_Headline({
   variable: "--font-stack-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+});
+
+// Only used by the EasiAbroad wordmark, to match the brand logo.
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["500"],
 });
 
 // Not in Next's Google font list yet, so it's self-hosted from Google Fonts.
@@ -23,7 +30,7 @@ const caslon = localFont({
 export const metadata: Metadata = {
   title: "EasiAbroad — Your whole study-abroad journey, one platform",
   description:
-    "EasiAbroad helps Bangladeshi students check their readiness, find universities and professors, and track scholarship and conference deadlines.",
+    "EasiAbroad helps South Asian students check their readiness, find universities and professors, and track scholarship and conference deadlines.",
 };
 
 export default function RootLayout({
@@ -34,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${stackSans.variable} ${caslon.variable} h-full antialiased`}
+      className={`${stackSans.variable} ${caslon.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper text-ink">
         <Nav />

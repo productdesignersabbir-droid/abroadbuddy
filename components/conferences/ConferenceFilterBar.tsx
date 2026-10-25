@@ -28,15 +28,16 @@ function Chevron() {
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden
-      className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-sub"
+      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-sub"
     >
       <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
+// A bordered box so each choice reads as something you can open and change.
 const selectClass =
-  "w-full cursor-pointer appearance-none truncate bg-transparent pr-6 font-display text-[24px] leading-tight tracking-[-0.02em] text-ink outline-none";
+  "w-full cursor-pointer appearance-none truncate rounded-[12px] border-[1.5px] border-line bg-white py-2.5 pl-3.5 pr-9 font-body text-[15px] font-medium text-ink outline-none transition-colors hover:border-ink/30 focus-visible:border-blue";
 
 const QUICK: { label: string; apply: (f: ConferenceFilters) => ConferenceFilters; on: (f: ConferenceFilters) => boolean }[] = [
   {
@@ -72,14 +73,14 @@ export function ConferenceFilterBar({
     <div>
       <div className="grid grid-cols-1 gap-1 rounded-[28px] bg-white p-2 sm:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1fr_1fr]">
         <Segment label="Search" htmlFor="conferenceQuery">
-          <div className="relative mt-1.5">
+          <div className="relative mt-2">
             <input
               id="conferenceQuery"
               type="search"
               value={filters.query}
               onChange={(e) => onChange({ ...filters, query: e.target.value })}
               placeholder="Event, host or city"
-              className="w-full bg-transparent pr-7 font-display text-[24px] leading-tight tracking-[-0.02em] text-ink outline-none placeholder:text-ink/35"
+              className="w-full rounded-[12px] border-[1.5px] border-line bg-white py-2.5 pl-3.5 pr-10 font-body text-[15px] font-medium text-ink outline-none transition-colors placeholder:font-normal placeholder:text-sub hover:border-ink/30 focus-visible:border-blue"
             />
             <svg
               width="18"
@@ -87,7 +88,7 @@ export function ConferenceFilterBar({
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden
-              className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-sub"
+              className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-sub"
             >
               <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="2" />
               <path d="m16 16 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -96,7 +97,7 @@ export function ConferenceFilterBar({
         </Segment>
 
         <Segment label="Field" htmlFor="conferenceField">
-          <div className="relative mt-1.5">
+          <div className="relative mt-2">
             <select
               id="conferenceField"
               value={filters.field}
@@ -115,7 +116,7 @@ export function ConferenceFilterBar({
         </Segment>
 
         <Segment label="Where" htmlFor="conferenceLocation">
-          <div className="relative mt-1.5">
+          <div className="relative mt-2">
             <select
               id="conferenceLocation"
               value={filters.location}
@@ -131,7 +132,7 @@ export function ConferenceFilterBar({
         </Segment>
 
         <Segment label="Type" htmlFor="conferenceType">
-          <div className="relative mt-1.5">
+          <div className="relative mt-2">
             <select
               id="conferenceType"
               value={filters.type}

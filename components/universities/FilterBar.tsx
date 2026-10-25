@@ -51,15 +51,16 @@ function Chevron() {
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden
-      className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-sub"
+      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-sub"
     >
       <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
+// A bordered box so each choice reads as something you can open and change.
 const selectClass =
-  "w-full cursor-pointer appearance-none truncate bg-transparent pr-6 font-display text-[24px] leading-tight tracking-[-0.02em] text-ink outline-none";
+  "w-full cursor-pointer appearance-none truncate rounded-[12px] border-[1.5px] border-line bg-white py-2.5 pl-3.5 pr-9 font-body text-[15px] font-medium text-ink outline-none transition-colors hover:border-ink/30 focus-visible:border-blue";
 
 export function FilterBar({
   filters,
@@ -77,7 +78,7 @@ export function FilterBar({
           label="Your CGPA"
           htmlFor="cgpa"
           value={
-            <span className="font-display text-[24px] leading-none tracking-[-0.02em] text-ink">
+            <span className="font-display text-[20px] leading-none tracking-[-0.01em] text-ink">
               {filters.cgpa.toFixed(2)}
             </span>
           }
@@ -96,7 +97,7 @@ export function FilterBar({
         </Segment>
 
         <Segment label="Destination" htmlFor="country">
-          <div className="relative mt-1.5">
+          <div className="relative mt-2">
             <select
               id="country"
               value={filters.country}
@@ -119,7 +120,7 @@ export function FilterBar({
         </Segment>
 
         <Segment label="Major" htmlFor="major">
-          <div className="relative mt-1.5">
+          <div className="relative mt-2">
             <select
               id="major"
               value={filters.major}
@@ -139,7 +140,7 @@ export function FilterBar({
           label="Max tuition / year"
           htmlFor="budget"
           value={
-            <span className="font-display text-[24px] leading-none tracking-[-0.02em] text-ink">
+            <span className="font-display text-[20px] leading-none tracking-[-0.01em] text-ink">
               {anyBudget ? "Any" : `$${Math.round(filters.budget / 1000)}k`}
             </span>
           }
