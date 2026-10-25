@@ -1,4 +1,4 @@
-import { COUNTRIES, MAJORS, type Major } from "@/data/universities";
+import { MAJORS, type Major } from "@/data/universities";
 
 export { MAJORS };
 export type { Major };
@@ -13,7 +13,16 @@ export const FUNDING_TYPES: FundingType[] = [
   "Tuition Waiver",
 ];
 
-export const SCHOLARSHIP_COUNTRIES = [...COUNTRIES, "Multiple Countries"] as const;
+// Scholarship data currently covers these destinations; it is kept separate from
+// the University Finder's wider country list so each can grow on its own.
+export const SCHOLARSHIP_COUNTRIES = [
+  "USA",
+  "UK",
+  "Canada",
+  "Germany",
+  "Australia",
+  "Multiple Countries",
+] as const;
 export type ScholarshipCountry = (typeof SCHOLARSHIP_COUNTRIES)[number];
 
 export type Scholarship = {

@@ -1,50 +1,48 @@
 import Link from "next/link";
 import { SectionHead } from "@/components/home/SectionHead";
 import { Accent } from "@/components/PageHeader";
-import { FallbackImage } from "@/components/ui/FallbackImage";
+import { FeatureIllustration, type IllustrationKind } from "@/components/home/FeatureIllustrations";
 
-const img = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?w=900&q=80&auto=format&fit=crop`;
-
-const FEATURES = [
+const FEATURES: {
+  title: string;
+  desc: string;
+  href: string;
+  kind: IllustrationKind;
+  span: string;
+}[] = [
   {
     title: "Study Abroad Readiness",
-    desc: "Answer five questions and get a readiness score with a to-do list of what to work on next.",
+    desc: "Answer nine quick questions and get a readiness score, a timeline and a to-do list for your plan.",
     href: "/readiness",
-    imageSrc: img("1544717305-2782549b5136"),
-    imageAlt: "Smiling student holding an orange folder",
+    kind: "readiness",
     span: "lg:col-span-3",
   },
   {
     title: "University Finder",
     desc: "A ranked shortlist based on your CGPA, major, target country and budget — not guesswork.",
     href: "/universities",
-    imageSrc: img("1562774053-701939374585"),
-    imageAlt: "University building with a wide green lawn",
+    kind: "universities",
     span: "lg:col-span-3",
   },
   {
     title: "Find your Professor",
     desc: "Read professor ratings, lab culture and funding reviews before you reach out.",
     href: "/lab-kemon",
-    imageSrc: img("1522202176988-66273c2fd55f"),
-    imageAlt: "Students discussing research around a laptop",
+    kind: "professors",
     span: "lg:col-span-2",
   },
   {
     title: "Scholarship Calendar",
     desc: "Every upcoming deadline in one calendar, with official links for each scholarship.",
     href: "/scholarships",
-    imageSrc: img("1523580846011-d3a5bc25702b"),
-    imageAlt: "Graduate in a cap looking out at a ceremony",
+    kind: "scholarships",
     span: "lg:col-span-2",
   },
   {
     title: "Conference Calendar",
     desc: "Local and global conferences, research fests and paper deadlines in one place.",
     href: "/conferences",
-    imageSrc: img("1540575467063-178a50c2df87"),
-    imageAlt: "Audience at a research conference",
+    kind: "conferences",
     span: "lg:col-span-2",
   },
 ];
@@ -72,23 +70,20 @@ export function Features() {
               href={f.href}
               className={`group flex flex-col rounded-[30px] bg-white p-2.5 no-underline ${f.span}`}
             >
-              <div
-                className={`relative overflow-hidden rounded-[22px] ${
-                  f.span === "lg:col-span-3" ? "h-64 lg:h-80" : "h-60"
-                }`}
-              >
-                <FallbackImage
-                  src={f.imageSrc}
-                  alt={f.imageAlt}
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
-                />
-              </div>
-              <div className="px-3.5 pb-4 pt-5">
+              <FeatureIllustration
+                kind={f.kind}
+                className={f.span === "lg:col-span-3" ? "aspect-[16/9]" : "aspect-[16/10]"}
+              />
+              <div className="flex flex-1 flex-col items-start px-3.5 pb-4 pt-5">
                 <h3 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-ink">
                   {f.title}
                 </h3>
-                <p className="mt-2 font-body text-[15px] leading-relaxed text-sub">{f.desc}</p>
+                <p className="mb-5 mt-2 font-body text-[15px] leading-relaxed text-sub">{f.desc}</p>
+                {/* The whole card is the link, so this is styled as a button rather than nested. */}
+                <span className="mt-auto inline-flex items-center gap-2 rounded-pill bg-softer px-4.5 py-2.5 font-body text-[14.5px] text-ink transition-colors duration-200 group-hover:bg-ink group-hover:text-white">
+                  Explore
+                  <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+                </span>
               </div>
             </Link>
           ))}

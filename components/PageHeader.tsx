@@ -20,6 +20,7 @@ export function PageHeader({
   description,
   imageSrc,
   imageAlt,
+  media,
   children,
 }: {
   kicker: string;
@@ -27,14 +28,17 @@ export function PageHeader({
   description: string;
   imageSrc?: string;
   imageAlt?: string;
+  /** Replaces the photo with custom content (e.g. a carousel) in the same frame. */
+  media?: ReactNode;
   children?: ReactNode;
 }) {
+  const hasMedia = Boolean(media || imageSrc);
   return (
     <section className="bg-paper">
       <div className="mx-auto max-w-7xl px-6 pb-14 pt-14 sm:pt-18">
         <div
           className={`grid grid-cols-1 items-center gap-10 ${
-            imageSrc ? "lg:grid-cols-[1.1fr_0.9fr] lg:gap-14" : ""
+            hasMedia ? "lg:grid-cols-[1.1fr_0.9fr] lg:gap-14" : ""
           }`}
         >
           <div>
@@ -48,15 +52,17 @@ export function PageHeader({
             {children}
           </div>
 
-          {imageSrc && (
+          {hasMedia && (
             <div className="relative h-64 overflow-hidden rounded-[30px] lg:h-96">
-              <FallbackImage
-                src={imageSrc}
-                alt={imageAlt ?? ""}
-                className="object-cover"
-                sizes="(min-width: 1024px) 45vw, 100vw"
-                priority
-              />
+              {media ?? (
+                <FallbackImage
+                  src={imageSrc!}
+                  alt={imageAlt ?? ""}
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  priority
+                />
+              )}
             </div>
           )}
         </div>

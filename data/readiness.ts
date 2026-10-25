@@ -1,3 +1,5 @@
+import type { Country, Major } from "@/data/universities";
+
 export type ReadinessArea = "cgpa" | "english" | "research" | "budget" | "documents";
 
 export type Priority = "high" | "medium" | "low";
@@ -19,6 +21,14 @@ export type ReadinessOption = {
   todo?: Todo;
 };
 
+/** Wording for school leavers applying for a bachelor's, option by option. */
+export type BachelorsVersion = {
+  areaLabel: string;
+  question: string;
+  hint: string;
+  options: { label: string; todo?: Todo }[];
+};
+
 export type SingleQuestion = {
   kind: "single";
   area: ReadinessArea;
@@ -26,6 +36,7 @@ export type SingleQuestion = {
   question: string;
   hint: string;
   options: ReadinessOption[];
+  forBachelors?: BachelorsVersion;
 };
 
 // Documents is a checklist: each ticked item earns points, each unticked item
@@ -37,6 +48,7 @@ export type ChecklistQuestion = {
   question: string;
   hint: string;
   options: ReadinessOption[];
+  forBachelors?: BachelorsVersion;
 };
 
 export type ReadinessQuestion = SingleQuestion | ChecklistQuestion;
@@ -44,9 +56,9 @@ export type ReadinessQuestion = SingleQuestion | ChecklistQuestion;
 // Every area is worth 20 points, so the total score is out of 100.
 export const AREA_MAX = 20;
 
-const UNIVERSITY_FINDER: TodoLink = { href: "/universities", label: "Open University Finder" };
-const SCHOLARSHIPS: TodoLink = { href: "/scholarships", label: "Browse scholarships" };
-const PROFESSORS: TodoLink = { href: "/lab-kemon", label: "Find your professor" };
+export const UNIVERSITY_FINDER: TodoLink = { href: "/universities", label: "Open University Finder" };
+export const SCHOLARSHIPS: TodoLink = { href: "/scholarships", label: "Browse scholarships" };
+export const PROFESSORS: TodoLink = { href: "/lab-kemon", label: "Find your professor" };
 const CONFERENCES: TodoLink = { href: "/conferences", label: "See conference deadlines" };
 
 export const READINESS_QUESTIONS: ReadinessQuestion[] = [
@@ -107,6 +119,54 @@ export const READINESS_QUESTIONS: ReadinessQuestion[] = [
         },
       },
     ],
+    forBachelors: {
+      areaLabel: "Grades",
+      question: "What's your HSC result (or A-level equivalent)?",
+      hint: "A-level students: pick the closest match to your predicted grades.",
+      options: [
+        { label: "GPA 5.00 in both SSC and HSC" },
+        {
+          label: "HSC GPA 5.00",
+          todo: {
+            title: "Mix reach and match universities",
+            detail:
+              "Your grades are strong. Apply to a few reach universities, but keep match and safe options so one decision doesn't decide everything.",
+            priority: "low",
+            link: UNIVERSITY_FINDER,
+          },
+        },
+        {
+          label: "HSC GPA 4.50 – 4.99",
+          todo: {
+            title: "Strengthen the rest of your application",
+            detail:
+              "A good English score, a clear personal statement and real activities can balance your grades.",
+            priority: "medium",
+            link: UNIVERSITY_FINDER,
+          },
+        },
+        {
+          label: "HSC GPA 4.00 – 4.49",
+          todo: {
+            title: "Target universities that accept your grades",
+            detail:
+              "Check each university's HSC or A-level entry rule. A foundation year is a common route into UK and Australian universities.",
+            priority: "high",
+            link: UNIVERSITY_FINDER,
+          },
+        },
+        {
+          label: "Below 4.00",
+          todo: {
+            title: "Look at foundation and diploma pathways",
+            detail:
+              "Universities in the UK, Australia, Malaysia and Canada run one-year foundation programs that lead straight into a degree.",
+            priority: "high",
+            link: UNIVERSITY_FINDER,
+          },
+        },
+      ],
+    },
   },
   {
     kind: "single",
@@ -219,6 +279,49 @@ export const READINESS_QUESTIONS: ReadinessQuestion[] = [
         },
       },
     ],
+    forBachelors: {
+      areaLabel: "Activities",
+      question: "What have you done outside class?",
+      hint: "Olympiads, clubs, competitions, projects or volunteering all count.",
+      options: [
+        { label: "National or international award" },
+        {
+          label: "Led a club, team or big project",
+          todo: {
+            title: "Show your impact in your personal statement",
+            detail: "Say what you led, what changed because of it and what you learned.",
+            priority: "medium",
+          },
+        },
+        {
+          label: "Regular member of a club or team",
+          todo: {
+            title: "Take on a role you can talk about",
+            detail:
+              "Volunteer to organise an event or lead a project this term. One clear story beats a long list of memberships.",
+            priority: "medium",
+          },
+        },
+        {
+          label: "A few school activities",
+          todo: {
+            title: "Go deep on one activity",
+            detail:
+              "Pick one thing — an olympiad, a coding project, debate or volunteering — and stick with it for a few months.",
+            priority: "high",
+          },
+        },
+        {
+          label: "Not much yet",
+          todo: {
+            title: "Build something you can show",
+            detail:
+              "Admissions teams look for curiosity. Join an olympiad, a club, or an online course with a final project.",
+            priority: "high",
+          },
+        },
+      ],
+    },
   },
   {
     kind: "single",
@@ -341,5 +444,146 @@ export const READINESS_QUESTIONS: ReadinessQuestion[] = [
         },
       },
     ],
+  },
+];
+
+// About you: unscored questions that personalise the results.
+
+export type DegreeLevel = "masters" | "phd" | "bachelors" | "unsure";
+
+export const UNDECIDED = "undecided";
+
+export type ReadinessProfile = {
+  degree?: DegreeLevel;
+  major?: Major | typeof UNDECIDED;
+  country?: Country | typeof UNDECIDED;
+  intake?: string;
+};
+
+export type ProfileKey = keyof ReadinessProfile;
+
+export const DEGREE_OPTIONS: { id: DegreeLevel; label: string; hint: string }[] = [
+  { id: "masters", label: "Master's", hint: "MS, MSc, MEng, MBA or MA" },
+  { id: "phd", label: "PhD", hint: "Research degree, often fully funded" },
+  { id: "bachelors", label: "Bachelor's", hint: "Straight after HSC or A levels" },
+  { id: "unsure", label: "Not sure yet", hint: "We'll help you decide" },
+];
+
+export type IntakeOption = {
+  id: string;
+  label: string;
+  /** Rough first day of classes, used to count months left. */
+  start: string;
+  season: "spring" | "fall";
+};
+
+export const INTAKE_OPTIONS: IntakeOption[] = [
+  { id: "spring-2027", label: "Spring 2027", start: "2027-01-15", season: "spring" },
+  { id: "fall-2027", label: "Fall 2027", start: "2027-09-01", season: "fall" },
+  { id: "spring-2028", label: "Spring 2028", start: "2028-01-15", season: "spring" },
+  { id: "fall-2028", label: "Fall 2028 or later", start: "2028-09-01", season: "fall" },
+];
+
+export const PROFILE_QUESTIONS: Record<ProfileKey, { question: string; hint: string }> = {
+  degree: {
+    question: "What do you want to study abroad?",
+    hint: "This changes which questions and advice you see.",
+  },
+  major: {
+    question: "Which field are you aiming for?",
+    hint: "Pick the closest match. You can change it later in University Finder.",
+  },
+  country: {
+    question: "Where would you most like to go?",
+    hint: "Pick your first choice. We'll show its visa, costs and intakes.",
+  },
+  intake: {
+    question: "When do you want to start?",
+    hint: "We'll work out how much time you have left.",
+  },
+};
+
+/** Advice that depends on the field, matched by major. */
+export const FIELD_TIPS: { majors: Major[]; todo: Todo }[] = [
+  {
+    majors: ["Computer Science", "Data Science", "Artificial Intelligence", "Cybersecurity"],
+    todo: {
+      title: "Show your work on GitHub",
+      detail:
+        "Admissions teams in computing look for real projects. Pin 2–3 well-documented repos and link them in your CV. Many US programs have made the GRE optional — check each one.",
+      priority: "medium",
+    },
+  },
+  {
+    majors: [
+      "Electrical Engineering",
+      "Mechanical Engineering",
+      "Civil Engineering",
+      "Chemical Engineering",
+      "Biomedical Engineering",
+      "Renewable Energy",
+    ],
+    todo: {
+      title: "Put your lab and thesis work first",
+      detail:
+        "Engineering programs weigh hands-on work. Describe tools, results and your exact role. Some US programs still ask for the GRE.",
+      priority: "medium",
+    },
+  },
+  {
+    majors: ["Architecture"],
+    todo: {
+      title: "Build your design portfolio",
+      detail:
+        "Almost every architecture program asks for one. Pick 4–6 of your strongest projects and show your process, not only final renders.",
+      priority: "high",
+    },
+  },
+  {
+    majors: ["Business", "Finance", "Economics", "Supply Chain Management"],
+    todo: {
+      title: "Check GMAT, GRE and work experience rules",
+      detail:
+        "Many business master's accept either test, and MBAs usually want 2–3 years of work. Note each program's rule before you shortlist.",
+      priority: "medium",
+    },
+  },
+  {
+    majors: ["Public Health", "Pharmacy", "Biotechnology"],
+    todo: {
+      title: "Line up lab or field experience",
+      detail:
+        "Health and life-science programs look for lab, hospital or field work. Even a short internship or volunteer role helps.",
+      priority: "medium",
+    },
+  },
+  {
+    majors: ["Physics", "Mathematics", "Chemistry"],
+    todo: {
+      title: "Contact professors early",
+      detail:
+        "Science programs are research-led and funding often sits with a professor. Read their recent papers before you email.",
+      priority: "medium",
+      link: PROFESSORS,
+    },
+  },
+  {
+    majors: ["Environmental Science", "Agriculture", "Public Policy"],
+    todo: {
+      title: "Look at development-focused scholarships",
+      detail:
+        "Erasmus Mundus, Commonwealth and Australia Awards often fund these fields. Field or NGO experience makes your case stronger.",
+      priority: "medium",
+      link: SCHOLARSHIPS,
+    },
+  },
+  {
+    majors: ["Law"],
+    todo: {
+      title: "Check LLM entry rules",
+      detail:
+        "Most LLM programs ask for a law degree and a writing sample. Some countries have extra rules if you plan to practise there.",
+      priority: "medium",
+    },
   },
 ];

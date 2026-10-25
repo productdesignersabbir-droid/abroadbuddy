@@ -12,7 +12,7 @@ export default function LabKemonPage() {
             Know the <Accent>lab</Accent> before you commit
           </>
         }
-        description="Search professors and labs by university or field to see mentorship, funding, work-life balance and publishing scores — plus honest reviews from students who've actually been there."
+        description="Browse 43 labs in 26 countries. Search by professor, university or research topic to see who is taking students, what funding looks like, and what past students say."
         imageSrc="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80&auto=format&fit=crop"
         imageAlt="A mentor and student celebrating progress at a desk"
       />

@@ -1,6 +1,6 @@
-import { COUNTRIES } from "@/data/universities";
-
-export { COUNTRIES };
+// Visa stories currently cover these destinations only, separate from the
+// University Finder's wider country list.
+export const COUNTRIES = ["USA", "UK", "Canada", "Germany", "Australia"] as const;
 
 export type VisaOutcome = "Approved" | "Rejected";
 export const VISA_OUTCOMES: VisaOutcome[] = ["Approved", "Rejected"];

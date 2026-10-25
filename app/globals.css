@@ -140,3 +140,337 @@ input:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- Homepage illustrations ----------
+   Small, reusable motion classes for the hero showcase and the feature
+   illustrations. Delays are set inline per element. */
+.ill-pop {
+  animation: ill-pop 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.25) both;
+}
+.ill-slide {
+  animation: ill-slide 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ill-up {
+  animation: ill-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ill-fill {
+  transform-origin: left center;
+  animation: ill-fill 1.2s cubic-bezier(0.3, 0.7, 0.2, 1) both;
+}
+.ill-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ill-draw 1.6s ease-out forwards;
+}
+.ill-type {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  animation: ill-type 1.5s steps(24) both;
+}
+.ill-caret {
+  animation: ill-caret 0.9s steps(1) infinite;
+}
+.ill-bob {
+  animation: ill-bob 3.2s ease-in-out infinite;
+}
+.ill-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: ill-sway 2.6s ease-in-out infinite;
+}
+.ill-wave {
+  transform-box: fill-box;
+  transform-origin: 0% 50%;
+  animation: ill-wave 1.8s ease-in-out infinite;
+}
+.ill-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ill-pulse 2.4s ease-in-out infinite;
+}
+.ill-drift {
+  animation: ill-drift 9s ease-in-out infinite alternate;
+}
+.ill-twinkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ill-twinkle 2.2s ease-in-out infinite;
+}
+.ill-scan {
+  animation: ill-scan 4s ease-in-out infinite;
+}
+.ill-progress {
+  transform-origin: left center;
+  animation: ill-fill linear both;
+}
+
+@keyframes ill-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ill-slide {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ill-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ill-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes ill-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes ill-type {
+  from {
+    max-width: 0;
+  }
+  to {
+    max-width: 100%;
+  }
+}
+@keyframes ill-caret {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes ill-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes ill-sway {
+  0%,
+  100% {
+    transform: rotate(-14deg);
+  }
+  50% {
+    transform: rotate(14deg);
+  }
+}
+@keyframes ill-wave {
+  0%,
+  100% {
+    transform: skewY(0deg) scaleX(1);
+  }
+  50% {
+    transform: skewY(-8deg) scaleX(0.92);
+  }
+}
+@keyframes ill-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.75;
+  }
+}
+@keyframes ill-drift {
+  from {
+    transform: translateX(-12px);
+  }
+  to {
+    transform: translateX(14px);
+  }
+}
+@keyframes ill-twinkle {
+  0%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+@keyframes ill-scan {
+  0%,
+  100% {
+    transform: translate(-22px, 4px) rotate(-6deg);
+  }
+  50% {
+    transform: translate(26px, -4px) rotate(6deg);
+  }
+}
+.ill-knob {
+  animation: ill-knob 0.9s cubic-bezier(0.3, 0.7, 0.2, 1) both;
+}
+@keyframes ill-knob {
+  from {
+    left: 0%;
+  }
+  to {
+    left: 81%;
+  }
+}
+
+/* Soft range slider: neutral track, ink fill up to --pct, white thumb. */
+.range-soft {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 99px;
+  background: linear-gradient(
+    to right,
+    var(--color-ink) 0 var(--pct, 50%),
+    var(--color-softer) var(--pct, 50%) 100%
+  );
+  cursor: pointer;
+}
+.range-soft::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--color-ink);
+  box-shadow: 0 2px 8px rgba(11, 18, 32, 0.18);
+  transition: transform 0.15s ease;
+}
+.range-soft::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--color-ink);
+  box-shadow: 0 2px 8px rgba(11, 18, 32, 0.18);
+}
+.range-soft:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+/* Split-flap departure board tile (boarding pass). */
+.flap-tile {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 0.82em;
+  height: 1.08em;
+  border-radius: 0.12em;
+  background: var(--color-ink);
+  color: #fff;
+  line-height: 1;
+}
+.flap-tile::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.flap-anim {
+  animation: flap 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  transform-origin: 50% 50%;
+}
+@keyframes flap {
+  0% {
+    transform: perspective(300px) rotateX(-95deg);
+    filter: brightness(1.8);
+  }
+  100% {
+    transform: perspective(300px) rotateX(0);
+    filter: brightness(1);
+  }
+}
+
+/* Small looping motions for 24px step icons. */
+.icon-bob {
+  animation: icon-bob 2.4s ease-in-out infinite;
+}
+.icon-scan {
+  animation: icon-scan 3s ease-in-out infinite;
+}
+.arrow-nudge {
+  animation: arrow-nudge 1.6s ease-in-out infinite;
+}
+@keyframes icon-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+@keyframes icon-scan {
+  0%,
+  100% {
+    transform: translate(-2.5px, 1px);
+  }
+  50% {
+    transform: translate(2.5px, -1px);
+  }
+}
+@keyframes arrow-nudge {
+  0%,
+  100% {
+    transform: translateX(-1.5px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+}
+
+/* Problem section pills: rise in on small screens, drift out from the circle on wide ones. */
+.pill-drift {
+  transform: translateY(calc((1 - var(--k, 1)) * 18px));
+}
+@media (min-width: 1024px) {
+  .pill-drift {
+    transform: translate(
+        calc(-50% + var(--x) * var(--fit, 1) * 1px * (0.45 + 0.55 * var(--k, 1))),
+        calc(-50% + var(--y) * 1px * (0.45 + 0.55 * var(--k, 1)))
+      )
+      scale(calc(0.88 + 0.12 * var(--k, 1)));
+  }
+}
+
+/* Scalloped tear-off edge for the boarding-pass stub: top on phones, left on desktop. */
+.stub-scallop {
+  -webkit-mask: radial-gradient(circle at 10px 0, transparent 6px, #000 6.5px) 0 0 / 20px 100% repeat-x;
+  mask: radial-gradient(circle at 10px 0, transparent 6px, #000 6.5px) 0 0 / 20px 100% repeat-x;
+}
+@media (min-width: 1024px) {
+  .stub-scallop {
+    -webkit-mask: radial-gradient(circle at 0 10px, transparent 6px, #000 6.5px) 0 0 / 100% 20px repeat-y;
+    mask: radial-gradient(circle at 0 10px, transparent 6px, #000 6.5px) 0 0 / 100% 20px repeat-y;
+  }
+}

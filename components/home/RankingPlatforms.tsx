@@ -3,33 +3,53 @@
 import { useReveal } from "@/lib/use-reveal";
 import { SectionHead } from "@/components/home/SectionHead";
 import { Accent } from "@/components/PageHeader";
-import { FallbackImage } from "@/components/ui/FallbackImage";
 import { IconExternalLink } from "@/components/conferences/icons";
 
-const PLATFORMS = [
+type Entry = { rank: string; name: string; flag: string };
+
+// Top five from each system's latest edition (checked October 2026). Ties
+// share a rank, shown with "=".
+const PLATFORMS: {
+  name: string;
+  edition: string;
+  href: string;
+  top: Entry[];
+}[] = [
   {
     name: "QS World University Rankings",
-    desc: "The most widely cited global ranking — compare universities by subject, employability and research impact.",
-    href: "https://www.topuniversities.com/university-rankings",
-    imageSrc:
-      "https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?w=800&q=80&auto=format&fit=crop",
-    imageAlt: "Modern university building facade with a landscaped lawn",
+    edition: "2027 edition",
+    href: "https://www.topuniversities.com/world-university-rankings",
+    top: [
+      { rank: "1", name: "MIT", flag: "🇺🇸" },
+      { rank: "=2", name: "Imperial College London", flag: "🇬🇧" },
+      { rank: "=2", name: "Stanford University", flag: "🇺🇸" },
+      { rank: "4", name: "University of Oxford", flag: "🇬🇧" },
+      { rank: "5", name: "Harvard University", flag: "🇺🇸" },
+    ],
   },
   {
-    name: "Times Higher Education Rankings",
-    desc: "THE's World University Rankings weigh teaching, research and international outlook across 100+ countries.",
+    name: "Times Higher Education",
+    edition: "2027 edition",
     href: "https://www.timeshighereducation.com/world-university-rankings/latest/world-ranking",
-    imageSrc:
-      "https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=80&auto=format&fit=crop",
-    imageAlt: "Grand classical university academic building with a lawn",
+    top: [
+      { rank: "1", name: "University of Oxford", flag: "🇬🇧" },
+      { rank: "2", name: "MIT", flag: "🇺🇸" },
+      { rank: "=3", name: "Princeton University", flag: "🇺🇸" },
+      { rank: "=3", name: "Stanford University", flag: "🇺🇸" },
+      { rank: "5", name: "University of Cambridge", flag: "🇬🇧" },
+    ],
   },
   {
     name: "US News Best Global Universities",
-    desc: "A trusted US-centric ranking, useful for comparing national universities and program-level strength.",
-    href: "https://www.usnews.com/best-colleges/rankings/national-universities",
-    imageSrc:
-      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&q=80&auto=format&fit=crop",
-    imageAlt: "Curved rows of bookshelves in a university library",
+    edition: "2026–2027 edition",
+    href: "https://www.usnews.com/education/best-global-universities/rankings",
+    top: [
+      { rank: "1", name: "Harvard University", flag: "🇺🇸" },
+      { rank: "2", name: "MIT", flag: "🇺🇸" },
+      { rank: "3", name: "Stanford University", flag: "🇺🇸" },
+      { rank: "4", name: "University of Oxford", flag: "🇬🇧" },
+      { rank: "5", name: "University of Cambridge", flag: "🇬🇧" },
+    ],
   },
 ];
 
@@ -49,34 +69,51 @@ function PlatformCard({
         opacity: seen ? 1 : 0,
         transform: seen ? "translateY(0)" : "translateY(16px)",
       }}
-      className="flex flex-col overflow-hidden rounded-[30px] bg-white p-2.5 transition-[opacity,transform] duration-300 hover:-translate-y-1"
+      className="flex flex-col rounded-[30px] bg-white p-6 transition-[opacity,transform] duration-300"
     >
-      <div className="relative h-48 w-full overflow-hidden rounded-[22px]">
-        <FallbackImage
-          src={platform.imageSrc}
-          alt={platform.imageAlt}
-          className="object-cover"
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-5.5">
+      <div className="flex items-start justify-between gap-3">
         <h3 className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
           {platform.name}
         </h3>
-        <p className="mt-2.25 font-body text-[14px] leading-relaxed text-sub">
-          {platform.desc}
-        </p>
-        <div className="mt-auto pt-5">
-          <a
-            href={platform.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 rounded-button bg-ink px-4.5 py-2.5 font-body text-sm text-white transition-colors hover:bg-blue"
+        <span className="mt-1 shrink-0 rounded-pill bg-soft px-2.5 py-1 font-body text-[12px] text-sub">
+          {platform.edition}
+        </span>
+      </div>
+
+      <ol className="mt-5 grid list-none grid-cols-1 p-0">
+        {platform.top.map((u, idx) => (
+          <li
+            key={u.name}
+            style={{ transitionDelay: `${150 + i * 60 + idx * 70}ms` }}
+            className={`flex items-center gap-3.5 border-t border-line py-3 transition-[opacity,transform] duration-500 ${
+              seen ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0"
+            }`}
           >
-            Visit rankings
-            <IconExternalLink color="#FFFFFF" />
-          </a>
-        </div>
+            <span
+              className={`w-9 shrink-0 font-display text-[24px] leading-none tabular-nums ${
+                idx === 0 ? "text-ink" : "text-ink/45"
+              }`}
+            >
+              {u.rank}
+            </span>
+            <span className="text-[17px] leading-none" aria-hidden>
+              {u.flag}
+            </span>
+            <span className="min-w-0 flex-1 truncate font-body text-[15px] text-ink">{u.name}</span>
+          </li>
+        ))}
+      </ol>
+
+      <div className="mt-auto border-t border-line pt-5">
+        <a
+          href={platform.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-1.5 rounded-button bg-softer px-4.5 py-2.5 font-body text-sm text-ink transition-colors hover:bg-[#E2DCD2]"
+        >
+          See the full ranking
+          <IconExternalLink color="#0B1220" />
+        </a>
       </div>
     </div>
   );
@@ -93,7 +130,7 @@ export function RankingPlatforms() {
               Cross-check with the <Accent>rankings</Accent> that matter
             </>
           }
-          sub="Cross-check your shortlist against the world's most trusted university ranking systems before you commit."
+          sub="The top five in each of the big three global rankings. Open the full list on the official site."
         />
         <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {PLATFORMS.map((platform, i) => (
