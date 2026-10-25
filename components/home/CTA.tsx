@@ -28,7 +28,7 @@ const STARS = Array.from({ length: 34 }, (_, i) => ({
 export function CTA() {
   return (
     <section className="bg-paper px-6 pb-10 pt-4">
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-6 overflow-hidden rounded-[30px] bg-[#1A1C20] px-8 pt-16 sm:px-14 md:grid-cols-[1.1fr_0.9fr] md:py-16">
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-6 overflow-hidden rounded-[30px] bg-[#1A1C20] px-6 pt-14 sm:px-14 sm:pt-16 md:grid-cols-[1.1fr_0.9fr] md:py-16">
         <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-full md:w-1/2">
           {STARS.map((s, i) => (
             <span
@@ -67,7 +67,7 @@ export function CTA() {
           </ul>
         </div>
 
-        <div className="relative mx-auto -mb-24 w-full max-w-90 sm:max-w-105 md:-my-6 md:mb-0 md:max-w-115">
+        <div className="relative mx-auto mb-6 w-[calc(100%+1rem)] max-w-105 md:-my-6 md:mb-0 md:w-full md:max-w-115">
           <div
             aria-hidden
             className="absolute inset-[8%] rounded-full blur-3xl"

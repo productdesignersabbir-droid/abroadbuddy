@@ -154,7 +154,7 @@ export function Problem() {
       style={{ "--p": 0 } as CSSProperties}
       aria-labelledby="problem-heading"
     >
-      <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden px-6 motion-reduce:relative motion-reduce:h-auto motion-reduce:py-24">
+      <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden px-4 pt-16 sm:px-6 lg:pt-0 motion-reduce:relative motion-reduce:h-auto motion-reduce:py-24">
         {/* Heading: fades and lifts away as the circle arrives. */}
         <div
           className="absolute inset-x-6 top-[13vh] mx-auto max-w-210 text-center motion-reduce:hidden"
@@ -172,10 +172,10 @@ export function Problem() {
           </h2>
         </div>
 
-        <div className="relative flex w-full max-w-6xl flex-col items-center gap-5 lg:block lg:h-140">
+        <div className="relative flex w-full max-w-6xl flex-col items-center gap-3 sm:gap-5 lg:block lg:h-140">
           {/* The dark circle at the centre. */}
           <div
-            className="relative grid h-40 w-40 shrink-0 place-items-center rounded-full bg-soft sm:h-48 sm:w-48 lg:absolute lg:left-1/2 lg:top-1/2 lg:-ml-30 lg:-mt-30 lg:h-60 lg:w-60"
+            className="relative grid h-32 w-32 shrink-0 place-items-center rounded-full bg-soft sm:h-48 sm:w-48 lg:absolute lg:left-1/2 lg:top-1/2 lg:-ml-30 lg:-mt-30 lg:h-60 lg:w-60"
             style={{ opacity: circle, transform: `scale(calc(0.5 + ${circle} * 0.5))` }}
           >
             <span
@@ -185,10 +185,10 @@ export function Problem() {
             />
             <div className="grid h-[80%] w-[80%] place-items-center rounded-full bg-ink text-center text-white shadow-[0_24px_50px_-20px_rgba(11,18,32,0.55)]">
               <div>
-                <div className="font-display text-[clamp(44px,5vw,64px)] italic leading-none">
+                <div className="font-display text-[clamp(34px,5vw,64px)] italic leading-none">
                   1<span className="ml-1.5 text-[0.4em]">year</span>
                 </div>
-                <p className="mx-auto mt-2 max-w-28 font-body text-[12.5px] leading-snug text-white/70">
+                <p className="mx-auto mt-1 max-w-20 font-body text-[10px] leading-snug text-white/70 sm:mt-2 sm:max-w-28 sm:text-[12.5px]">
                   lost to one missed step
                 </p>
               </div>
@@ -196,7 +196,7 @@ export function Problem() {
           </div>
 
           {/* The mistakes, one after another. */}
-          <ul className="grid w-full max-w-md list-none grid-cols-1 gap-2 p-0 lg:contents">
+          <ul className="grid w-full max-w-md list-none grid-cols-1 gap-1.5 p-0 sm:gap-2 lg:contents">
             {MISTAKES.map((m, i) => {
               const k = ramp(PILLS_AT + i * PILL_STEP, 0.09);
               return (
@@ -207,16 +207,16 @@ export function Problem() {
                 >
                   <Link
                     href={m.href}
-                    className="group flex items-center gap-3.5 rounded-[22px] bg-soft p-2.5 pr-3.5 no-underline transition-colors hover:bg-softer"
+                    className="group flex items-center gap-3 rounded-[18px] bg-soft p-2 pr-3 sm:gap-3.5 sm:rounded-[22px] sm:p-2.5 sm:pr-3.5 no-underline transition-colors hover:bg-softer"
                   >
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[13px] bg-white text-ink">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] bg-white text-ink sm:h-11 sm:w-11 sm:rounded-[13px]">
                       <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
                         {m.icon}
                       </svg>
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block font-body text-[14.5px] leading-snug text-ink">{m.title}</span>
-                      <span className="block font-body text-[12.5px] text-sub transition-colors group-hover:text-ink">
+                      <span className="block font-body text-[13.5px] leading-snug text-ink sm:text-[14.5px]">{m.title}</span>
+                      <span className="block font-body text-[11.5px] text-sub transition-colors sm:text-[12.5px] group-hover:text-ink">
                         Fix · {m.fix} →
                       </span>
                     </span>

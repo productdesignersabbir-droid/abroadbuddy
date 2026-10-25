@@ -179,7 +179,7 @@ function Chip({
       role="radio"
       aria-checked={selected}
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-pill border-[1.5px] px-3.5 py-2 font-body text-[14px] transition-colors ${
+      className={`inline-flex items-center gap-1.5 rounded-pill border-[1.5px] px-3 py-1.5 font-body text-[13px] transition-colors sm:px-3.5 sm:py-2 sm:text-[14px] ${
         selected
           ? "border-[#1F9D61] bg-[#E3F4EA] text-ink"
           : "border-line bg-white text-ink hover:border-[#1F9D61]/40"
@@ -236,7 +236,7 @@ function ProfileStep({
     );
   } else if (field === "major") {
     body = (
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2">
         {[...MAJORS].sort().map((m) => (
           <Chip key={m} selected={value === m} onClick={() => onChange(m)}>
             {m}
@@ -255,7 +255,7 @@ function ProfileStep({
     body = (
       <div>
         <p className="mb-2 font-body text-[12.5px] text-sub">Most popular</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {POPULAR_FIRST.map((c) => (
             <Chip key={c} selected={value === c} onClick={() => onChange(c)}>
               <span className="text-[16px] leading-none">
@@ -274,7 +274,7 @@ function ProfileStep({
         <p className="mb-2 mt-5 font-body text-[12.5px] text-sub">
           More destinations
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {rest.map((c) => (
             <Chip key={c} selected={value === c} onClick={() => onChange(c)}>
               <span className="text-[16px] leading-none">
@@ -515,7 +515,7 @@ function PlanStrip({ profile, now }: { profile: ReadinessProfile; now: Date }) {
   return (
     <div className="mb-5 flex flex-col gap-3 rounded-card bg-white px-5.5 py-4 sm:flex-row sm:items-center">
       <span className="shrink-0 font-body text-[13px] text-sub">Your plan</span>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2">
         {chips.map((c) => (
           <span
             key={c}
