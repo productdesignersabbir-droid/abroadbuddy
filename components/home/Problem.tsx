@@ -154,7 +154,7 @@ export function Problem() {
       style={{ "--p": 0 } as CSSProperties}
       aria-labelledby="problem-heading"
     >
-      <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden px-4 pt-16 sm:px-6 lg:pt-0 motion-reduce:relative motion-reduce:h-auto motion-reduce:py-24">
+      <div className="sticky top-0 flex h-svh items-end justify-center overflow-hidden px-4 pb-6 pt-16 sm:items-center sm:px-6 sm:pb-0 lg:pt-0 motion-reduce:relative motion-reduce:h-auto motion-reduce:py-24">
         {/* Heading: fades and lifts away as the circle arrives. */}
         <div
           className="absolute inset-x-6 top-[13vh] mx-auto max-w-210 text-center motion-reduce:hidden"

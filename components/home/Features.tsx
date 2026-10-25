@@ -49,7 +49,7 @@ const FEATURES: {
 
 export function Features() {
   return (
-    <section id="features" className="bg-paper py-24">
+    <section id="features" className="bg-paper pb-24 pt-12 sm:pt-24">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead
           kicker="What we cover"
