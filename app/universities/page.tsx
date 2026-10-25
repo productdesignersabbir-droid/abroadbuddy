@@ -31,7 +31,7 @@ export default async function UniversitiesPage({ searchParams }: { searchParams:
             Find the university that <Accent>actually</Accent> fits you
           </>
         }
-        description="Compare 84 universities across 30 countries. Set your CGPA, destination, major and budget to see a ranked shortlist with admissions, costs, scholarships and visa details for each."
+        description={`Compare ${UNIVERSITIES.length} universities across ${COUNTRIES.length} countries. Set your CGPA, destination, major and budget to see a ranked shortlist with admissions, costs, scholarships and visa details for each.`}
         media={<TopUniversitiesCarousel />}
       />
       <UniversitiesExplorer universities={UNIVERSITIES} initialFilters={initialFilters} />

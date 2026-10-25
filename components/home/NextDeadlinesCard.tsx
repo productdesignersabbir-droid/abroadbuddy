@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { SCHOLARSHIPS, type ScholarshipCountry } from "@/data/scholarships";
+import { COUNTRY_INFO } from "@/data/universities";
 import {
   formatDaysLeftLabel,
   isClosingSoon,
@@ -10,14 +11,11 @@ import {
   withUpcomingDeadlines,
 } from "@/lib/scholarship-match";
 
-const FLAGS: Record<ScholarshipCountry, string> = {
-  USA: "🇺🇸",
-  UK: "🇬🇧",
-  Canada: "🇨🇦",
-  Germany: "🇩🇪",
-  Australia: "🇦🇺",
-  "Multiple Countries": "🌍",
-};
+function flagOf(country: ScholarshipCountry) {
+  if (country === "Multiple Countries") return "🌍";
+  if (country === "India") return "🇮🇳";
+  return COUNTRY_INFO[country].flag;
+}
 
 /** Hero card: a boarding-pass style ticket listing the next real deadlines. */
 export function NextDeadlinesCard() {
@@ -75,7 +73,7 @@ export function NextDeadlinesCard() {
                 className="flex items-center gap-3 rounded-[16px] px-2 py-2.5 no-underline transition-colors hover:bg-soft"
               >
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-soft text-[20px]">
-                  {FLAGS[s.country]}
+                  {flagOf(s.country)}
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-body text-[15px] text-ink">{s.name}</span>

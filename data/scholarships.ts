@@ -1,4 +1,5 @@
 import { MAJORS, type Major } from "@/data/universities";
+import { MORE_SCHOLARSHIPS } from "@/data/more-scholarships";
 
 export { MAJORS };
 export type { Major };
@@ -13,14 +14,37 @@ export const FUNDING_TYPES: FundingType[] = [
   "Tuition Waiver",
 ];
 
-// Scholarship data currently covers these destinations; it is kept separate from
-// the University Finder's wider country list so each can grow on its own.
+// Scholarship destinations are kept separate from the University Finder's country
+// list so each can grow on its own (India, for example, is only a scholarship host).
 export const SCHOLARSHIP_COUNTRIES = [
   "USA",
-  "UK",
   "Canada",
+  "UK",
+  "Ireland",
   "Germany",
+  "Netherlands",
+  "Belgium",
+  "France",
+  "Switzerland",
+  "Italy",
+  "Spain",
+  "Sweden",
+  "Finland",
+  "Denmark",
+  "Poland",
+  "Hungary",
+  "Turkey",
   "Australia",
+  "New Zealand",
+  "Japan",
+  "South Korea",
+  "China",
+  "Hong Kong",
+  "Taiwan",
+  "Singapore",
+  "Malaysia",
+  "India",
+  "Saudi Arabia",
   "Multiple Countries",
 ] as const;
 export type ScholarshipCountry = (typeof SCHOLARSHIP_COUNTRIES)[number];
@@ -513,4 +537,5 @@ export const SCHOLARSHIPS: Scholarship[] = [
       "Shortlisted candidates attend interviews with a selection committee",
     ],
   },
+  ...MORE_SCHOLARSHIPS,
 ];

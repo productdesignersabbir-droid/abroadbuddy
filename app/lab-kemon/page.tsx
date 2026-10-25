@@ -12,7 +12,7 @@ export default function LabKemonPage() {
             Know the <Accent>lab</Accent> before you commit
           </>
         }
-        description="Browse 43 labs in 26 countries. Search by professor, university or research topic to see who is taking students, what funding looks like, and what past students say."
+        description={`Browse ${LABS.length} labs in ${new Set(LABS.map((l) => l.country)).size} countries. Search by professor, university or research topic to see who is taking students, what funding looks like, and what past students say.`}
         imageSrc="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80&auto=format&fit=crop"
         imageAlt="A mentor and student celebrating progress at a desk"
       />

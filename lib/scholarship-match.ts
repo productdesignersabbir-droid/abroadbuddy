@@ -30,15 +30,38 @@ export const DEFAULT_FILTERS: ScholarshipFilters = {
   closingSoonOnly: false,
 };
 
-export const REGIONS = ["North America", "Europe", "Oceania", "Global"] as const;
+export const REGIONS = ["North America", "Europe", "Asia", "Oceania", "Middle East", "Global"] as const;
 export type Region = (typeof REGIONS)[number];
 
 const COUNTRY_REGION: Record<ScholarshipCountry, Region> = {
   USA: "North America",
   Canada: "North America",
   UK: "Europe",
+  Ireland: "Europe",
   Germany: "Europe",
+  Netherlands: "Europe",
+  Belgium: "Europe",
+  France: "Europe",
+  Switzerland: "Europe",
+  Italy: "Europe",
+  Spain: "Europe",
+  Sweden: "Europe",
+  Finland: "Europe",
+  Denmark: "Europe",
+  Poland: "Europe",
+  Hungary: "Europe",
+  Turkey: "Europe",
   Australia: "Oceania",
+  "New Zealand": "Oceania",
+  Japan: "Asia",
+  "South Korea": "Asia",
+  China: "Asia",
+  "Hong Kong": "Asia",
+  Taiwan: "Asia",
+  Singapore: "Asia",
+  Malaysia: "Asia",
+  India: "Asia",
+  "Saudi Arabia": "Middle East",
   "Multiple Countries": "Global",
 };
 

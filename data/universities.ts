@@ -1,3 +1,8 @@
+import { MORE_NORTH_AMERICA } from "@/data/more-universities/north-america";
+import { MORE_EUROPE } from "@/data/more-universities/europe";
+import { MORE_EUROPE_2 } from "@/data/more-universities/europe-2";
+import { MORE_ASIA_PACIFIC } from "@/data/more-universities/asia-pacific";
+
 export type Difficulty = "Highly Competitive" | "Competitive" | "Moderate";
 
 export type Major =
@@ -607,7 +612,7 @@ function difficultyFor(acceptanceRate: number): Difficulty {
   return "Moderate";
 }
 
-type UniInput = Omit<
+export type UniInput = Omit<
   University,
   "difficulty" | "imageSrc" | "imageAlt" | "tuitionMin" | "tuitionMax" | "intakes" | "toefl"
 > & {
@@ -3184,4 +3189,5 @@ export const UNIVERSITIES: University[] = [
     ],
     scholarships: [{ name: "KSU International Scholarship", amount: "Free tuition + housing + allowance" }],
   }),
+  ...[...MORE_NORTH_AMERICA, ...MORE_EUROPE, ...MORE_EUROPE_2, ...MORE_ASIA_PACIFIC].map(uni),
 ];

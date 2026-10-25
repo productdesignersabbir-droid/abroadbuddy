@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Remotion launch video has its own toolchain.
+    "video/**",
   ]),
 ]);
 

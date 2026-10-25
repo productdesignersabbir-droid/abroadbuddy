@@ -1,4 +1,5 @@
 import { MAJORS, type Major } from "@/data/universities";
+import { MORE_CONFERENCES } from "@/data/more-conferences";
 
 export { MAJORS };
 export type { Major };
@@ -188,4 +189,5 @@ export const CONFERENCES: Conference[] = [
     description:
       "Flagship global communications and networking conference covering 5G/6G, IoT and signal processing.",
   },
+  ...MORE_CONFERENCES,
 ];

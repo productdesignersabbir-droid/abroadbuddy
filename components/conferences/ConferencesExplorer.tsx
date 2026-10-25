@@ -15,14 +15,22 @@ import { ConferenceCard } from "@/components/conferences/ConferenceCard";
 import { ClosingSoonStrip } from "@/components/conferences/ClosingSoonStrip";
 import { ConferenceDetailsModal } from "@/components/conferences/ConferenceDetailsModal";
 
+const PAGE_SIZE = 12;
+
 const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: "deadline", label: "Deadline soonest" },
   { value: "eventDate", label: "Event date" },
 ];
 
 export function ConferencesExplorer({ conferences }: { conferences: Conference[] }) {
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [filters, setFiltersState] = useState(DEFAULT_FILTERS);
   const [sort, setSort] = useState<SortMode>(DEFAULT_SORT);
+  const [visible, setVisible] = useState(PAGE_SIZE);
+
+  const setFilters = (next: typeof DEFAULT_FILTERS) => {
+    setFiltersState(next);
+    setVisible(PAGE_SIZE);
+  };
   const [selected, setSelected] = useState<Conference | null>(null);
 
   // Other events in the same field, soonest open deadline first.
@@ -103,15 +111,28 @@ export function ConferencesExplorer({ conferences }: { conferences: Conference[]
         </div>
 
         {results.length > 0 ? (
-          <div className="mt-6 flex flex-col gap-4">
-            {results.map((conference) => (
-              <ConferenceCard
-                key={conference.id}
-                conference={conference}
-                onOpen={() => setSelected(conference)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="mt-6 flex flex-col gap-4">
+              {results.slice(0, visible).map((conference) => (
+                <ConferenceCard
+                  key={conference.id}
+                  conference={conference}
+                  onOpen={() => setSelected(conference)}
+                />
+              ))}
+            </div>
+            {visible < results.length && (
+              <div className="mt-8 text-center">
+                <button
+                  type="button"
+                  onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                  className="rounded-button border-[1.5px] border-line bg-white px-6 py-3 font-body text-sm font-semibold text-ink transition-colors hover:border-ink/40"
+                >
+                  Show more ({results.length - visible} left)
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="mt-6 rounded-card border border-dashed border-line bg-white px-6 py-14 text-center">
             <p className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">

@@ -1,4 +1,5 @@
 import { COUNTRIES, MAJORS, type Country, type Major } from "@/data/universities";
+import { MORE_LABS } from "@/data/more-labs";
 
 export { COUNTRIES, MAJORS };
 export type { Country, Major };
@@ -1404,4 +1405,5 @@ export const LABS: Lab[] = [
       ["MS student", "2026-01-09", "Fully funded, calm lab, helpful Bangladeshi seniors."],
     ],
   }),
+  ...MORE_LABS,
 ];

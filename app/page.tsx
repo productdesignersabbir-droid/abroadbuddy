@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { LaunchVideo } from "@/components/home/LaunchVideo";
 import { Problem } from "@/components/home/Problem";
 import { Features } from "@/components/home/Features";
 import { JourneyTicket } from "@/components/home/JourneyTicket";
@@ -11,6 +12,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <LaunchVideo />
       <Problem />
       <Features />
       <JourneyTicket />

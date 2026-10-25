@@ -47,10 +47,15 @@ export function passesConferenceFilters(
   return fieldOk && locationOk && typeOk && openOk && queryOk;
 }
 
+/** Soonest first, with dates that have already passed moved to the end (most recent first). */
 export function sortConferences(conferences: Conference[], sort: SortMode) {
+  const key = sort === "deadline" ? "deadline" : "eventDate";
   return [...conferences].sort((a, b) => {
-    const key = sort === "deadline" ? "deadline" : "eventDate";
-    return new Date(a[key]).getTime() - new Date(b[key]).getTime();
+    const aPast = daysUntil(a[key]) < 0;
+    const bPast = daysUntil(b[key]) < 0;
+    if (aPast !== bPast) return aPast ? 1 : -1;
+    const diff = new Date(a[key]).getTime() - new Date(b[key]).getTime();
+    return aPast ? -diff : diff;
   });
 }
 

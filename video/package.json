@@ -1,0 +1,19 @@
+{
+  "name": "easiabroad-launch-video",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts LaunchVideo out/easiabroad-launch.mp4 --port=3123",
+    "still": "remotion still src/index.ts LaunchVideo"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.538",
+    "@remotion/paths": "^4.0.538",
+    "@remotion/transitions": "^4.0.538",
+    "@types/react": "^19.3.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "remotion": "^4.0.538",
+    "typescript": "^5.9.3"
+  }
+}

@@ -7,6 +7,8 @@ import { LabSearchFilterBar } from "@/components/lab-kemon/LabSearchFilterBar";
 import { LabCard } from "@/components/lab-kemon/LabCard";
 import { LabDetailsModal } from "@/components/lab-kemon/LabDetailsModal";
 
+const PAGE_SIZE = 12;
+
 function countBy(labs: Lab[], key: (lab: Lab) => string) {
   const counts: Record<string, number> = {};
   for (const lab of labs) counts[key(lab)] = (counts[key(lab)] ?? 0) + 1;
@@ -14,8 +16,14 @@ function countBy(labs: Lab[], key: (lab: Lab) => string) {
 }
 
 export function LabsExplorer({ labs }: { labs: Lab[] }) {
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [filters, setFiltersState] = useState(DEFAULT_FILTERS);
+  const [visible, setVisible] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<Lab | null>(null);
+
+  const setFilters = (next: typeof DEFAULT_FILTERS) => {
+    setFiltersState(next);
+    setVisible(PAGE_SIZE);
+  };
 
   const countryCounts = useMemo(() => countBy(labs, (l) => l.country), [labs]);
   const fieldCounts = useMemo(() => countBy(labs, (l) => l.field), [labs]);
@@ -62,11 +70,24 @@ export function LabsExplorer({ labs }: { labs: Lab[] }) {
         </div>
 
         {results.length > 0 ? (
-          <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {results.map((lab) => (
-              <LabCard key={lab.id} lab={lab} onReadReviews={() => setSelected(lab)} />
-            ))}
-          </div>
+          <>
+            <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {results.slice(0, visible).map((lab) => (
+                <LabCard key={lab.id} lab={lab} onReadReviews={() => setSelected(lab)} />
+              ))}
+            </div>
+            {visible < results.length && (
+              <div className="mt-8 text-center">
+                <button
+                  type="button"
+                  onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                  className="rounded-button border-[1.5px] border-line bg-white px-6 py-3 font-body text-sm font-semibold text-ink transition-colors hover:border-ink/40"
+                >
+                  Show more ({results.length - visible} left)
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="mt-6 rounded-card border border-dashed border-line bg-white px-6 py-14 text-center">
             <p className="font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
