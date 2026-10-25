@@ -5,7 +5,7 @@ import {
   formatEventRange,
   isClosingSoon,
 } from "@/lib/conference-match";
-import { IconClock, IconExternalLink, IconPin } from "@/components/conferences/icons";
+import { IconClock, IconPin } from "@/components/conferences/icons";
 import { IconCal, IconVideo } from "@/components/home/icons";
 
 const TYPE_STYLES: Record<Conference["type"], string> = {
@@ -14,7 +14,7 @@ const TYPE_STYLES: Record<Conference["type"], string> = {
   "Paper Deadline": "bg-ink/8 text-ink",
 };
 
-export function ConferenceCard({ conference }: { conference: Conference }) {
+export function ConferenceCard({ conference, onOpen }: { conference: Conference; onOpen: () => void }) {
   const urgent = isClosingSoon(conference.deadline);
   const isPaperDeadline = conference.type === "Paper Deadline";
 
@@ -33,7 +33,9 @@ export function ConferenceCard({ conference }: { conference: Conference }) {
         </div>
 
         <h3 className="mt-3 font-display text-[25px] leading-tight tracking-[-0.02em] text-ink">
-          {conference.name}
+          <button type="button" onClick={onOpen} className="text-left hover:underline hover:decoration-line hover:underline-offset-4">
+            {conference.name}
+          </button>
         </h3>
         <p className="mt-0.5 font-body text-[13px] text-sub">{conference.host}</p>
 
@@ -87,15 +89,13 @@ export function ConferenceCard({ conference }: { conference: Conference }) {
           </div>
         </div>
 
-        <a
-          href={conference.url}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={onOpen}
           className="inline-flex items-center justify-center gap-1.5 rounded-button bg-blue px-4 py-2.5 font-body text-sm font-semibold text-white transition-transform duration-150 hover:-translate-y-0.5"
         >
-          Visit site
-          <IconExternalLink color="#FFFFFF" />
-        </a>
+          View details →
+        </button>
       </div>
     </div>
   );

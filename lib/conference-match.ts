@@ -1,9 +1,12 @@
 import type { Conference } from "@/data/conferences";
 
 export type ConferenceFilters = {
+  query: string;
   field: string;
   location: string;
   type: string;
+  /** Hide events whose deadline has already passed. */
+  openOnly: boolean;
 };
 
 export type SortMode = "eventDate" | "deadline";
@@ -13,9 +16,11 @@ export const ALL_LOCATIONS = "All Locations";
 export const ALL_TYPES = "All Types";
 
 export const DEFAULT_FILTERS: ConferenceFilters = {
+  query: "",
   field: ALL_FIELDS,
   location: ALL_LOCATIONS,
   type: ALL_TYPES,
+  openOnly: false,
 };
 
 export const DEFAULT_SORT: SortMode = "deadline";
@@ -32,7 +37,14 @@ export function passesConferenceFilters(
   const locationOk =
     filters.location === ALL_LOCATIONS || conference.locationType === filters.location;
   const typeOk = filters.type === ALL_TYPES || conference.type === filters.type;
-  return fieldOk && locationOk && typeOk;
+  const openOk = !filters.openOnly || daysUntil(conference.deadline) >= 0;
+  const q = filters.query.trim().toLowerCase();
+  const queryOk =
+    !q ||
+    [conference.name, conference.host, conference.city, ...conference.fields].some((t) =>
+      t.toLowerCase().includes(q)
+    );
+  return fieldOk && locationOk && typeOk && openOk && queryOk;
 }
 
 export function sortConferences(conferences: Conference[], sort: SortMode) {
