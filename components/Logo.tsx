@@ -32,8 +32,16 @@ export function Wordmark({ light = false, className = "" }: { light?: boolean; c
 
 export function Logo({ light = false }: { light?: boolean }) {
   return (
-    <Link href="/" className="flex items-center no-underline" aria-label="EasiAbroad home">
-      <Wordmark light={light} className="h-8 w-auto sm:h-9" />
+    <Link href="/" className="flex flex-col items-start gap-0.5 no-underline" aria-label="EasiAbroad home">
+      <Wordmark light={light} className="h-7 w-auto sm:h-7.5" />
+      <span
+        aria-hidden
+        className={`whitespace-nowrap font-body text-[10.5px] leading-none tracking-[0.01em] sm:text-[11px] ${
+          light ? "text-white/60" : "text-sub"
+        }`}
+      >
+        Easi today, abroad tomorrow.
+      </span>
     </Link>
   );
 }

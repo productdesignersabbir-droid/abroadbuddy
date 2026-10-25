@@ -223,7 +223,7 @@ export function JourneyTicket() {
             <div className="stub-scallop flex h-full flex-col overflow-hidden rounded-b-[26px] bg-[#1C1E22] text-white shadow-[0_30px_60px_-30px_rgba(11,18,32,0.6)] lg:rounded-r-[26px] lg:rounded-bl-none">
               <div className="bg-[#2A2C31] px-7 py-5 lg:pl-9">
                 <h3 className="font-display text-[24px] leading-tight tracking-[-0.01em]">
-                  Start your readiness check
+                  Your readiness check
                 </h3>
               </div>
               <div className="flex flex-1 flex-col px-7 pb-6 pt-6 lg:pl-9">
@@ -239,7 +239,7 @@ export function JourneyTicket() {
                   variant="primary"
                   className="mt-7 w-full rounded-pill bg-red! py-3.5 text-[16px] shadow-none! hover:bg-[#E62F3B]!"
                 >
-                  Check my readiness
+                  Start Abroad Readiness
                 </Button>
                 <p className="mt-2.5 text-center font-body text-[12.5px] text-white/50">
                   Free · takes about five minutes

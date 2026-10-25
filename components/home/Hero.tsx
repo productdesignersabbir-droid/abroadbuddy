@@ -17,47 +17,21 @@ const SOURCES = [
   { name: "Erasmus+", src: "/logos/erasmus.svg", w: 312, h: 89, cls: "h-8" },
 ];
 
-const SOUTH_ASIA = [
-  { name: "Bangladesh", flag: "🇧🇩" },
-  { name: "India", flag: "🇮🇳" },
-  { name: "Nepal", flag: "🇳🇵" },
-  { name: "Sri Lanka", flag: "🇱🇰" },
-  { name: "Pakistan", flag: "🇵🇰" },
-  { name: "Bhutan", flag: "🇧🇹" },
-];
-
 export function Hero() {
   return (
     <section className="bg-paper">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-24 pt-14 sm:pt-20 md:grid-cols-[1.1fr_0.9fr] md:gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
         <div>
           <div style={rise(0)} className="animate-rise">
-            <Kicker>
-              <span className="inline-flex items-center gap-2.5">
-                <span className="flex" aria-hidden>
-                  {SOUTH_ASIA.map((f, i) => (
-                    <span
-                      key={f.name}
-                      title={f.name}
-                      // Earlier flags sit on top, so Bangladesh leads the stack.
-                      style={{ zIndex: SOUTH_ASIA.length - i }}
-                      className={`relative grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-white text-[26px] leading-none shadow-[0_0_0_1px_rgba(11,18,32,0.18)] ring-2 ring-white ${i ? "-ml-1" : ""}`}
-                    >
-                      <span className="block translate-y-[1px] scale-125">{f.flag}</span>
-                    </span>
-                  ))}
-                </span>
-                Built for South Asian students · Free to start
-              </span>
-            </Kicker>
+            <Kicker>Built for your next chapter</Kicker>
           </div>
 
-          <h1 className="mt-6 font-display text-[clamp(52px,7.4vw,96px)] leading-[0.98] tracking-[-0.05em] text-ink">
+          <h1 className="mt-6 font-display text-[clamp(42px,5.6vw,76px)] leading-[1.02] tracking-[-0.045em] text-ink">
             <span style={rise(1)} className="block animate-rise">
-              Your path to
+              Your whole <span className="whitespace-nowrap">study-abroad</span>
             </span>
             <span style={rise(2)} className="block animate-rise">
-              <Accent>studying</Accent> abroad
+              <Accent>journey.</Accent> One platform.
             </span>
           </h1>
 
@@ -68,7 +42,7 @@ export function Hero() {
 
           <div style={rise(4)} className="mt-8 flex animate-rise flex-wrap gap-3">
             <Button href="/readiness" variant="primary" className="px-6.5 py-3.5 text-[17px]">
-              Check my readiness
+              Start Abroad Readiness
             </Button>
             <Button href="#how-it-works" variant="ghost" className="px-6.5 py-3.5 text-[17px]">
               How it works

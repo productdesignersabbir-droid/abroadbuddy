@@ -174,7 +174,7 @@ export function Nav() {
         <div className="flex items-center gap-2">
           <div className="hidden sm:block">
             <Button href="/readiness" variant="dark" className="py-2 text-sm">
-              Check my readiness
+              Start Abroad Readiness
             </Button>
           </div>
           <button
@@ -231,7 +231,7 @@ export function Nav() {
           </ul>
           <div className="mt-4 sm:hidden">
             <Button href="/readiness" variant="dark" className="w-full">
-              Check my readiness
+              Start Abroad Readiness
             </Button>
           </div>
         </nav>
