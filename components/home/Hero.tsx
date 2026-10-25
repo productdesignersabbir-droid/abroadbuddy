@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Kicker, Accent } from "@/components/PageHeader";
-import { FeatureShowcase } from "@/components/home/FeatureShowcase";
+import { HeroGlobe } from "@/components/home/HeroGlobe";
 
 // Staggered entrance: each block rises in a beat after the one before.
 const rise = (step: number) => ({ animationDelay: `${120 + step * 110}ms` });
@@ -68,9 +68,9 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Tablets keep the showcase beside the copy, just smaller. */}
-        <div className="md:max-lg:[zoom:0.78]">
-          <FeatureShowcase />
+        {/* The looping FeatureShowcase is parked for now; it may move elsewhere later. */}
+        <div style={rise(2)} className="animate-rise">
+          <HeroGlobe />
         </div>
       </div>
     </section>

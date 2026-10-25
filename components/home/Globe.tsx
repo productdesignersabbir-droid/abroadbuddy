@@ -77,6 +77,7 @@ export function Globe({ className = "" }: { className?: string }) {
       const r = size / 2 - 6;
       projection.rotate([lon, lat]);
       ctx.clearRect(0, 0, size, size);
+      if (r <= 0) return;
 
       // Sphere with soft light from the top left.
       const shade = ctx.createRadialGradient(size * 0.36, size * 0.32, r * 0.1, size / 2, size / 2, r);
