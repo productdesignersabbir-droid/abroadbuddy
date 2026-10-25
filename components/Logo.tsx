@@ -5,7 +5,7 @@ const BLUE = "#1F4FD8";
 const NAVY = "#1B2559";
 
 /** Plane silhouette pointing right, centred on 0,0. */
-export const PLANE_PATH =
+const PLANE_PATH =
   "M10 0 L-2 -1.8 L-6.5 -9 L-9 -9 L-6 -1.6 L-11.5 -1.2 L-14 -4.5 L-16 -4.5 L-14.5 0 L-16 4.5 L-14 4.5 L-11.5 1.2 L-6 1.6 L-9 9 L-6.5 9 L-2 1.8 Z";
 
 /** The "easiabroad" wordmark: blue "easi", navy "abroad", and a flight path off the i. */
