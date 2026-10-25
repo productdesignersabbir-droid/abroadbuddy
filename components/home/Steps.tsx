@@ -128,7 +128,7 @@ export function Steps() {
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-5">
           <p className="font-body text-[15.5px] text-sub">Start your journey today.</p>
           <Button href="/readiness" variant="primary" className="px-6.5 py-3.5 text-[16px]">
-            Check my readiness →
+            Start Abroad Readiness →
           </Button>
         </div>
       </div>

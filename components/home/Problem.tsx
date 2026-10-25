@@ -238,7 +238,7 @@ export function Problem() {
               className="inline-flex items-center gap-3 rounded-pill bg-white py-1.5 pl-5 pr-1.5 font-body text-[14px] text-ink no-underline shadow-[0_10px_30px_-18px_rgba(11,18,32,0.4)]"
             >
               <span className="hidden sm:inline">Every one of these has a fix.</span>
-              <span className="rounded-pill bg-blue px-4 py-2 text-white shadow-[0_6px_16px_-6px_rgba(30,79,255,0.6)]">Check my readiness →</span>
+              <span className="rounded-pill bg-blue px-4 py-2 text-white shadow-[0_6px_16px_-6px_rgba(30,79,255,0.6)]">Start Abroad Readiness →</span>
             </Link>
           </div>
         </div>

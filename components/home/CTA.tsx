@@ -53,7 +53,7 @@ export function CTA() {
             variant="primary"
             className="mt-8 rounded-pill bg-red! px-7 py-3.5 text-[17px] shadow-none! hover:bg-[#E62F3B]!"
           >
-            Check my readiness
+            Start Abroad Readiness
           </Button>
           <ul className="mt-10 flex list-none flex-wrap gap-x-6 gap-y-2.5 p-0">
             {POINTS.map((p) => (
