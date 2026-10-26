@@ -20,11 +20,11 @@ const PAGE_SIZE = 10;
 const GUIDANCE: Record<FinderDegree, { body: string; second: { href: string; label: string } }> = {
   bachelors: {
     body: "See which fields fit your HSC subjects, what each country asks for, and a month-by-month plan to your start date.",
-    second: { href: "/mentors", label: "Talk to a mentor" },
+    second: { href: "/mentoring", label: "Talk to a mentor" },
   },
   masters: {
     body: "Get a readiness score, a to-do list made for your plan and a month-by-month route to your intake.",
-    second: { href: "/mentors", label: "Talk to a mentor" },
+    second: { href: "/mentoring", label: "Talk to a mentor" },
   },
   phd: {
     body: "PhD places often come through a supervisor. Check your readiness, then find professors whose work fits yours.",

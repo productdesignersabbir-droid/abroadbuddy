@@ -143,6 +143,32 @@ export const READINESS_ROUTE: RouteInfo = {
     "Check how ready you are to apply abroad, and see exactly what to work on next.",
 };
 
+export const RESEARCH_DIRECTION_ROUTE: RouteInfo = {
+  href: "/research-direction",
+  label: "Find my research direction",
+  navLabel: "Find my research direction",
+  description: "Turn your subject and interests into three research directions you can start this month.",
+};
+
+export const APPLICATION_STUDIO_ROUTE: RouteInfo = {
+  href: "/application-studio",
+  label: "Application Studio",
+  navLabel: "Application Studio",
+  description: "Draft your CV, statement, research proposal or reference request in a clear order.",
+};
+
+export const MENTORING_ROUTE: RouteInfo = {
+  href: "/mentoring",
+  label: "Mentoring",
+  navLabel: "Mentoring",
+  description: "Book a session with students, alumni and researchers abroad.",
+};
+
+export const PREPARE_GROUP: NavGroup = {
+  label: "Prepare",
+  items: [RESEARCH_DIRECTION_ROUTE, APPLICATION_STUDIO_ROUTE, MENTORING_ROUTE],
+};
+
 // The five features live on the site right now. Every other route above is
 // hidden from the nav, footer and home page but its page still exists — add it
 // back to these lists to bring it back.
@@ -152,6 +178,14 @@ export const ROUTES: RouteInfo[] = [
   LAB_KEMON_ROUTE,
   SCHOLARSHIPS_ROUTE,
   CONFERENCES_ROUTE,
+  ...PREPARE_GROUP.items,
 ];
 
-export const NAV_ENTRIES: NavEntry[] = ROUTES;
+export const NAV_ENTRIES: NavEntry[] = [
+  READINESS_ROUTE,
+  UNIVERSITIES_ROUTE,
+  LAB_KEMON_ROUTE,
+  SCHOLARSHIPS_ROUTE,
+  CONFERENCES_ROUTE,
+  PREPARE_GROUP,
+];

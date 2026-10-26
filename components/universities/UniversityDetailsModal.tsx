@@ -357,7 +357,7 @@ export function UniversityDetailsModal({
           </p>
           <div className="flex gap-2">
             <Link
-              href={filters.degree === "bachelors" ? "/mentors" : "/lab-kemon"}
+              href={filters.degree === "bachelors" ? "/mentoring" : "/lab-kemon"}
               className="rounded-button border-[1.5px] border-line bg-white px-4 py-2.25 font-body text-sm font-semibold text-ink no-underline hover:border-ink/40"
             >
               {filters.degree === "bachelors" ? "Talk to a mentor" : "Find professors"}
