@@ -52,7 +52,7 @@ export function Hero() {
             </Button>
           </div>
 
-          <div style={rise(5)} className="mt-14 animate-rise">
+          <div style={rise(5)} className="mt-14 hidden animate-rise sm:block">
             <p className="font-body text-[14px] text-sub">Scholarships we track, with official links:</p>
             <ul className="mt-4 flex list-none flex-wrap items-center gap-x-8 gap-y-4 p-0">
               {SOURCES.map((s) => (
