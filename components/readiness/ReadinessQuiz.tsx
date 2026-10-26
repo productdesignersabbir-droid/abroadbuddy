@@ -264,7 +264,7 @@ function Chip({
       aria-checked={selected}
       disabled={disabled}
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-pill border-[1.5px] px-3 py-1.5 font-body text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-40 sm:px-3.5 sm:py-2 sm:text-[14px] ${
+      className={`inline-flex grow items-center justify-center gap-1.5 rounded-pill border-[1.5px] px-3 py-1.5 font-body text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-40 sm:px-3.5 sm:py-2 sm:text-[14px] ${
         selected
           ? "border-[#1F9D61] bg-[#E3F4EA] text-ink"
           : "border-line bg-white text-ink hover:border-[#1F9D61]/40"
@@ -1427,7 +1427,14 @@ function Results({
   );
 }
 
-export function ReadinessQuiz({ initialDegree }: { initialDegree?: DegreeLevel } = {}) {
+export function ReadinessQuiz({
+  initialDegree,
+  header,
+}: {
+  initialDegree?: DegreeLevel;
+  /** The page title. On phones it shows only with the first question, so the quiz sits at the top after that. */
+  header?: React.ReactNode;
+} = {}) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<ReadinessAnswers>({});
   const [profile, setProfile] = useState<ReadinessProfile>(
@@ -1463,90 +1470,95 @@ export function ReadinessQuiz({ initialDegree }: { initialDegree?: DegreeLevel }
     setDone(false);
   }
 
+  const started = step > 0 || done;
+
   return (
-    <section className="bg-soft px-6 py-16">
-      <div className={`mx-auto ${done ? "max-w-6xl" : "max-w-2xl"}`}>
-        {done ? (
-          <Results
-            answers={answers}
-            profile={profile}
-            now={now}
-            onRestart={restart}
-          />
-        ) : (
-          <div className="overflow-hidden rounded-card bg-white">
-            <div className="flex items-center justify-between border-b-2 border-dashed border-line px-6 py-4 font-label text-[11.5px] uppercase tracking-[0.1em] text-sub">
-              <span>
-                Gate {step + 1} of {steps.length}
-              </span>
-              <span className="text-[#13804D]">{label}</span>
-            </div>
-
-            <div className="p-6 sm:p-8">
-              <Progress steps={steps} step={step} />
-              <div className="mt-7">
-                {current.type === "profile" ? (
-                  <ProfileStep
-                    field={current.key}
-                    profile={profile}
-                    now={now}
-                    onChange={(value) =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        [current.key]: value,
-                        // A new field means new specialisations.
-                        ...(current.key === "major" && value !== prev.major
-                          ? { focus: undefined }
-                          : {}),
-                        // Situation questions depend on the degree.
-                        ...(current.key === "degree" && value !== prev.degree
-                          ? { background: undefined }
-                          : {}),
-                        // Intakes differ by country, so pick again.
-                        ...(current.key === "country" && value !== prev.country
-                          ? { intake: undefined }
-                          : {}),
-                      }))
-                    }
-                  />
-                ) : (
-                  <QuestionStep
-                    index={current.index}
-                    answers={answers}
-                    profile={profile}
-                    onChange={(ids) =>
-                      setAnswers((prev) => ({
-                        ...prev,
-                        [READINESS_QUESTIONS[current.index].area]: ids,
-                      }))
-                    }
-                  />
-                )}
+    <>
+      {header && <div className={started ? "hidden sm:block" : ""}>{header}</div>}
+      <section className={`bg-soft px-6 sm:py-16 ${started ? "pb-10 pt-4" : "py-6"}`}>
+        <div className={`mx-auto ${done ? "max-w-6xl" : "max-w-2xl"}`}>
+          {done ? (
+            <Results
+              answers={answers}
+              profile={profile}
+              now={now}
+              onRestart={restart}
+            />
+          ) : (
+            <div className="overflow-hidden rounded-card bg-white">
+              <div className="flex items-center justify-between border-b-2 border-dashed border-line px-6 py-4 font-label text-[11.5px] uppercase tracking-[0.1em] text-sub">
+                <span>
+                  Gate {step + 1} of {steps.length}
+                </span>
+                <span className="text-[#13804D]">{label}</span>
               </div>
 
-              <div className="mt-8 flex items-center justify-between gap-3">
-                {step > 0 ? (
-                  <Button variant="ghost" onClick={() => setStep((s) => s - 1)}>
-                    ← Back
-                  </Button>
-                ) : (
-                  <span />
-                )}
-                <button
-                  type="button"
-                  disabled={!canContinue}
-                  onClick={() =>
-                    isLast ? setDone(true) : setStep((s) => s + 1)
-                  }
-                  className="inline-flex items-center justify-center gap-2 rounded-button bg-ink px-5.5 py-3 font-body text-[15px] font-semibold text-white transition-all duration-150 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
-                >
-                  {isLast ? "See my score" : "Next →"}
-                </button>
+              <div className="p-6 sm:p-8">
+                <Progress steps={steps} step={step} />
+                <div className="mt-7">
+                  {current.type === "profile" ? (
+                    <ProfileStep
+                      field={current.key}
+                      profile={profile}
+                      now={now}
+                      onChange={(value) =>
+                        setProfile((prev) => ({
+                          ...prev,
+                          [current.key]: value,
+                          // A new field means new specialisations.
+                          ...(current.key === "major" && value !== prev.major
+                            ? { focus: undefined }
+                            : {}),
+                          // Situation questions depend on the degree.
+                          ...(current.key === "degree" && value !== prev.degree
+                            ? { background: undefined }
+                            : {}),
+                          // Intakes differ by country, so pick again.
+                          ...(current.key === "country" && value !== prev.country
+                            ? { intake: undefined }
+                            : {}),
+                        }))
+                      }
+                    />
+                  ) : (
+                    <QuestionStep
+                      index={current.index}
+                      answers={answers}
+                      profile={profile}
+                      onChange={(ids) =>
+                        setAnswers((prev) => ({
+                          ...prev,
+                          [READINESS_QUESTIONS[current.index].area]: ids,
+                        }))
+                      }
+                    />
+                  )}
+                </div>
+
+                <div className="mt-8 flex items-center justify-between gap-3">
+                  {step > 0 ? (
+                    <Button variant="ghost" onClick={() => setStep((s) => s - 1)}>
+                      ← Back
+                    </Button>
+                  ) : (
+                    <span />
+                  )}
+                  <button
+                    type="button"
+                    disabled={!canContinue}
+                    onClick={() =>
+                      isLast ? setDone(true) : setStep((s) => s + 1)
+                    }
+                    className="inline-flex items-center justify-center gap-2 rounded-button bg-ink px-5.5 py-3 font-body text-[15px] font-semibold text-white transition-all duration-150 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
+                  >
+                    {isLast ? "See my score" : "Next →"}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    </section>
+          )}
+        </div>
+      </section>
+    </>
   );
 }
