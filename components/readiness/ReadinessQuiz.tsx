@@ -52,7 +52,7 @@ import {
   testsFor,
 } from "@/data/english-tests";
 import { fundingCopy, fundingOptionsFor } from "@/data/funding";
-import { researchFollowUps } from "@/data/research";
+import { otherText, otherTextOpen, researchFollowUps } from "@/data/research";
 import { documentOptionsFor } from "@/data/documents";
 import { planFor } from "@/data/plan";
 import {
@@ -294,7 +294,7 @@ function ProfileStep({
     body = (
       <div className="grid gap-5">
         {streamQuestions(profile).map((q) => (
-          <div key={q.id}>
+          <div key={q.id} className="animate-appear">
             <p
               id={`st-${q.id}`}
               className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
@@ -325,7 +325,7 @@ function ProfileStep({
     body = (
       <div className="grid gap-5">
         {backgroundQuestions(profile).map((q) => (
-          <div key={q.id}>
+          <div key={q.id} className="animate-appear">
             <p
               id={`bg-${q.id}`}
               className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
@@ -656,7 +656,7 @@ function GradesStep({
   const renderPart = (part: (typeof parts)[number]) => {
     const current = pickedFor(picked, part);
     return (
-      <div key={part.id}>
+      <div key={part.id} className="animate-appear">
         <p
           id={`grade-${part.id}`}
           className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
@@ -689,7 +689,7 @@ function GradesStep({
         {parts.filter((p) => p.id !== "ms").map(renderPart)}
 
         {asksAboutMasters(profile.degree) && (
-          <div>
+          <div className="animate-appear">
             <p
               id="grade-has-ms"
               className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
@@ -801,7 +801,8 @@ function EnglishStep({
         </div>
 
         {statuses.length > 0 && (
-          <div>
+          // Keyed by test so switching tests replays the fade.
+          <div key={test} className="animate-appear">
             <p id="english-status" className={label}>
               {test === "moi"
                 ? "Do you have the letter?"
@@ -826,7 +827,7 @@ function EnglishStep({
         )}
 
         {grad && (
-          <div>
+          <div className="animate-appear">
             <p id="english-grad" className={label}>
               {grad}
             </p>
@@ -852,7 +853,7 @@ function EnglishStep({
           <div
             role="radiogroup"
             aria-label="Which test did you take?"
-            className="-mt-2 flex flex-wrap gap-1.5 sm:gap-2"
+            className="-mt-2 flex animate-appear flex-wrap gap-1.5 sm:gap-2"
           >
             {(["gmat", "gre"] as const).map((t) => (
               <Chip
@@ -867,7 +868,7 @@ function EnglishStep({
         )}
 
         {tookGrad && gradTest && (
-          <div>
+          <div className="animate-appear">
             <p id="english-grad-score" className={label}>
               Your {GRAD_TEST_NAMES[gradTest]} score
             </p>
@@ -914,14 +915,18 @@ function ResearchFollowUps({
         ? picked.includes(id)
           ? picked.filter((a) => a !== id)
           : [...picked, id]
-        : [...picked.filter((a) => !a.startsWith(`${fid}:`)), id],
+        : // A new pick also clears any text typed for the old "other" option.
+          [...picked.filter((a) => !a.startsWith(`${fid}:`) && !a.startsWith(`${fid}-text:`)), id],
     );
   };
 
+  const setText = (fid: string, text: string) =>
+    onChange([...picked.filter((a) => !a.startsWith(`${fid}-text:`)), ...(text ? [`${fid}-text:${text}`] : [])]);
+
   return (
-    <div className="mt-6 grid gap-5 rounded-[16px] bg-soft/60 p-4.5 sm:p-5">
+    <div className="mt-6 grid animate-appear gap-5 rounded-[16px] bg-soft/60 p-4.5 sm:p-5">
       {followUps.map((f) => (
-        <div key={f.id}>
+        <div key={f.id} className="animate-appear">
           <p
             id={`fu-${f.id}`}
             className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
@@ -944,6 +949,19 @@ function ResearchFollowUps({
               </Chip>
             ))}
           </div>
+          {f.other && picked.includes(`${f.id}:${f.other.optionId}`) && (
+            <label className="mt-3 block animate-appear">
+              <span className="mb-1.5 block font-body text-[13px] text-sub">{f.other.label}</span>
+              <input
+                autoFocus
+                value={otherText(picked, f.id) ?? ""}
+                onChange={(e) => setText(f.id, e.target.value)}
+                placeholder={f.other.placeholder}
+                maxLength={120}
+                className="w-full border-[1.5px] border-line bg-white px-3.5 py-2.5 font-body text-[15px] text-ink outline-none placeholder:text-sub/70 focus-visible:border-blue"
+              />
+            </label>
+          )}
         </div>
       ))}
     </div>
@@ -1290,7 +1308,6 @@ function Results({
 
   useEffect(() => {
     headingRef.current?.focus({ preventScroll: true });
-    headingRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     // Start from 0 so the ring and bars animate in.
     const id = requestAnimationFrame(() => setShown(total));
     return () => cancelAnimationFrame(id);
@@ -1472,18 +1489,61 @@ export function ReadinessQuiz({
 
   const started = step > 0 || done;
 
+  // Steps finished by a single pick move on by themselves. Steps where the
+  // student can pick several things (or optional extras) wait for Next.
+  const waitsForNext =
+    current.type === "profile"
+      ? current.key === "focus" || (current.key === "stream" && streamPicked(profile, "group", "alevel"))
+      : READINESS_QUESTIONS[current.index].kind === "checklist" ||
+        (READINESS_QUESTIONS[current.index].area === "research" &&
+          (researchFollowUps(profile, answers.research?.find((a) => a.startsWith("res-"))).some((f) => f.multi) ||
+            otherTextOpen(profile, answers.research ?? [])));
+  const pickedNow = useRef(false);
+  const markPicked = () => {
+    pickedNow.current = true;
+  };
+  useEffect(() => {
+    if (!pickedNow.current) return;
+    pickedNow.current = false;
+    if (done || waitsForNext || !canContinue) return;
+    // A short pause so the student sees their choice land.
+    const id = setTimeout(() => (isLast ? setDone(true) : setStep((s) => s + 1)), 450);
+    return () => clearTimeout(id);
+  }, [profile, answers, canContinue, waitsForNext, isLast, done]);
+
+  // Every new question (and the results) starts at the top of the quiz, below the sticky nav.
+  const sectionRef = useRef<HTMLElement>(null);
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const el = sectionRef.current;
+    if (!el) return;
+    const nav = document.querySelector("header")?.getBoundingClientRect().height ?? 0;
+    const top = el.getBoundingClientRect().top + window.scrollY - nav;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+  }, [step, done]);
+
   return (
     <>
       {header && <div className={started ? "hidden sm:block" : ""}>{header}</div>}
-      <section className={`bg-soft px-6 sm:py-16 ${started ? "pb-10 pt-4" : "py-6"}`}>
+      <section
+        ref={sectionRef}
+        className={`bg-soft px-6 sm:py-16 ${started ? "pb-10 pt-4" : "py-6"}`}
+      >
         <div className={`mx-auto ${done ? "max-w-6xl" : "max-w-2xl"}`}>
           {done ? (
-            <Results
-              answers={answers}
-              profile={profile}
-              now={now}
-              onRestart={restart}
-            />
+            <div className="animate-appear">
+              <Results
+                answers={answers}
+                profile={profile}
+                now={now}
+                onRestart={restart}
+              />
+            </div>
           ) : (
             <div className="overflow-hidden rounded-card bg-white">
               <div className="flex items-center justify-between border-b-2 border-dashed border-line px-6 py-4 font-label text-[11.5px] uppercase tracking-[0.1em] text-sub">
@@ -1495,13 +1555,14 @@ export function ReadinessQuiz({
 
               <div className="p-6 sm:p-8">
                 <Progress steps={steps} step={step} />
-                <div className="mt-7">
+                <div key={step} className="mt-7 animate-appear">
                   {current.type === "profile" ? (
                     <ProfileStep
                       field={current.key}
                       profile={profile}
                       now={now}
-                      onChange={(value) =>
+                      onChange={(value) => {
+                        markPicked();
                         setProfile((prev) => ({
                           ...prev,
                           [current.key]: value,
@@ -1517,20 +1578,21 @@ export function ReadinessQuiz({
                           ...(current.key === "country" && value !== prev.country
                             ? { intake: undefined }
                             : {}),
-                        }))
-                      }
+                        }));
+                      }}
                     />
                   ) : (
                     <QuestionStep
                       index={current.index}
                       answers={answers}
                       profile={profile}
-                      onChange={(ids) =>
+                      onChange={(ids) => {
+                        markPicked();
                         setAnswers((prev) => ({
                           ...prev,
                           [READINESS_QUESTIONS[current.index].area]: ids,
-                        }))
-                      }
+                        }));
+                      }}
                     />
                   )}
                 </div>

@@ -12,6 +12,8 @@ export type FollowUp = {
   options: { id: string; label: string }[];
   /** Pick several; these are optional, so Next works with none ticked. */
   multi?: boolean;
+  /** Picking this option opens a text box to describe it, saved as `${id}-text:…`. */
+  other?: { optionId: string; label: string; placeholder: string };
 };
 
 const OTHER_TOPIC = "other";
@@ -24,6 +26,11 @@ function topicFollowUp(profile: ReadinessProfile, title: string): FollowUp[] {
     {
       id: "rtopic",
       title,
+      other: {
+        optionId: OTHER_TOPIC,
+        label: "Describe your topic",
+        placeholder: "e.g. Low-cost flood sensors for rural Bangladesh",
+      },
       options: [
         ...topics.map((t, i) => ({ id: `t${i}`, label: t })),
         { id: OTHER_TOPIC, label: "Something else" },
@@ -91,6 +98,7 @@ export function researchFollowUps(profile: ReadinessProfile, main: string | unde
       {
         id: "rvenue",
         title: "Where were they published?",
+        other: { optionId: "journal", label: "Which journal?", placeholder: "e.g. Journal of Hydrology" },
         options: [
           { id: "q1", label: "Q1 or Q2 journal" },
           { id: "journal", label: "Other journal" },
@@ -182,6 +190,18 @@ export function researchFollowUps(profile: ReadinessProfile, main: string | unde
 const pickOf = (answers: string[], id: string) =>
   answers.filter((a) => a.startsWith(`${id}:`)).map((a) => a.slice(id.length + 1));
 
+/** The text a student typed for an "other" option, if any. */
+export const otherText = (answers: string[], fid: string) =>
+  answers.find((a) => a.startsWith(`${fid}-text:`))?.slice(fid.length + 6);
+
+/** True while a text box for an "other" option is open, so the quiz waits for Next. */
+export function otherTextOpen(profile: ReadinessProfile, answers: string[]) {
+  const main = answers.find((a) => a.startsWith("res-"));
+  return researchFollowUps(profile, main).some(
+    (f) => f.other && pickOf(answers, f.id).includes(f.other.optionId),
+  );
+}
+
 export function researchAnswered(profile: ReadinessProfile, answers: string[]) {
   const main = answers.find((a) => a.startsWith("res-"));
   if (!main) return false;
@@ -229,7 +249,7 @@ export function researchExtras(profile: ReadinessProfile, answers: string[]) {
   const focus = (profile.focus ?? []).filter((f) => f !== UNDECIDED);
   const topics = profile.major && profile.major !== UNDECIDED ? SPECIALISATIONS[profile.major as Major] : [];
   const topicLabel = topic && topic !== OTHER_TOPIC ? topics[Number(topic.slice(1))] : undefined;
-  if (topic && focus.length && (!topicLabel || !focus.includes(topicLabel))) {
+  if (topic && topic !== OTHER_TOPIC && focus.length && (!topicLabel || !focus.includes(topicLabel))) {
     todos.push({
       title: `Link your research to ${focus[0].toLowerCase()}`,
       detail:

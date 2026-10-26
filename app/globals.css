@@ -34,10 +34,22 @@
 
   --animate-marquee: marquee 22s linear infinite;
   --animate-rise: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-appear: appear 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-ticket: ticket 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-float: float 7s ease-in-out infinite;
   --animate-drift: drift 12s ease-in-out infinite alternate;
   --animate-fly: fly 2.8s ease-in-out infinite;
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 
   @keyframes rise {
     from {
