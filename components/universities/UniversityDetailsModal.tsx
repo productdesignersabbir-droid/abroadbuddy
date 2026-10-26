@@ -12,22 +12,14 @@ import {
   matchLabel,
   yearlyCost,
   type UniversityFilters,
+  applicationDocuments,
+  hscBar,
 } from "@/lib/university-match";
 import { FallbackImage } from "@/components/ui/FallbackImage";
 import { MatchRing } from "@/components/universities/UniversityCard";
 
 const TABS = ["Overview", "Admissions", "Costs", "Scholarships", "Life & visa"] as const;
 type Tab = (typeof TABS)[number];
-
-const DOCUMENTS = [
-  "Academic transcripts and degree certificate",
-  "Statement of purpose (SOP)",
-  "2–3 letters of recommendation",
-  "CV or résumé",
-  "English test score (IELTS / TOEFL / Duolingo where accepted)",
-  "Passport copy",
-  "Financial documents (bank statement or sponsor letter)",
-];
 
 const kicker = "font-label text-[11px] uppercase tracking-[0.08em] text-sub";
 
@@ -227,10 +219,14 @@ export function UniversityDetailsModal({
                 <div>
                   <div className={kicker}>Entry requirements</div>
                   <div className="mt-2">
-                    <Row label="Typical CGPA" value={`${uni.minCgpa.toFixed(2)} / 4.00 or higher`} />
+                    {filters.degree === "bachelors" ? (
+                      <Row label="Est. HSC GPA" value={`${hscBar(uni).toFixed(2)} / 5.00 or higher`} />
+                    ) : (
+                      <Row label="Typical CGPA" value={`${uni.minCgpa.toFixed(2)} / 4.00 or higher`} />
+                    )}
                     <Row label="IELTS" value={`${uni.ielts.toFixed(1)} overall`} />
                     <Row label="TOEFL iBT" value={`${uni.toefl}+`} />
-                    <Row label="GRE / GMAT" value={uni.gre} />
+                    {filters.degree !== "bachelors" && <Row label="GRE / GMAT" value={uni.gre} />}
                     <Row label="Competition" value={uni.difficulty} />
                   </div>
                 </div>
@@ -245,14 +241,17 @@ export function UniversityDetailsModal({
                     />
                   </div>
                   <p className="mt-3 rounded-[14px] bg-[#fff6dc] px-4 py-3 font-body text-[13px] leading-relaxed text-ink">
-                    Deadlines differ by program. Start 9–12 months early so you have time for tests,
-                    SOP drafts and recommendation letters.
+                    {filters.degree === "bachelors"
+                      ? "Deadlines differ by program. Start 9–12 months early so you have time for your English test, personal statement and teacher references. The HSC GPA is our estimate, so check the university's entry page for Bangladesh."
+                      : filters.degree === "phd"
+                        ? "Deadlines differ by program. Contact likely supervisors 3–4 months before, and leave time for your proposal and recommendation letters."
+                        : "Deadlines differ by program. Start 9–12 months early so you have time for tests, SOP drafts and recommendation letters."}
                   </p>
                 </div>
                 <div className="md:col-span-2">
                   <div className={kicker}>Documents you will need</div>
                   <ul className="mt-3 grid list-none gap-2.5 p-0 sm:grid-cols-2">
-                    {DOCUMENTS.map((d) => (
+                    {applicationDocuments(filters.degree).map((d) => (
                       <li key={d} className="flex items-start gap-2.5 font-body text-[14px] text-ink">
                         <Check />
                         {d}
@@ -358,10 +357,10 @@ export function UniversityDetailsModal({
           </p>
           <div className="flex gap-2">
             <Link
-              href="/lab-kemon"
+              href={filters.degree === "bachelors" ? "/mentors" : "/lab-kemon"}
               className="rounded-button border-[1.5px] border-line bg-white px-4 py-2.25 font-body text-sm font-semibold text-ink no-underline hover:border-ink/40"
             >
-              Find professors
+              {filters.degree === "bachelors" ? "Talk to a mentor" : "Find professors"}
             </Link>
             <a
               href={uni.website}

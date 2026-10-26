@@ -5,6 +5,7 @@ import { COUNTRIES, COUNTRY_INFO, MAJORS, REGIONS, type Country } from "@/data/u
 import {
   ALL_COUNTRIES,
   ALL_MAJORS,
+  DEGREE_OPTIONS,
   MAX_BUDGET,
   SORT_OPTIONS,
   type UniversityFilters,
@@ -14,6 +15,8 @@ const POPULAR: Country[] = ["USA", "UK", "Canada", "Australia", "Germany", "Japa
 
 const CGPA_MIN = 2;
 const CGPA_MAX = 4;
+const GPA_MIN = 3;
+const GPA_MAX = 5;
 
 /** Feeds the filled part of a `.range-soft` slider. */
 const fill = (value: number, min: number, max: number) =>
@@ -70,28 +73,55 @@ export function FilterBar({
   onChange: (next: UniversityFilters) => void;
 }) {
   const anyBudget = filters.budget >= MAX_BUDGET;
+  const bachelors = filters.degree === "bachelors";
+  // School leavers give their HSC GPA out of 5.00; everyone else their CGPA.
+  const grade = bachelors
+    ? { label: "Your HSC GPA", value: filters.gpa, min: GPA_MIN, max: GPA_MAX, key: "gpa" as const }
+    : { label: "Your CGPA", value: filters.cgpa, min: CGPA_MIN, max: CGPA_MAX, key: "cgpa" as const };
 
   return (
     <div>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <span className="font-body text-[13px] text-sub">I want to study</span>
+        <div role="group" aria-label="Degree level" className="flex items-center gap-1 bg-white p-1">
+          {DEGREE_OPTIONS.map((opt) => {
+            const active = filters.degree === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onChange({ ...filters, degree: opt.value })}
+                className={`px-4 py-2 font-body text-[14px] font-semibold transition-colors ${
+                  active ? "bg-blue text-white" : "text-sub hover:bg-soft hover:text-ink"
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-1 rounded-[28px] bg-white p-2 sm:grid-cols-2 lg:grid-cols-[1fr_1.15fr_1.15fr_1fr]">
         <Segment
-          label="Your CGPA"
-          htmlFor="cgpa"
+          label={grade.label}
+          htmlFor="grade"
           value={
             <span className="font-display text-[20px] leading-none tracking-[-0.01em] text-ink">
-              {filters.cgpa.toFixed(2)}
+              {grade.value.toFixed(2)}
             </span>
           }
         >
           <input
-            id="cgpa"
+            id="grade"
             type="range"
-            min={CGPA_MIN}
-            max={CGPA_MAX}
+            min={grade.min}
+            max={grade.max}
             step={0.05}
-            value={filters.cgpa}
-            onChange={(e) => onChange({ ...filters, cgpa: parseFloat(e.target.value) })}
-            style={fill(filters.cgpa, CGPA_MIN, CGPA_MAX)}
+            value={grade.value}
+            onChange={(e) => onChange({ ...filters, [grade.key]: parseFloat(e.target.value) })}
+            style={fill(grade.value, grade.min, grade.max)}
             className="range-soft mt-4"
           />
         </Segment>

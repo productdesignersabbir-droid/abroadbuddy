@@ -6,6 +6,7 @@ import {
   matchColor,
   matchLabel,
   type UniversityFilters,
+  hscBar,
 } from "@/lib/university-match";
 import { FallbackImage } from "@/components/ui/FallbackImage";
 
@@ -102,7 +103,11 @@ export function UniversityCard({
 
         <dl className="mt-auto grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-4 sm:grid-cols-4">
           <Stat label="Tuition" value={formatTuition(uni.tuitionMin, uni.tuitionMax)} />
-          <Stat label="Typical CGPA" value={`${uni.minCgpa.toFixed(2)}+`} />
+          {filters.degree === "bachelors" ? (
+            <Stat label="Est. HSC GPA" value={`${hscBar(uni).toFixed(2)}+`} />
+          ) : (
+            <Stat label="Typical CGPA" value={`${uni.minCgpa.toFixed(2)}+`} />
+          )}
           <Stat label="IELTS" value={`${uni.ielts.toFixed(1)}+`} />
           <Stat label="Acceptance" value={`~${uni.acceptanceRate}%`} />
         </dl>

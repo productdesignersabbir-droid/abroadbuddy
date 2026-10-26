@@ -11,6 +11,7 @@ import {
   PROFILE_QUESTIONS,
   READINESS_QUESTIONS,
   UNDECIDED,
+  type DegreeLevel,
   type Priority,
   type ProfileKey,
   type ReadinessProfile,
@@ -174,6 +175,13 @@ function stepsFor(profile: ReadinessProfile): Step[] {
 }
 
 // Midpoint of each CGPA band, used to prefill University Finder.
+const GPA_FOR_FINDER: Record<string, number> = {
+  "gpa-5": 5,
+  "gpa-45": 4.7,
+  "gpa-40": 4.2,
+  "gpa-low": 3.7,
+};
+
 const CGPA_FOR_FINDER: Record<string, number> = {
   "cgpa-37": 3.8,
   "cgpa-34": 3.55,
@@ -1188,8 +1196,15 @@ function finderHref(profile: ReadinessProfile, answers: ReadinessAnswers) {
     params.set("country", profile.country);
   if (profile.major && profile.major !== UNDECIDED)
     params.set("major", profile.major);
-  const cgpa = CGPA_FOR_FINDER[bachelorsCgpaId(answers.cgpa ?? []) ?? ""];
-  if (cgpa && profile.degree !== "bachelors") params.set("cgpa", String(cgpa));
+  if (profile.degree && profile.degree !== "unsure") params.set("degree", profile.degree);
+  if (profile.degree === "bachelors") {
+    const hsc = answers.cgpa?.find((a) => a.startsWith("hsc:"))?.slice(4);
+    const gpa = GPA_FOR_FINDER[hsc ?? ""];
+    if (gpa) params.set("gpa", String(gpa));
+  } else {
+    const cgpa = CGPA_FOR_FINDER[bachelorsCgpaId(answers.cgpa ?? []) ?? ""];
+    if (cgpa) params.set("cgpa", String(cgpa));
+  }
   const qs = params.toString();
   return qs ? `/universities?${qs}` : "/universities";
 }
@@ -1412,10 +1427,12 @@ function Results({
   );
 }
 
-export function ReadinessQuiz() {
+export function ReadinessQuiz({ initialDegree }: { initialDegree?: DegreeLevel } = {}) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<ReadinessAnswers>({});
-  const [profile, setProfile] = useState<ReadinessProfile>({});
+  const [profile, setProfile] = useState<ReadinessProfile>(
+    initialDegree ? { degree: initialDegree } : {}
+  );
   const [done, setDone] = useState(false);
   // Fixed once, so month counts don't shift between renders.
   const [now] = useState(() => new Date());

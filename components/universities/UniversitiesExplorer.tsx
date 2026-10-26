@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { University } from "@/data/universities";
 import {
@@ -7,6 +8,7 @@ import {
   computeMatch,
   passesHardFilters,
   sortResults,
+  type FinderDegree,
   type UniversityFilters,
 } from "@/lib/university-match";
 import { FilterBar } from "@/components/universities/FilterBar";
@@ -14,6 +16,49 @@ import { UniversityCard } from "@/components/universities/UniversityCard";
 import { UniversityDetailsModal } from "@/components/universities/UniversityDetailsModal";
 
 const PAGE_SIZE = 10;
+
+const GUIDANCE: Record<FinderDegree, { body: string; second: { href: string; label: string } }> = {
+  bachelors: {
+    body: "See which fields fit your HSC subjects, what each country asks for, and a month-by-month plan to your start date.",
+    second: { href: "/mentors", label: "Talk to a mentor" },
+  },
+  masters: {
+    body: "Get a readiness score, a to-do list made for your plan and a month-by-month route to your intake.",
+    second: { href: "/mentors", label: "Talk to a mentor" },
+  },
+  phd: {
+    body: "PhD places often come through a supervisor. Check your readiness, then find professors whose work fits yours.",
+    second: { href: "/lab-kemon", label: "Find professors" },
+  },
+};
+
+/** A free way in for students who aren't sure what to filter for yet. */
+function GuidanceCard({ degree }: { degree: FinderDegree }) {
+  const g = GUIDANCE[degree];
+  return (
+    <div className="mt-6 flex flex-col gap-4 border-l-4 border-blue bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="max-w-2xl">
+        <p className="font-label text-[11px] font-semibold uppercase tracking-[0.08em] text-blue">Free guidance</p>
+        <p className="mt-1 font-display text-[20px] leading-tight text-ink">Not sure where you fit?</p>
+        <p className="mt-1 font-body text-[14px] leading-relaxed text-sub">{g.body}</p>
+      </div>
+      <div className="flex shrink-0 flex-wrap gap-2">
+        <Link
+          href={`/readiness?degree=${degree}`}
+          className="bg-blue px-4 py-2.5 font-body text-[14px] font-semibold text-white"
+        >
+          Free readiness check
+        </Link>
+        <Link
+          href={g.second.href}
+          className="border-[1.5px] border-line px-4 py-2.5 font-body text-[14px] font-semibold text-ink hover:border-ink/40"
+        >
+          {g.second.label}
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export function UniversitiesExplorer({
   universities,
@@ -49,6 +94,7 @@ export function UniversitiesExplorer({
     <section className="bg-soft py-14">
       <div className="mx-auto max-w-7xl px-6">
         <FilterBar filters={filters} onChange={update} />
+        <GuidanceCard degree={filters.degree} />
 
         <div className="mt-8 flex items-center justify-between">
           <p className="font-body text-sm text-sub">
@@ -60,7 +106,9 @@ export function UniversitiesExplorer({
           {isFiltered && (
             <button
               type="button"
-              onClick={() => update({ ...DEFAULT_FILTERS, cgpa: filters.cgpa })}
+              onClick={() =>
+                update({ ...DEFAULT_FILTERS, degree: filters.degree, cgpa: filters.cgpa, gpa: filters.gpa })
+              }
               className="font-body text-[13px] font-semibold text-ink underline underline-offset-4"
             >
               Reset filters
@@ -103,7 +151,7 @@ export function UniversitiesExplorer({
             </p>
             <button
               type="button"
-              onClick={() => update(DEFAULT_FILTERS)}
+              onClick={() => update({ ...DEFAULT_FILTERS, degree: filters.degree })}
               className="mt-5 rounded-button bg-ink px-5 py-2.5 font-body text-sm font-semibold text-white"
             >
               Reset filters

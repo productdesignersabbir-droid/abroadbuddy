@@ -6,9 +6,19 @@ import {
 } from "@/data/universities";
 
 export type UniversitySort = "match" | "rank" | "tuition";
+export type FinderDegree = "bachelors" | "masters" | "phd";
+
+export const DEGREE_OPTIONS: { value: FinderDegree; label: string }[] = [
+  { value: "bachelors", label: "Bachelor's" },
+  { value: "masters", label: "Master's" },
+  { value: "phd", label: "PhD" },
+];
 
 export type UniversityFilters = {
+  degree: FinderDegree;
   cgpa: number;
+  /** HSC GPA out of 5.00, used instead of CGPA for bachelor's. */
+  gpa: number;
   country: string;
   major: string;
   budget: number;
@@ -29,7 +39,9 @@ export const SORT_OPTIONS: { value: UniversitySort; label: string }[] = [
 ];
 
 export const DEFAULT_FILTERS: UniversityFilters = {
+  degree: "masters",
   cgpa: 3.6,
+  gpa: 4.5,
   country: ALL_COUNTRIES,
   major: ALL_MAJORS,
   budget: MAX_BUDGET,
@@ -40,11 +52,25 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
 
+/**
+ * Our sample data has one entry bar per university, on the 4.00 scale. For
+ * school leavers we estimate the matching HSC GPA by scaling it to 5.00.
+ */
+export function hscBar(uni: University) {
+  return Math.min(5, Math.round(uni.minCgpa * 1.25 * 20) / 20);
+}
+
+/** How far the student's grades sit above the bar, in CGPA points. */
+function gradeGap(uni: University, filters: UniversityFilters) {
+  return filters.degree === "bachelors"
+    ? (filters.gpa - hscBar(uni)) * 0.8
+    : filters.cgpa - uni.minCgpa;
+}
+
 export function computeMatch(uni: University, filters: UniversityFilters) {
   let score = 55;
 
-  const cgpaDelta = filters.cgpa - uni.minCgpa;
-  score += clamp(cgpaDelta * 45, -30, 25);
+  score += clamp(gradeGap(uni, filters) * 45, -30, 25);
 
   if (filters.country === ALL_COUNTRIES || filters.country === uni.country) {
     score += 12;
@@ -83,14 +109,18 @@ export type FitReason = { label: string; ok: boolean };
 
 /** Short, plain reasons behind the match score, shown on each result. */
 export function fitReasons(uni: University, filters: UniversityFilters): FitReason[] {
-  const cgpaGap = filters.cgpa - uni.minCgpa;
+  const bachelors = filters.degree === "bachelors";
+  const gap = bachelors ? filters.gpa - hscBar(uni) : filters.cgpa - uni.minCgpa;
+  const name = bachelors ? "HSC GPA" : "CGPA";
+  const yours = bachelors ? filters.gpa : filters.cgpa;
+  const bar = bachelors ? hscBar(uni) : uni.minCgpa;
   return [
     {
       label:
-        cgpaGap >= 0
-          ? `CGPA ${filters.cgpa.toFixed(2)} meets ${uni.minCgpa.toFixed(2)}`
-          : `CGPA ${Math.abs(cgpaGap).toFixed(2)} below typical`,
-      ok: cgpaGap >= 0,
+        gap >= 0
+          ? `${name} ${yours.toFixed(2)} meets ${bar.toFixed(2)}`
+          : `${name} ${Math.abs(gap).toFixed(2)} below typical`,
+      ok: gap >= 0,
     },
     {
       label:
@@ -164,4 +194,27 @@ export function yearlyCost(uni: University): [number, number] {
 
 export function formatCount(n: number) {
   return n >= 1000 ? `${Math.round(n / 1000)}k` : `${n}`;
+}
+
+/** What a university usually asks for, by degree. */
+export function applicationDocuments(degree: FinderDegree) {
+  if (degree === "bachelors") {
+    return [
+      "SSC and HSC (or O and A-level) certificates and transcripts",
+      "Personal statement",
+      "1–2 teacher references",
+      "English test score (IELTS / TOEFL / Duolingo where accepted)",
+      "Passport copy",
+      "Financial documents (bank statement or sponsor letter)",
+    ];
+  }
+  return [
+    "Academic transcripts and degree certificate",
+    degree === "phd" ? "Research proposal or statement of research interests" : "Statement of purpose (SOP)",
+    degree === "phd" ? "3 letters of recommendation, mostly academic" : "2–3 letters of recommendation",
+    degree === "phd" ? "Academic CV with any publications" : "CV or résumé",
+    "English test score (IELTS / TOEFL / Duolingo where accepted)",
+    "Passport copy",
+    "Financial documents (bank statement or sponsor letter)",
+  ];
 }

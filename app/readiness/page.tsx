@@ -1,7 +1,14 @@
 import { Accent, PageHeader } from "@/components/PageHeader";
 import { ReadinessQuiz } from "@/components/readiness/ReadinessQuiz";
 
-export default function ReadinessPage() {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+const DEGREES = ["bachelors", "masters", "phd"] as const;
+
+export default async function ReadinessPage({ searchParams }: { searchParams: SearchParams }) {
+  // University Finder links here with the degree already chosen.
+  const { degree } = await searchParams;
+  const initialDegree = DEGREES.find((d) => d === degree);
   return (
     <>
       <PageHeader
@@ -15,7 +22,7 @@ export default function ReadinessPage() {
         imageSrc="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1200&q=80&auto=format&fit=crop"
         imageAlt="Three students looking at a tablet together"
       />
-      <ReadinessQuiz />
+      <ReadinessQuiz initialDegree={initialDegree} />
     </>
   );
 }
