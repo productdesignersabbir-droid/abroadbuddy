@@ -55,6 +55,14 @@ import { researchFollowUps } from "@/data/research";
 import { documentOptionsFor } from "@/data/documents";
 import { planFor } from "@/data/plan";
 import {
+  setStream,
+  streamAnswered,
+  streamLabel,
+  streamPicked,
+  streamQuestions,
+} from "@/data/stream";
+import { bachelorsScholarships } from "@/data/bachelors";
+import {
   backgroundAnswered,
   backgroundPick,
   backgroundQuestions,
@@ -133,6 +141,7 @@ const PROFILE_ORDER: ProfileKey[] = [
   "degree",
   "major",
   "focus",
+  "stream",
   "country",
   "intake",
   "background",
@@ -143,10 +152,18 @@ const MAX_FOCUS = 3;
 const hasMajor = (profile: ReadinessProfile) =>
   Boolean(profile.major && profile.major !== UNDECIDED);
 
-// The specialisation gate only shows once a field is picked.
+// Graduate applicants pick specialisations inside their field; bachelor's
+// applicants choose those later, so they tell us their HSC subjects instead.
 function stepsFor(profile: ReadinessProfile): Step[] {
+  const bachelors = profile.degree === "bachelors";
+  const shown = (key: ProfileKey) =>
+    key === "focus"
+      ? hasMajor(profile) && !bachelors
+      : key === "stream"
+        ? bachelors
+        : true;
   return [
-    ...PROFILE_ORDER.filter((key) => key !== "focus" || hasMajor(profile)).map(
+    ...PROFILE_ORDER.filter(shown).map(
       (key) => ({ type: "profile" as const, key }),
     ),
     ...READINESS_QUESTIONS.map((_, index) => ({
@@ -265,7 +282,38 @@ function ProfileStep({
   const value = profile[field];
 
   let body: React.ReactNode;
-  if (field === "background") {
+  if (field === "stream") {
+    body = (
+      <div className="grid gap-5">
+        {streamQuestions(profile).map((q) => (
+          <div key={q.id}>
+            <p
+              id={`st-${q.id}`}
+              className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
+            >
+              {q.title}
+            </p>
+            <div
+              role={q.multi ? "group" : "radiogroup"}
+              aria-labelledby={`st-${q.id}`}
+              className="flex flex-wrap gap-1.5 sm:gap-2"
+            >
+              {q.options.map((o) => (
+                <Chip
+                  key={o.id}
+                  role={q.multi ? "checkbox" : "radio"}
+                  selected={streamPicked(profile, q.id, o.id)}
+                  onClick={() => onChange(setStream(profile, q, o.id))}
+                >
+                  {o.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  } else if (field === "background") {
     body = (
       <div className="grid gap-5">
         {backgroundQuestions(profile).map((q) => (
@@ -480,7 +528,11 @@ function ProfileStep({
     <div>
       <StepHeading id={field} question={question} hint={hint} />
       <div
-        role={field === "focus" || field === "background" ? "group" : "radiogroup"}
+        role={
+          field === "focus" || field === "background" || field === "stream"
+            ? "group"
+            : "radiogroup"
+        }
         aria-labelledby={`q-${field}`}
         className="mt-6"
       >
@@ -568,7 +620,10 @@ function GradesStep({
   onChange: (ids: string[]) => void;
 }) {
   const picked = answers.cgpa ?? [];
-  const { question, hint } = gradeCopy(profile.degree);
+  const { question, hint } = gradeCopy(
+    profile.degree,
+    backgroundPick(profile.background, "now") === "hsc-sitting"
+  );
   const parts = gradePartsFor(profile.degree, picked);
   const hasMasters = picked.includes(HAS_MASTERS_YES)
     ? true
@@ -1045,9 +1100,14 @@ function PlanStrip({ profile, now }: { profile: ReadinessProfile; now: Date }) {
   const chips = [
     degree && degree.id !== "unsure" ? degree.label : "Degree to decide",
     profile.major && profile.major !== UNDECIDED
-      ? [profile.major, ...(profile.focus ?? []).filter((f) => f !== UNDECIDED)]
-          .join(" · ")
+      ? [
+          profile.major,
+          ...(profile.degree === "bachelors"
+            ? []
+            : (profile.focus ?? []).filter((f) => f !== UNDECIDED)),
+        ].join(" · ")
       : "Field to decide",
+    profile.degree === "bachelors" ? streamLabel(profile) ?? null : null,
     country
       ? `${COUNTRY_INFO[country].flag} ${country}`
       : "Destination to decide",
@@ -1074,7 +1134,7 @@ function PlanStrip({ profile, now }: { profile: ReadinessProfile; now: Date }) {
 }
 
 /** Visa, costs and intakes for the student's first-choice country. */
-function DestinationCard({ country }: { country: Country }) {
+function DestinationCard({ country, bachelors }: { country: Country; bachelors: boolean }) {
   const info = COUNTRY_INFO[country];
   const [lo, hi] = info.livingCost;
   const rows = [
@@ -1086,7 +1146,7 @@ function DestinationCard({ country }: { country: Country }) {
     },
     { label: "Work while studying", value: info.workWhileStudying },
     { label: "After you graduate", value: info.postStudyWork },
-    { label: "Scholarships", value: info.scholarships },
+    { label: "Scholarships", value: bachelors ? bachelorsScholarships(country) : info.scholarships },
     { label: "Bangladeshi community", value: info.bdCommunity },
   ];
   return (
@@ -1287,7 +1347,7 @@ function Results({
               </div>
             </div>
           </div>
-          {country && <DestinationCard country={country} />}
+          {country && <DestinationCard country={country} bachelors={profile.degree === "bachelors"} />}
         </div>
 
         <div className="rounded-card bg-white p-5.5 sm:p-6.5">
@@ -1368,6 +1428,8 @@ export function ReadinessQuiz() {
     current.type === "profile"
       ? current.key === "background"
         ? backgroundAnswered(profile)
+        : current.key === "stream"
+          ? streamAnswered(profile)
         : Array.isArray(profileValue)
         ? profileValue.length > 0
         : Boolean(profileValue)

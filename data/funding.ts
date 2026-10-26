@@ -47,7 +47,19 @@ export function fundingOptionsFor(profile: ReadinessProfile): FundingOption[] {
   const funded = base("bud-funded");
   return [
     { ...base("bud-full"), label: "Self-funded", hint: "Savings, family or a sponsor" },
-    { ...base("bud-year"), label: "Self-funded for year one" },
+    {
+      ...base("bud-year"),
+      label: "Self-funded for year one",
+      ...(bachelors && {
+        todo: {
+          title: "Plan how you'll pay for every year",
+          detail:
+            "A bachelor's runs three to four years. Work out each year's cost, and ask universities about merit scholarships for international students before you accept.",
+          priority: "high" as const,
+          link: base("bud-year").todo?.link,
+        },
+      }),
+    },
     { ...base("bud-partial"), label: "Partial scholarship", hint: "Tuition waiver or part funding" },
     {
       ...funded,

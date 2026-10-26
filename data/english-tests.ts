@@ -193,7 +193,32 @@ export function englishScore(profile: ReadinessProfile, answers: string[]) {
   const test = testOf(answers);
   const status =
     test === UNDECIDED ? base("eng-none") : statusOptionsFor(test).find((o) => answers.includes(o.id));
-  const todos: Todo[] = status?.todo ? [status.todo] : [];
+  const bachelors = profile.degree === "bachelors";
+  // Bachelor's programs usually ask for less than master's, so 6.0 is often enough.
+  const adjusted =
+    bachelors && status?.id === "eng-low"
+      ? {
+          ...status,
+          points: 14,
+          todo: {
+            title: "Check each university's English rule",
+            detail:
+              "This meets many bachelor's programs, but some ask for more, such as IELTS 6.5. Check each one before you decide to retake.",
+            priority: "medium" as const,
+          },
+        }
+      : bachelors && status?.id === "eng-lower"
+        ? {
+            ...status,
+            todo: {
+              title: "Raise your score or look at foundation programs",
+              detail:
+                "Most bachelor's programs ask for more than this. Retake after 6–8 weeks of practice, or look at foundation and pathway programs, which often accept lower scores.",
+              priority: "high" as const,
+            },
+          }
+        : status;
+  const todos: Todo[] = adjusted?.todo ? [adjusted.todo] : [];
 
   const grad = graduateTestFor(profile);
   const took = grad && answers.includes("gre:taken") ? gradTestOf(profile, answers) : undefined;
@@ -220,5 +245,5 @@ export function englishScore(profile: ReadinessProfile, answers: string[]) {
       priority: "medium",
     });
   }
-  return { points: status?.points ?? 0, todos };
+  return { points: adjusted?.points ?? 0, todos };
 }

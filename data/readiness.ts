@@ -415,8 +415,10 @@ export const UNDECIDED = "undecided";
 export type ReadinessProfile = {
   degree?: DegreeLevel;
   major?: Major | typeof UNDECIDED;
-  /** Up to three specialisations inside the major, or [UNDECIDED]. */
+  /** Up to three specialisations inside the major, or [UNDECIDED]. Not asked for bachelor's. */
   focus?: string[];
+  /** Bachelor's only: HSC group and subjects, stored as `${questionId}:${optionId}`. */
+  stream?: string[];
   country?: Country | typeof UNDECIDED;
   intake?: string;
   /** "Your situation" answers, stored as `${questionId}:${optionId}`. */
@@ -525,6 +527,10 @@ export const PROFILE_QUESTIONS: Record<ProfileKey, { question: string; hint: str
   focus: {
     question: "Which areas interest you most?",
     hint: "Pick up to three. Not sure yet is fine too.",
+  },
+  stream: {
+    question: "What did you study at school?",
+    hint: "HSC group or A levels. Most fields have subject entry rules, so we'll check yours.",
   },
   country: {
     question: "Where would you most like to go?",

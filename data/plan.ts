@@ -35,12 +35,24 @@ export function planFor(profile: ReadinessProfile, now: Date): Milestone[] | nul
   const steps: [number, string, string][] = [
     [
       12,
-      grad ? `Take your English test and ${grad}` : "Take your English test",
+      grad
+        ? `Take your English test and ${grad}`
+        : bachelors && country === "USA"
+          ? "Take your English test, and the SAT if your colleges ask"
+          : "Take your English test",
       "Results take about two weeks, and leave room for a retake before deadlines.",
     ],
     phd
       ? [11, "Email professors", "Write to 10–15 professors whose work fits yours. Their replies shape where you apply."]
-      : [11, "Shortlist universities", "Pick 6–10: a few reach, most match, one or two safe."],
+      : bachelors && country === "Germany"
+        ? [11, "Apply to a Studienkolleg", "With HSC you'll usually need this foundation year first, so this date may be your Studienkolleg start."]
+        : [
+            11,
+            "Shortlist universities",
+            bachelors && country === "UK"
+              ? "Pick up to five for UCAS: a few reach, most match, one safe."
+              : "Pick 6–10: a few reach, most match, one or two safe.",
+          ],
     [
       10,
       bachelors ? "Write your personal statement" : "Finish your SOP and CV",
@@ -49,7 +61,11 @@ export function planFor(profile: ReadinessProfile, now: Date): Milestone[] | nul
         : "Ask your recommenders now, at least six weeks before the first deadline.",
     ],
     [9, "Apply for scholarships", "Many close 8–12 months before classes start, often with the admission form."],
-    [8, "Submit your applications", "Some programs close earlier, so check each deadline on your shortlist."],
+    bachelors && country === "UK"
+      ? [8, "Submit your UCAS application", "One form covers all five choices. Oxford, Cambridge and medicine close earlier, in mid-October."]
+      : bachelors && country === "USA"
+        ? [8, "Submit your Common App", "Check each college's early and regular deadline; early ones close first."]
+        : [8, "Submit your applications", "Some programs close earlier, so check each deadline on your shortlist."],
     country === "Germany"
       ? [6, "Open a blocked account and book a visa appointment", "Embassy appointments in Dhaka can take weeks to get."]
       : [

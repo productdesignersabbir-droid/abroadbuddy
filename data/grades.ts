@@ -74,7 +74,16 @@ const PARTS: Record<GradePartId, GradePart> = {
 /** Master's and PhD applicants are asked whether they already hold a master's. */
 export const asksAboutMasters = (degree?: DegreeLevel) => degree === "masters" || degree === "phd";
 
-export function gradeCopy(degree?: DegreeLevel): { question: string; hint: string } {
+export function gradeCopy(
+  degree?: DegreeLevel,
+  sittingHsc = false
+): { question: string; hint: string } {
+  if (degree === "bachelors" && sittingHsc) {
+    return {
+      question: "What are your SSC and expected HSC results?",
+      hint: "Still sitting your exams? Pick the HSC result you expect from your test exams, or your predicted A-level grades.",
+    };
+  }
   if (degree === "bachelors") {
     return {
       question: "What are your SSC and HSC results?",

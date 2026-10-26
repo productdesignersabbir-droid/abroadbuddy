@@ -5,6 +5,7 @@ import {
   type ReadinessProfile,
 } from "@/data/readiness";
 import { backgroundPick } from "@/data/background";
+import { streamPicked } from "@/data/stream";
 import type { Country } from "@/data/universities";
 
 // The documents checklist changes with the plan: school leavers need
@@ -93,11 +94,26 @@ export function documentOptionsFor(profile: ReadinessProfile): ReadinessOption[]
     profile.country && profile.country !== UNDECIDED ? (profile.country as Country) : undefined;
   const bachelors = profile.degree === "bachelors";
   const phd = profile.degree === "phd";
+  const alevel = streamPicked(profile, "group", "alevel");
 
   const items: ReadinessOption[] = [
     base("doc-passport"),
     bachelors
-      ? { ...base("doc-transcript"), label: "SSC and HSC certificates and transcripts" }
+      ? {
+          ...base("doc-transcript"),
+          label: alevel
+            ? "O and A-level certificates and school transcript"
+            : backgroundPick(profile.background, "now") === "hsc-sitting"
+              ? "SSC certificate and college transcript"
+              : "SSC and HSC certificates and transcripts",
+          todo: {
+            title: "Collect your certificates and transcripts",
+            detail: alevel
+              ? "Get your exam certificates and a school transcript, and ask your school for predicted grades if you're still sitting A levels."
+              : "Get your SSC and HSC marksheets and certificates, with attested English copies from your board or college. This can take a few weeks.",
+            priority: "medium",
+          },
+        }
       : base("doc-transcript"),
     bachelors
       ? {
@@ -125,7 +141,7 @@ export function documentOptionsFor(profile: ReadinessProfile): ReadinessOption[]
     bachelors
       ? {
           ...base("doc-lor"),
-          label: "1–2 teacher references agreed",
+          label: country === "USA" ? "Teacher references and counsellor letter agreed" : "1–2 teacher references agreed",
           todo: {
             title: "Ask teachers for references",
             detail: "Ask a teacher who knows you well, ideally in your subject, at least a month before your deadline.",

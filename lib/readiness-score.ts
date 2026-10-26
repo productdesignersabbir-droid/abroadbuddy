@@ -21,6 +21,8 @@ import { fundingOptionsFor } from "@/data/funding";
 import { researchAnswered, researchExtras } from "@/data/research";
 import { backgroundTodos } from "@/data/background";
 import { documentOptionsFor } from "@/data/documents";
+import { missesRequiredSubject, streamTodos } from "@/data/stream";
+import { bachelorsTodos } from "@/data/bachelors";
 import { BDT_PER_USD } from "@/lib/university-match";
 
 // Single-choice areas store one option id; the documents checklist stores many.
@@ -96,7 +98,16 @@ function personalTodos(
 
   if (intake) {
     const months = monthsBetween(now, new Date(intake.start));
-    if (months <= 9) {
+    if (months <= 5) {
+      out.push({
+        title: `${intake.label} may be too close`,
+        detail:
+          "Most deadlines close 6–9 months before classes start, so many have passed. Apply where deadlines are still open, and plan the following intake as a backup.",
+        priority: "high",
+        link: UNIVERSITY_FINDER,
+        areaLabel: "Timeline",
+      });
+    } else if (months <= 9) {
       out.push({
         title: `${intake.label} is about ${months} months away`,
         detail:
@@ -116,7 +127,10 @@ function personalTodos(
     } else {
       out.push({
         title: "Use the extra time to build your profile",
-        detail: `About ${months} months to go. Work on research, test scores and grades now. Applications usually open about a year before intake.`,
+        detail:
+          profile.degree === "bachelors"
+            ? `About ${months} months to go. Focus on your school results, your English test and one activity you can talk about. Applications usually open about a year before intake.`
+            : `About ${months} months to go. Work on research, test scores and grades now. Applications usually open about a year before intake.`,
         priority: "low",
         areaLabel: "Timeline",
       });
@@ -154,10 +168,14 @@ function personalTodos(
     });
   }
 
-  const tip = FIELD_TIPS.find((t) => profile.major && t.majors.some((m) => m === profile.major));
+  // School leavers get their own field advice; see data/bachelors.ts and data/stream.ts.
+  const bachelors = profile.degree === "bachelors";
+  const tip = bachelors
+    ? undefined
+    : FIELD_TIPS.find((t) => profile.major && t.majors.some((m) => m === profile.major));
   if (tip) {
     out.push({ ...tip.todo, areaLabel: String(profile.major) });
-  } else if (profile.major === UNDECIDED) {
+  } else if (profile.major === UNDECIDED && !bachelors) {
     out.push({
       title: "Narrow down your field",
       detail:
@@ -205,7 +223,9 @@ export function scoreAnswers(
     if (q.area === "cgpa") {
       const { points, todo } = gradeScore(profile.degree, answers.cgpa ?? []);
       if (todo) todos.push({ ...todo, areaLabel: q.areaLabel });
-      areas.push({ area: q.area, label: q.areaLabel, points: Math.min(points, AREA_MAX) });
+      // Good grades in the wrong subjects don't open the field, so they count for less.
+      const fit = missesRequiredSubject(profile) ? -5 : 0;
+      areas.push({ area: q.area, label: q.areaLabel, points: Math.max(0, Math.min(points + fit, AREA_MAX)) });
       continue;
     }
 
@@ -258,6 +278,8 @@ export function scoreAnswers(
 
   todos.push(...personalTodos(profile, answers, now));
   todos.push(...backgroundTodos(profile).map((t) => ({ ...t, areaLabel: "Your situation" })));
+  todos.push(...streamTodos(profile).map((t) => ({ ...t, areaLabel: "Subjects" })));
+  todos.push(...bachelorsTodos(profile, answers, now));
   todos.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
 
   const total = areas.reduce((sum, a) => sum + a.points, 0);

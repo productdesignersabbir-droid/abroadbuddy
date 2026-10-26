@@ -31,7 +31,10 @@ export function Hero() {
               Your whole <span className="whitespace-nowrap">study-abroad</span>
             </span>
             <span style={rise(2)} className="block animate-rise">
-              <Accent>journey.</Accent> One platform.
+              <Accent>journey.</Accent>{" "}
+              <span className="bg-linear-to-r from-blue to-red bg-clip-text pr-[0.04em] text-transparent">
+                One platform.
+              </span>
             </span>
           </h1>
 
@@ -40,11 +43,11 @@ export function Hero() {
             miss a scholarship or conference deadline.
           </p>
 
-          <div style={rise(4)} className="mt-8 flex animate-rise flex-wrap gap-3">
-            <Button href="/readiness" variant="primary" className="px-6.5 py-3.5 text-[17px]">
+          <div style={rise(4)} className="mt-8 grid max-w-[34rem] animate-rise grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-3">
+            <Button href="/readiness" variant="primary" className="justify-center px-6.5 py-3.5 text-[17px]">
               Start Abroad Readiness
             </Button>
-            <Button href="#how-it-works" variant="ghost" className="px-6.5 py-3.5 text-[17px]">
+            <Button href="#how-it-works" variant="ghost" className="justify-center px-6.5 py-3.5 text-[17px]">
               How it works
             </Button>
           </div>
