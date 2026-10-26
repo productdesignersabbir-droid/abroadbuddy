@@ -10,6 +10,7 @@ import {
   type StudioDegree,
 } from "@/data/application-studio";
 import { Field, inputClass } from "@/components/ui/Chip";
+import { CvBuilder } from "@/components/application-studio/cv/CvBuilder";
 
 export function ApplicationStudio({
   initialDoc = "cv",
@@ -82,68 +83,72 @@ export function ApplicationStudio({
           })}
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="flex flex-col gap-5 bg-white p-6 sm:p-7">
-            {doc.fields.map((f) => (
-              <Field key={f.key} label={f.label}>
-                {f.multiline ? (
-                  <textarea
-                    rows={3}
-                    value={values[f.key] ?? ""}
-                    placeholder={f.placeholder}
-                    onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
-                    className={`${inputClass} resize-y`}
-                  />
-                ) : (
-                  <input
-                    value={values[f.key] ?? ""}
-                    placeholder={f.placeholder}
-                    onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
-                    className={inputClass}
-                  />
-                )}
-              </Field>
-            ))}
-            <p className="font-body text-[12.5px] leading-relaxed text-sub">
-              Your answers stay on this page and aren&apos;t sent anywhere. The university&apos;s own
-              instructions always come first.
-            </p>
-          </div>
+        {doc.id === "cv" ? (
+          <CvBuilder degree={degree} />
+        ) : (
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="flex flex-col gap-5 bg-white p-6 sm:p-7">
+              {doc.fields.map((f) => (
+                <Field key={f.key} label={f.label}>
+                  {f.multiline ? (
+                    <textarea
+                      rows={3}
+                      value={values[f.key] ?? ""}
+                      placeholder={f.placeholder}
+                      onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+                      className={`${inputClass} resize-y`}
+                    />
+                  ) : (
+                    <input
+                      value={values[f.key] ?? ""}
+                      placeholder={f.placeholder}
+                      onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+                      className={inputClass}
+                    />
+                  )}
+                </Field>
+              ))}
+              <p className="font-body text-[12.5px] leading-relaxed text-sub">
+                Your answers stay on this page and aren&apos;t sent anywhere. The university&apos;s own
+                instructions always come first.
+              </p>
+            </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="bg-white">
-              <div className="flex items-center justify-between border-b border-line px-5 py-3">
-                <span className="font-label text-[11px] uppercase tracking-[0.08em] text-sub">
-                  Your draft · {words} words
-                </span>
-                <button
-                  type="button"
-                  onClick={copy}
-                  className="bg-blue px-4 py-2 font-body text-[13.5px] font-semibold text-white"
-                >
-                  {copied ? "Copied" : "Copy draft"}
-                </button>
+            <div className="flex flex-col gap-4">
+              <div className="bg-white">
+                <div className="flex items-center justify-between border-b border-line px-5 py-3">
+                  <span className="font-label text-[11px] uppercase tracking-[0.08em] text-sub">
+                    Your draft · {words} words
+                  </span>
+                  <button
+                    type="button"
+                    onClick={copy}
+                    className="bg-blue px-4 py-2 font-body text-[13.5px] font-semibold text-white"
+                  >
+                    {copied ? "Copied" : "Copy draft"}
+                  </button>
+                </div>
+                <pre className="max-h-[560px] overflow-auto whitespace-pre-wrap px-6 py-5 font-body text-[14.5px] leading-relaxed text-ink">
+                  {draft}
+                </pre>
               </div>
-              <pre className="max-h-[560px] overflow-auto whitespace-pre-wrap px-6 py-5 font-body text-[14.5px] leading-relaxed text-ink">
-                {draft}
-              </pre>
-            </div>
-            <p className="font-body text-[12.5px] text-sub">
-              Text in [brackets] is what you still need to write. Replace it before you send anything.
-            </p>
-            <div className="flex flex-col gap-3 bg-ink p-5.5 text-white sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-display text-[21px]">Want a second pair of eyes?</p>
-                <p className="mt-1 font-body text-[14px] text-white/75">
-                  A mentor who got in can review your draft before you submit.
-                </p>
+              <p className="font-body text-[12.5px] text-sub">
+                Text in [brackets] is what you still need to write. Replace it before you send anything.
+              </p>
+              <div className="flex flex-col gap-3 bg-ink p-5.5 text-white sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-display text-[21px]">Want a second pair of eyes?</p>
+                  <p className="mt-1 font-body text-[14px] text-white/75">
+                    A mentor who got in can review your draft before you submit.
+                  </p>
+                </div>
+                <Link href="/mentoring" className="shrink-0 bg-blue px-4 py-2.5 font-body text-[14px] font-semibold">
+                  Book a document review
+                </Link>
               </div>
-              <Link href="/mentoring" className="shrink-0 bg-blue px-4 py-2.5 font-body text-[14px] font-semibold">
-                Book a document review
-              </Link>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -493,3 +493,28 @@ input:focus-visible {
 *::after {
   border-radius: 0 !important;
 }
+
+/* CV PDF download: print only the CV, on A4, with its colours. */
+.cv-print-root {
+  display: none;
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 0;
+  }
+  @page :first {
+    margin-top: 0;
+  }
+  body > *:not(.cv-print-root) {
+    display: none !important;
+  }
+  .cv-print-root {
+    display: block;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .cv-print-root > div {
+    min-height: 0 !important;
+  }
+}
