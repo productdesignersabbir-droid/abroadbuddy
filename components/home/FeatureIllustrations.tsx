@@ -7,7 +7,10 @@ export type IllustrationKind =
   | "universities"
   | "professors"
   | "scholarships"
-  | "conferences";
+  | "conferences"
+  | "research"
+  | "studio"
+  | "mentoring";
 
 export const ILLUSTRATION_TINT: Record<IllustrationKind, string> = {
   readiness: "#EAF6EF",
@@ -15,6 +18,9 @@ export const ILLUSTRATION_TINT: Record<IllustrationKind, string> = {
   professors: "#EDF7F1",
   scholarships: "#FFF7E4",
   conferences: "#F4F0FF",
+  research: "#E8F6F8",
+  studio: "#FFF0F1",
+  mentoring: "#EEF2FF",
 };
 
 /** Moves a layer gently with the pointer; `depth` is how far it travels, in px. */
@@ -145,12 +151,79 @@ function Conferences() {
   );
 }
 
+function Research() {
+  return (
+    <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden>
+      <g style={layer(5)}>
+        {/* one start splitting into three directions */}
+        <path d="M110 150 C 150 150, 150 70, 206 70 M110 150 C 160 150, 170 118, 206 118 M110 150 H206" fill="none" stroke="#fff" strokeWidth="6" strokeLinecap="round" />
+        <circle cx="110" cy="150" r="9" fill="#2E6F7A" />
+        {[70, 118, 150].map((y) => (
+          <rect key={y} x="206" y={y - 9} width="34" height="18" rx="9" fill="#9ED3DB" />
+        ))}
+      </g>
+      <g style={layer(10)}>
+        <g className="ill-bob">
+          <circle cx="104" cy="74" r="20" fill="#fff" />
+          <path d="M98 70 a6 6 0 1 1 9 5 c-2 1 -3 2 -3 5 M104 86 v0.5" fill="none" stroke="#2E6F7A" strokeWidth="3" strokeLinecap="round" />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+function Studio() {
+  return (
+    <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden>
+      <g style={layer(5)}>
+        <rect x="104" y="36" width="104" height="136" rx="10" fill="#fff" />
+        <rect x="120" y="54" width="48" height="8" rx="4" fill="#FF9AA1" />
+        {[76, 88, 100, 120, 132, 144].map((y, i) => (
+          <rect key={y} x="120" y={y} width={i % 3 === 2 ? 44 : 72} height="5" rx="2.5" fill="#FBDDE0" />
+        ))}
+      </g>
+      <g style={layer(11)}>
+        <g className="ill-sway" style={{ transformOrigin: "232px 150px", animationDuration: "4s" }}>
+          <path d="M226 88 l12 0 l0 52 l-6 12 l-6 -12z" fill="#FF6B74" />
+          <rect x="226" y="80" width="12" height="10" rx="3" fill="#0B1220" />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+function Mentoring() {
+  return (
+    <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden>
+      <g style={layer(5)}>
+        <circle cx="122" cy="100" r="16" fill="#7C93F5" />
+        <path d="M94 160 C 96 128, 148 128, 150 160 Z" fill="#7C93F5" />
+        <circle cx="198" cy="104" r="14" fill="#B7C6FF" />
+        <path d="M174 160 C 176 132, 220 132, 222 160 Z" fill="#B7C6FF" />
+        <rect x="84" y="160" width="152" height="6" rx="3" fill="#D9E1FF" />
+      </g>
+      <g style={layer(11)}>
+        <g className="ill-bob">
+          <rect x="140" y="46" width="62" height="28" rx="12" fill="#fff" />
+          <path d="M156 74 l-4 9 12 -9z" fill="#fff" />
+          {[158, 171, 184].map((x) => (
+            <circle key={x} cx={x} cy="60" r="3" fill="#1E4FFF" />
+          ))}
+        </g>
+      </g>
+    </svg>
+  );
+}
+
 const ILLUSTRATIONS: Record<IllustrationKind, () => ReactNode> = {
   readiness: Readiness,
   universities: Universities,
   professors: Professors,
   scholarships: Scholarships,
   conferences: Conferences,
+  research: Research,
+  studio: Studio,
+  mentoring: Mentoring,
 };
 
 /** A light, tinted panel whose illustration leans toward the pointer. */

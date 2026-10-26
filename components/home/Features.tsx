@@ -45,6 +45,27 @@ const FEATURES: {
     kind: "conferences",
     span: "lg:col-span-2",
   },
+  {
+    title: "Find my research direction",
+    desc: "Turn your subject and interests into three research directions you can start this month.",
+    href: "/research-direction",
+    kind: "research",
+    span: "lg:col-span-2",
+  },
+  {
+    title: "Application Studio",
+    desc: "Build your CV in five clean templates, and draft your statement, proposal and reference request.",
+    href: "/application-studio",
+    kind: "studio",
+    span: "lg:col-span-2",
+  },
+  {
+    title: "Mentoring",
+    desc: "Book a session with students, alumni and researchers who have already made the move.",
+    href: "/mentoring",
+    kind: "mentoring",
+    span: "lg:col-span-2",
+  },
 ];
 
 export function Features() {
@@ -60,7 +81,7 @@ export function Features() {
               covered.
             </>
           }
-          sub="From your first shortlist to your first conference paper — five free tools, built for Bangladeshi students."
+          sub="From your first shortlist to your first conference paper — eight tools, built for Bangladeshi students."
         />
 
         <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-6">
