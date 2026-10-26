@@ -43,7 +43,7 @@ export const MENTORS_ROUTE: RouteInfo = {
 export const LAB_KEMON_ROUTE: RouteInfo = {
   href: "/lab-kemon",
   label: "Find your Professor",
-  navLabel: "Find your Professor",
+  navLabel: "Professor Finder",
   description:
     "Read professor ratings, lab culture and funding reviews before you commit.",
 };
@@ -138,7 +138,7 @@ export const PREPARATION_GROUP: NavGroup = {
 export const READINESS_ROUTE: RouteInfo = {
   href: "/readiness",
   label: "Study Abroad Readiness",
-  navLabel: "Study Abroad Readiness",
+  navLabel: "Readiness",
   description:
     "Check how ready you are to apply abroad, and see exactly what to work on next.",
 };
@@ -181,11 +181,14 @@ export const ROUTES: RouteInfo[] = [
   ...PREPARE_GROUP.items,
 ];
 
-export const NAV_ENTRIES: NavEntry[] = [
-  READINESS_ROUTE,
-  UNIVERSITIES_ROUTE,
-  LAB_KEMON_ROUTE,
-  SCHOLARSHIPS_ROUTE,
-  CONFERENCES_ROUTE,
-  PREPARE_GROUP,
-];
+export const FINDER_GROUP: NavGroup = {
+  label: "Finder",
+  items: [UNIVERSITIES_ROUTE, LAB_KEMON_ROUTE],
+};
+
+export const CALENDAR_GROUP: NavGroup = {
+  label: "Calendar",
+  items: [SCHOLARSHIPS_ROUTE, CONFERENCES_ROUTE],
+};
+
+export const NAV_ENTRIES: NavEntry[] = [READINESS_ROUTE, FINDER_GROUP, CALENDAR_GROUP, PREPARE_GROUP];
