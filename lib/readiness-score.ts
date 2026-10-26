@@ -2,6 +2,7 @@ import {
   AREA_MAX,
   FIELD_TIPS,
   INTAKE_OPTIONS,
+  findIntake,
   PROFESSORS,
   READINESS_QUESTIONS,
   SCHOLARSHIPS,
@@ -14,6 +15,10 @@ import {
   type Todo,
 } from "@/data/readiness";
 import { COUNTRY_INFO, type Country } from "@/data/universities";
+import { gradeScore, gradesAnswered } from "@/data/grades";
+import { englishAnswered, englishScore } from "@/data/english-tests";
+import { fundingOptionsFor } from "@/data/funding";
+import { researchAnswered, researchExtras } from "@/data/research";
 import { BDT_PER_USD } from "@/lib/university-match";
 
 // Single-choice areas store one option id; the documents checklist stores many.
@@ -53,9 +58,13 @@ export function questionFor(q: ReadinessQuestion, profile: ReadinessProfile): Re
 
 export function isAnswered(
   answers: ReadinessAnswers,
-  index: number
+  index: number,
+  profile: ReadinessProfile = {}
 ): boolean {
   const q = READINESS_QUESTIONS[index];
+  if (q.area === "cgpa") return gradesAnswered(profile.degree, answers.cgpa ?? []);
+  if (q.area === "english") return englishAnswered(profile, answers.english ?? []);
+  if (q.area === "research") return researchAnswered(profile, answers.research ?? []);
   // A checklist with nothing ticked is still a valid answer.
   if (q.kind === "checklist") return true;
   return (answers[q.area]?.length ?? 0) > 0;
@@ -77,7 +86,7 @@ function personalTodos(
   now: Date
 ): RankedTodo[] {
   const out: RankedTodo[] = [];
-  const intake = INTAKE_OPTIONS.find((i) => i.id === profile.intake);
+  const intake = findIntake(profile, now);
   const country =
     profile.country && profile.country !== UNDECIDED ? (profile.country as Country) : undefined;
   const info = country ? COUNTRY_INFO[country] : undefined;
@@ -111,7 +120,9 @@ function personalTodos(
       });
     }
 
-    if (info && intake.season === "spring" && !info.intakes.some((t) => /jan|feb|mar|spring/i.test(t))) {
+    // Only the generic spring/fall choices can miss the country's real intakes.
+    const generic = INTAKE_OPTIONS.some((i) => i.id === intake.id);
+    if (info && generic && intake.season === "spring" && !info.intakes.some((t) => /jan|feb|mar|spring/i.test(t))) {
       out.push({
         title: `Check whether ${country} has a spring intake`,
         detail: `Most programs in ${country} start in ${info.intakes.join(" or ")}. Plan for the next fall intake, or confirm each program's start date.`,
@@ -187,10 +198,28 @@ export function scoreAnswers(
 
   for (const raw of READINESS_QUESTIONS) {
     const q = questionFor(raw, profile);
+
+    // Grades can be one result or several (SSC + HSC, bachelor's + master's).
+    if (q.area === "cgpa") {
+      const { points, todo } = gradeScore(profile.degree, answers.cgpa ?? []);
+      if (todo) todos.push({ ...todo, areaLabel: q.areaLabel });
+      areas.push({ area: q.area, label: q.areaLabel, points: Math.min(points, AREA_MAX) });
+      continue;
+    }
+
+    if (q.area === "english") {
+      const { points, todos: extra } = englishScore(profile, answers.english ?? []);
+      todos.push(...extra.map((t) => ({ ...t, areaLabel: q.areaLabel })));
+      areas.push({ area: q.area, label: q.areaLabel, points: Math.min(points, AREA_MAX) });
+      continue;
+    }
+
     const picked = new Set(answers[q.area] ?? []);
     let points = 0;
+    // Funding labels, points and advice depend on degree and country.
+    const options = q.area === "budget" ? fundingOptionsFor(profile) : q.options;
 
-    for (const option of q.options) {
+    for (const option of options) {
       const chosen = picked.has(option.id);
       if (chosen) points += option.points;
 
@@ -203,6 +232,13 @@ export function scoreAnswers(
           profile.degree === "phd" && q.area === "research" ? "high" : option.todo.priority;
         todos.push({ ...option.todo, priority, areaLabel: q.areaLabel });
       }
+    }
+
+    // Research follow-ups (paper count, author role, topic…) fine-tune it.
+    if (q.area === "research" && picked.size) {
+      const extra = researchExtras(profile, answers.research ?? []);
+      points = Math.max(0, points + extra.delta);
+      todos.push(...extra.todos.map((t) => ({ ...t, areaLabel: q.areaLabel })));
     }
 
     areas.push({ area: q.area, label: q.areaLabel, points: Math.min(points, AREA_MAX) });

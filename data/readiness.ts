@@ -1,4 +1,4 @@
-import type { Country, Major } from "@/data/universities";
+import { COUNTRY_INFO, type Country, type Major } from "@/data/universities";
 
 export type ReadinessArea = "cgpa" | "english" | "research" | "budget" | "documents";
 
@@ -119,53 +119,12 @@ export const READINESS_QUESTIONS: ReadinessQuestion[] = [
         },
       },
     ],
+    // The grade pickers themselves change by degree; see data/grades.ts.
     forBachelors: {
       areaLabel: "Grades",
-      question: "What's your HSC result (or A-level equivalent)?",
-      hint: "A-level students: pick the closest match to your predicted grades.",
-      options: [
-        { label: "GPA 5.00 in both SSC and HSC" },
-        {
-          label: "HSC GPA 5.00",
-          todo: {
-            title: "Mix reach and match universities",
-            detail:
-              "Your grades are strong. Apply to a few reach universities, but keep match and safe options so one decision doesn't decide everything.",
-            priority: "low",
-            link: UNIVERSITY_FINDER,
-          },
-        },
-        {
-          label: "HSC GPA 4.50 – 4.99",
-          todo: {
-            title: "Strengthen the rest of your application",
-            detail:
-              "A good English score, a clear personal statement and real activities can balance your grades.",
-            priority: "medium",
-            link: UNIVERSITY_FINDER,
-          },
-        },
-        {
-          label: "HSC GPA 4.00 – 4.49",
-          todo: {
-            title: "Target universities that accept your grades",
-            detail:
-              "Check each university's HSC or A-level entry rule. A foundation year is a common route into UK and Australian universities.",
-            priority: "high",
-            link: UNIVERSITY_FINDER,
-          },
-        },
-        {
-          label: "Below 4.00",
-          todo: {
-            title: "Look at foundation and diploma pathways",
-            detail:
-              "Universities in the UK, Australia, Malaysia and Canada run one-year foundation programs that lead straight into a degree.",
-            priority: "high",
-            link: UNIVERSITY_FINDER,
-          },
-        },
-      ],
+      question: "What are your SSC and HSC results?",
+      hint: "O and A-level students: pick the closest match to your grades or predicted grades.",
+      options: [],
     },
   },
   {
@@ -477,6 +436,8 @@ export type IntakeOption = {
   /** Rough first day of classes, used to count months left. */
   start: string;
   season: "spring" | "fall";
+  /** Extra line under the label, e.g. the month a "Fall" intake starts. */
+  hint?: string;
 };
 
 export const INTAKE_OPTIONS: IntakeOption[] = [
@@ -485,6 +446,70 @@ export const INTAKE_OPTIONS: IntakeOption[] = [
   { id: "spring-2028", label: "Spring 2028", start: "2028-01-15", season: "spring" },
   { id: "fall-2028", label: "Fall 2028 or later", start: "2028-09-01", season: "fall" },
 ];
+
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+/** Countries that read better with "the" in a sentence. */
+const WITH_THE = new Set<Country>(["USA", "UK", "Netherlands", "Czech Republic"]);
+export const countryInSentence = (c: Country) => (WITH_THE.has(c) ? `the ${c}` : c);
+
+/** Pull the first month out of labels like "Fall (Aug–Sep)" or "September". */
+function monthOf(label: string): number {
+  const lower = label.toLowerCase();
+  let best = -1;
+  let at = Infinity;
+  MONTHS.forEach((m, i) => {
+    const pos = lower.indexOf(m.slice(0, 3).toLowerCase());
+    if (pos >= 0 && pos < at) {
+      at = pos;
+      best = i;
+    }
+  });
+  return best;
+}
+
+/**
+ * The next real intakes for a country, from its own intake months, for about
+ * the next two and a half years. Without a country, falls back to spring/fall.
+ */
+export function intakeOptionsFor(country: Country | undefined, now: Date): IntakeOption[] {
+  const info = country ? COUNTRY_INFO[country] : undefined;
+  if (!info) return INTAKE_OPTIONS;
+
+  const kinds = info.intakes
+    .map((label) => ({ label, month: monthOf(label) }))
+    .filter((k) => k.month >= 0);
+  const earliest = new Date(now.getFullYear(), now.getMonth() + 2, 1);
+  const latest = new Date(now.getFullYear(), now.getMonth() + 30, 1);
+  const out: IntakeOption[] = [];
+  for (let year = now.getFullYear(); year <= latest.getFullYear(); year++) {
+    for (const k of kinds) {
+      const start = new Date(year, k.month, 1);
+      if (start < earliest || start > latest) continue;
+      // "Fall (Aug–Sep)" becomes "Fall 2027"; "September" becomes "September 2027".
+      const season = k.label.includes("(") ? k.label.split("(")[0].trim() : "";
+      const month = MONTHS[k.month];
+      out.push({
+        id: `${year}-${String(k.month + 1).padStart(2, "0")}`,
+        label: season ? `${season} ${year}` : `${month} ${year}`,
+        hint: season ? `Starts in ${month}` : undefined,
+        start: `${year}-${String(k.month + 1).padStart(2, "0")}-01`,
+        season: k.month < 6 ? "spring" : "fall",
+      });
+    }
+  }
+  return out.sort((a, b) => a.start.localeCompare(b.start)).slice(0, 5);
+}
+
+/** The intake the student picked, looked up against their country's options. */
+export function findIntake(profile: ReadinessProfile, now: Date): IntakeOption | undefined {
+  const country =
+    profile.country && profile.country !== UNDECIDED ? (profile.country as Country) : undefined;
+  return intakeOptionsFor(country, now).find((i) => i.id === profile.intake);
+}
 
 export const PROFILE_QUESTIONS: Record<ProfileKey, { question: string; hint: string }> = {
   degree: {

@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import {
   AREA_MAX,
   DEGREE_OPTIONS,
-  INTAKE_OPTIONS,
+  countryInSentence,
+  findIntake,
+  intakeOptionsFor,
   PROFILE_QUESTIONS,
   READINESS_QUESTIONS,
   UNDECIDED,
@@ -28,6 +30,28 @@ import {
   type ReadinessAnswers,
 } from "@/lib/readiness-score";
 import { SPECIALISATIONS } from "@/data/specialisations";
+import {
+  HAS_MASTERS_NO,
+  HAS_MASTERS_YES,
+  asksAboutMasters,
+  bachelorsCgpaId,
+  gradeCopy,
+  gradePartsFor,
+  pickedFor,
+} from "@/data/grades";
+import {
+  GRAD_SCORE_BANDS,
+  GRAD_TEST_NAMES,
+  GRAD_TEST_OPTIONS,
+  gradTestOf,
+  englishCopy,
+  graduateTestFor,
+  statusOptionsFor,
+  testOf,
+  testsFor,
+} from "@/data/english-tests";
+import { fundingCopy, fundingOptionsFor } from "@/data/funding";
+import { researchFollowUps } from "@/data/research";
 import { BDT_PER_USD } from "@/lib/university-match";
 import { Button } from "@/components/ui/Button";
 
@@ -228,8 +252,7 @@ function ProfileStep({
   now: Date;
   onChange: (value: string | string[]) => void;
 }) {
-  const { hint } = PROFILE_QUESTIONS[field];
-  let { question } = PROFILE_QUESTIONS[field];
+  let { question, hint } = PROFILE_QUESTIONS[field];
   const value = profile[field];
 
   let body: React.ReactNode;
@@ -359,9 +382,18 @@ function ProfileStep({
       </div>
     );
   } else {
+    const country =
+      profile.country && profile.country !== UNDECIDED
+        ? (profile.country as Country)
+        : undefined;
+    if (country) {
+      const where = countryInSentence(country);
+      question = `When do you want to start in ${where}?`;
+      hint = `Most programs in ${where} start in ${COUNTRY_INFO[country].intakes.join(" or ")}. Check each program's own dates too.`;
+    }
     body = (
       <div className="grid gap-2.5 sm:grid-cols-2">
-        {INTAKE_OPTIONS.map((i) => {
+        {intakeOptionsFor(country, now).map((i) => {
           const selected = value === i.id;
           const months = monthsBetween(now, new Date(i.start));
           return (
@@ -377,11 +409,18 @@ function ProfileStep({
                   : "border-line bg-white hover:border-[#1F9D61]/40"
               }`}
             >
-              <span className="font-display text-[21px] leading-tight text-ink">
-                {i.label}
+              <span>
+                <span className="block font-display text-[21px] leading-tight text-ink">
+                  {i.label}
+                </span>
+                {i.hint && (
+                  <span className="mt-0.5 block font-body text-[13px] text-sub">
+                    {i.hint}
+                  </span>
+                )}
               </span>
               <span
-                className={`rounded-pill px-2.5 py-1 font-body text-[12px] ${
+                className={`shrink-0 rounded-pill px-2.5 py-1 font-body text-[12px] ${
                   months <= 9
                     ? "bg-[#FFE8E6] text-[#C2343E]"
                     : months <= 15
@@ -445,6 +484,370 @@ function SelectAll({
   );
 }
 
+/** A compact radio button used inside the grades gate. */
+function GradeOption({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      onClick={onClick}
+      className={`flex items-center gap-3 rounded-[12px] border-[1.5px] px-4 py-3 text-left font-body text-[15px] font-medium transition-colors duration-150 ${
+        selected
+          ? "border-[#1F9D61] bg-[#E3F4EA]/70 text-ink"
+          : "border-line bg-white text-ink hover:border-[#1F9D61]/40"
+      }`}
+    >
+      <span
+        className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-[1.5px] text-white transition-colors ${
+          selected ? "border-[#1F9D61] bg-[#1F9D61]" : "border-line bg-white"
+        }`}
+      >
+        {selected && <CheckMark />}
+      </span>
+      {children}
+    </button>
+  );
+}
+
+/** Grades change by degree: SSC + HSC, bachelor's CGPA, and a master's CGPA when there is one. */
+function GradesStep({
+  answers,
+  profile,
+  onChange,
+}: {
+  answers: ReadinessAnswers;
+  profile: ReadinessProfile;
+  onChange: (ids: string[]) => void;
+}) {
+  const picked = answers.cgpa ?? [];
+  const { question, hint } = gradeCopy(profile.degree);
+  const parts = gradePartsFor(profile.degree, picked);
+  const hasMasters = picked.includes(HAS_MASTERS_YES)
+    ? true
+    : picked.includes(HAS_MASTERS_NO)
+      ? false
+      : undefined;
+
+  const pick = (partId: string, optionId: string) =>
+    onChange([
+      ...picked.filter((a) => !a.startsWith(`${partId}:`)),
+      `${partId}:${optionId}`,
+    ]);
+  const setHasMasters = (yes: boolean) =>
+    onChange([
+      // Saying no drops any master's CGPA picked earlier.
+      ...picked.filter(
+        (a) => !a.startsWith("has-ms:") && (yes || !a.startsWith("ms:")),
+      ),
+      yes ? HAS_MASTERS_YES : HAS_MASTERS_NO,
+    ]);
+
+  const renderPart = (part: (typeof parts)[number]) => {
+    const current = pickedFor(picked, part);
+    return (
+      <div key={part.id}>
+        <p
+          id={`grade-${part.id}`}
+          className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
+        >
+          {part.title}
+        </p>
+        <div
+          role="radiogroup"
+          aria-labelledby={`grade-${part.id}`}
+          className="grid gap-2 sm:grid-cols-2"
+        >
+          {part.options.map((o) => (
+            <GradeOption
+              key={o.id}
+              selected={current?.id === o.id}
+              onClick={() => pick(part.id, o.id)}
+            >
+              {o.label}
+            </GradeOption>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <StepHeading id="cgpa" question={question} hint={hint} />
+      <div className="mt-6 grid gap-6">
+        {parts.filter((p) => p.id !== "ms").map(renderPart)}
+
+        {asksAboutMasters(profile.degree) && (
+          <div>
+            <p
+              id="grade-has-ms"
+              className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
+            >
+              Do you already have a master&apos;s degree?
+            </p>
+            <div
+              role="radiogroup"
+              aria-labelledby="grade-has-ms"
+              className="grid gap-2 sm:grid-cols-2"
+            >
+              <GradeOption
+                selected={hasMasters === true}
+                onClick={() => setHasMasters(true)}
+              >
+                Yes, I have one
+              </GradeOption>
+              <GradeOption
+                selected={hasMasters === false}
+                onClick={() => setHasMasters(false)}
+              >
+                {profile.degree === "phd"
+                  ? "No, applying after my bachelor's"
+                  : "No"}
+              </GradeOption>
+            </div>
+          </div>
+        )}
+
+        {parts.filter((p) => p.id === "ms").map(renderPart)}
+      </div>
+    </div>
+  );
+}
+
+/** Pick a test the destination accepts, then where you are with it on that test's scale. */
+function EnglishStep({
+  answers,
+  profile,
+  onChange,
+}: {
+  answers: ReadinessAnswers;
+  profile: ReadinessProfile;
+  onChange: (ids: string[]) => void;
+}) {
+  const picked = answers.english ?? [];
+  const { question, hint } = englishCopy(profile);
+  const tests = testsFor(profile);
+  const raw = testOf(picked);
+  // A test the current country doesn't take counts as not picked.
+  const test =
+    raw === UNDECIDED || tests.some((t) => t.id === raw) ? raw : undefined;
+  const statuses = test && test !== UNDECIDED ? statusOptionsFor(test) : [];
+  const grad = graduateTestFor(profile);
+  const gradPick = picked.find((a) => a.startsWith("gre:"));
+
+  const gradAnswers = (ids: string[]) =>
+    ids.filter((a) => /^(gre|gradtest|gradscore):/.test(a));
+  const tookGrad = gradPick === "gre:taken";
+  const gradTest = gradTestOf(profile, picked);
+
+  const setTest = (id: string) => onChange([`test:${id}`, ...gradAnswers(picked)]);
+  const setStatus = (id: string) =>
+    onChange([...picked.filter((a) => !a.startsWith("eng-")), id]);
+  const setGrad = (id: string) =>
+    onChange([
+      // Leaving "Taken" drops the score picked under it.
+      ...picked.filter(
+        (a) =>
+          !a.startsWith("gre:") &&
+          (id === "gre:taken" || !/^(gradtest|gradscore):/.test(a)),
+      ),
+      id,
+    ]);
+  const setGradTest = (test: string) =>
+    onChange([
+      ...picked.filter((a) => !/^(gradtest|gradscore):/.test(a)),
+      `gradtest:${test}`,
+    ]);
+  const setGradScore = (id: string) =>
+    onChange([...picked.filter((a) => !a.startsWith("gradscore:")), id]);
+
+  const label = "mb-2.5 font-body text-[13.5px] font-semibold text-ink";
+
+  return (
+    <div>
+      <StepHeading id="english" question={question} hint={hint} />
+      <div className="mt-6 grid gap-6">
+        <div
+          role="radiogroup"
+          aria-labelledby="q-english"
+          className="flex flex-wrap gap-1.5 sm:gap-2"
+        >
+          {tests.map((t) => (
+            <Chip
+              key={t.id}
+              selected={test === t.id}
+              onClick={() => setTest(t.id)}
+            >
+              {t.label}
+            </Chip>
+          ))}
+          <Chip
+            selected={test === UNDECIDED}
+            onClick={() => setTest(UNDECIDED)}
+          >
+            Not decided yet
+          </Chip>
+        </div>
+
+        {statuses.length > 0 && (
+          <div>
+            <p id="english-status" className={label}>
+              {test === "moi"
+                ? "Do you have the letter?"
+                : `Your ${tests.find((t) => t.id === test)?.label} score`}
+            </p>
+            <div
+              role="radiogroup"
+              aria-labelledby="english-status"
+              className="grid gap-2 sm:grid-cols-2"
+            >
+              {statuses.map((o) => (
+                <GradeOption
+                  key={o.id}
+                  selected={picked.includes(o.id)}
+                  onClick={() => setStatus(o.id)}
+                >
+                  {o.label}
+                </GradeOption>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {grad && (
+          <div>
+            <p id="english-grad" className={label}>
+              {grad}
+            </p>
+            <div
+              role="radiogroup"
+              aria-labelledby="english-grad"
+              className="grid gap-2 sm:grid-cols-2"
+            >
+              {GRAD_TEST_OPTIONS.map((o) => (
+                <GradeOption
+                  key={o.id}
+                  selected={gradPick === o.id}
+                  onClick={() => setGrad(o.id)}
+                >
+                  {o.label}
+                </GradeOption>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {grad && tookGrad && grad !== "GRE" && (
+          <div
+            role="radiogroup"
+            aria-label="Which test did you take?"
+            className="-mt-2 flex flex-wrap gap-1.5 sm:gap-2"
+          >
+            {(["gmat", "gre"] as const).map((t) => (
+              <Chip
+                key={t}
+                selected={gradTest === t}
+                onClick={() => setGradTest(t)}
+              >
+                {GRAD_TEST_NAMES[t]}
+              </Chip>
+            ))}
+          </div>
+        )}
+
+        {tookGrad && gradTest && (
+          <div>
+            <p id="english-grad-score" className={label}>
+              Your {GRAD_TEST_NAMES[gradTest]} score
+            </p>
+            <div
+              role="radiogroup"
+              aria-labelledby="english-grad-score"
+              className="grid gap-2 sm:grid-cols-2"
+            >
+              {GRAD_SCORE_BANDS[gradTest].map((o) => (
+                <GradeOption
+                  key={o.id}
+                  selected={picked.includes(o.id)}
+                  onClick={() => setGradScore(o.id)}
+                >
+                  {o.label}
+                </GradeOption>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Follow-ups under the chosen research answer: paper count, venue, topic and so on. */
+function ResearchFollowUps({
+  picked,
+  profile,
+  onChange,
+}: {
+  picked: string[];
+  profile: ReadinessProfile;
+  onChange: (ids: string[]) => void;
+}) {
+  const main = picked.find((a) => a.startsWith("res-"));
+  const followUps = researchFollowUps(profile, main);
+  if (!followUps.length) return null;
+
+  const toggle = (fid: string, oid: string, multi?: boolean) => {
+    const id = `${fid}:${oid}`;
+    onChange(
+      multi
+        ? picked.includes(id)
+          ? picked.filter((a) => a !== id)
+          : [...picked, id]
+        : [...picked.filter((a) => !a.startsWith(`${fid}:`)), id],
+    );
+  };
+
+  return (
+    <div className="mt-6 grid gap-5 rounded-[16px] bg-soft/60 p-4.5 sm:p-5">
+      {followUps.map((f) => (
+        <div key={f.id}>
+          <p
+            id={`fu-${f.id}`}
+            className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
+          >
+            {f.title}
+          </p>
+          <div
+            role={f.multi ? "group" : "radiogroup"}
+            aria-labelledby={`fu-${f.id}`}
+            className="flex flex-wrap gap-1.5 sm:gap-2"
+          >
+            {f.options.map((o) => (
+              <Chip
+                key={o.id}
+                role={f.multi ? "checkbox" : "radio"}
+                selected={picked.includes(`${f.id}:${o.id}`)}
+                onClick={() => toggle(f.id, o.id, f.multi)}
+              >
+                {o.label}
+              </Chip>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function QuestionStep({
   index,
   answers,
@@ -458,6 +861,15 @@ function QuestionStep({
 }) {
   const q = questionFor(READINESS_QUESTIONS[index], profile);
   const picked = answers[q.area] ?? [];
+  if (q.area === "cgpa") {
+    return <GradesStep answers={answers} profile={profile} onChange={onChange} />;
+  }
+  if (q.area === "english") {
+    return <EnglishStep answers={answers} profile={profile} onChange={onChange} />;
+  }
+  const funding = q.area === "budget";
+  const options = funding ? fundingOptionsFor(profile) : q.options;
+  const copy = funding ? fundingCopy(profile) : q;
 
   function toggle(id: string) {
     if (q.kind === "single") {
@@ -473,7 +885,7 @@ function QuestionStep({
 
   return (
     <div>
-      <StepHeading id={q.area} question={q.question} hint={q.hint} />
+      <StepHeading id={q.area} question={copy.question} hint={copy.hint} />
 
       {q.kind === "checklist" && (
         <SelectAll
@@ -488,8 +900,9 @@ function QuestionStep({
         aria-labelledby={`q-${q.area}`}
         className={`grid gap-2.5 ${q.kind === "checklist" ? "mt-3" : "mt-6"}`}
       >
-        {q.options.map((option) => {
+        {options.map((option) => {
           const selected = picked.includes(option.id);
+          const sub = (option as { hint?: string }).hint;
           return (
             <button
               key={option.id}
@@ -510,11 +923,22 @@ function QuestionStep({
               >
                 {selected && <CheckMark />}
               </span>
-              {option.label}
+              <span>
+                {option.label}
+                {sub && (
+                  <span className="mt-0.5 block text-[13px] font-normal text-sub">
+                    {sub}
+                  </span>
+                )}
+              </span>
             </button>
           );
         })}
       </div>
+
+      {q.area === "research" && (
+        <ResearchFollowUps picked={picked} profile={profile} onChange={onChange} />
+      )}
     </div>
   );
 }
@@ -570,7 +994,7 @@ const fmtLakh = (usd: number) =>
 /** One line that sums up the plan the student described. */
 function PlanStrip({ profile, now }: { profile: ReadinessProfile; now: Date }) {
   const degree = DEGREE_OPTIONS.find((d) => d.id === profile.degree);
-  const intake = INTAKE_OPTIONS.find((i) => i.id === profile.intake);
+  const intake = findIntake(profile, now);
   const country =
     profile.country && profile.country !== UNDECIDED
       ? (profile.country as Country)
@@ -661,7 +1085,7 @@ function finderHref(profile: ReadinessProfile, answers: ReadinessAnswers) {
     params.set("country", profile.country);
   if (profile.major && profile.major !== UNDECIDED)
     params.set("major", profile.major);
-  const cgpa = CGPA_FOR_FINDER[answers.cgpa?.[0] ?? ""];
+  const cgpa = CGPA_FOR_FINDER[bachelorsCgpaId(answers.cgpa ?? []) ?? ""];
   if (cgpa && profile.degree !== "bachelors") params.set("cgpa", String(cgpa));
   const qs = params.toString();
   return qs ? `/universities?${qs}` : "/universities";
@@ -842,7 +1266,7 @@ export function ReadinessQuiz() {
       ? Array.isArray(profileValue)
         ? profileValue.length > 0
         : Boolean(profileValue)
-      : isAnswered(answers, current.index);
+      : isAnswered(answers, current.index, profile);
   const label =
     current.type === "profile"
       ? "About you"
@@ -889,6 +1313,10 @@ export function ReadinessQuiz() {
                         // A new field means new specialisations.
                         ...(current.key === "major" && value !== prev.major
                           ? { focus: undefined }
+                          : {}),
+                        // Intakes differ by country, so pick again.
+                        ...(current.key === "country" && value !== prev.country
+                          ? { intake: undefined }
                           : {}),
                       }))
                     }
