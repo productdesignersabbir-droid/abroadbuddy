@@ -19,6 +19,8 @@ import { gradeScore, gradesAnswered } from "@/data/grades";
 import { englishAnswered, englishScore } from "@/data/english-tests";
 import { fundingOptionsFor } from "@/data/funding";
 import { researchAnswered, researchExtras } from "@/data/research";
+import { backgroundTodos } from "@/data/background";
+import { documentOptionsFor } from "@/data/documents";
 import { BDT_PER_USD } from "@/lib/university-match";
 
 // Single-choice areas store one option id; the documents checklist stores many.
@@ -217,7 +219,12 @@ export function scoreAnswers(
     const picked = new Set(answers[q.area] ?? []);
     let points = 0;
     // Funding labels, points and advice depend on degree and country.
-    const options = q.area === "budget" ? fundingOptionsFor(profile) : q.options;
+    const options =
+      q.area === "budget"
+        ? fundingOptionsFor(profile)
+        : q.area === "documents"
+          ? documentOptionsFor(profile)
+          : q.options;
 
     for (const option of options) {
       const chosen = picked.has(option.id);
@@ -234,6 +241,11 @@ export function scoreAnswers(
       }
     }
 
+    // Documents: each ticked item is an equal share of the area.
+    if (q.area === "documents") {
+      points = Math.round((AREA_MAX * options.filter((o) => picked.has(o.id)).length) / options.length);
+    }
+
     // Research follow-ups (paper count, author role, topic…) fine-tune it.
     if (q.area === "research" && picked.size) {
       const extra = researchExtras(profile, answers.research ?? []);
@@ -245,6 +257,7 @@ export function scoreAnswers(
   }
 
   todos.push(...personalTodos(profile, answers, now));
+  todos.push(...backgroundTodos(profile).map((t) => ({ ...t, areaLabel: "Your situation" })));
   todos.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
 
   const total = areas.reduce((sum, a) => sum + a.points, 0);

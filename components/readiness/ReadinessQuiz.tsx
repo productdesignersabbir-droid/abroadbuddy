@@ -52,6 +52,14 @@ import {
 } from "@/data/english-tests";
 import { fundingCopy, fundingOptionsFor } from "@/data/funding";
 import { researchFollowUps } from "@/data/research";
+import { documentOptionsFor } from "@/data/documents";
+import { planFor } from "@/data/plan";
+import {
+  backgroundAnswered,
+  backgroundPick,
+  backgroundQuestions,
+  setBackground,
+} from "@/data/background";
 import { BDT_PER_USD } from "@/lib/university-match";
 import { Button } from "@/components/ui/Button";
 
@@ -127,6 +135,7 @@ const PROFILE_ORDER: ProfileKey[] = [
   "focus",
   "country",
   "intake",
+  "background",
 ];
 
 const MAX_FOCUS = 3;
@@ -256,7 +265,37 @@ function ProfileStep({
   const value = profile[field];
 
   let body: React.ReactNode;
-  if (field === "focus") {
+  if (field === "background") {
+    body = (
+      <div className="grid gap-5">
+        {backgroundQuestions(profile).map((q) => (
+          <div key={q.id}>
+            <p
+              id={`bg-${q.id}`}
+              className="mb-2.5 font-body text-[13.5px] font-semibold text-ink"
+            >
+              {q.title}
+            </p>
+            <div
+              role="radiogroup"
+              aria-labelledby={`bg-${q.id}`}
+              className="flex flex-wrap gap-1.5 sm:gap-2"
+            >
+              {q.options.map((o) => (
+                <Chip
+                  key={o.id}
+                  selected={backgroundPick(profile.background, q.id) === o.id}
+                  onClick={() => onChange(setBackground(profile, q.id, o.id))}
+                >
+                  {o.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  } else if (field === "focus") {
     const major = profile.major as Major;
     question = `Which part of ${major} interests you most?`;
     const picked = profile.focus ?? [];
@@ -441,7 +480,7 @@ function ProfileStep({
     <div>
       <StepHeading id={field} question={question} hint={hint} />
       <div
-        role={field === "focus" ? "group" : "radiogroup"}
+        role={field === "focus" || field === "background" ? "group" : "radiogroup"}
         aria-labelledby={`q-${field}`}
         className="mt-6"
       >
@@ -868,7 +907,11 @@ function QuestionStep({
     return <EnglishStep answers={answers} profile={profile} onChange={onChange} />;
   }
   const funding = q.area === "budget";
-  const options = funding ? fundingOptionsFor(profile) : q.options;
+  const options = funding
+    ? fundingOptionsFor(profile)
+    : q.area === "documents"
+      ? documentOptionsFor(profile)
+      : q.options;
   const copy = funding ? fundingCopy(profile) : q;
 
   function toggle(id: string) {
@@ -889,9 +932,9 @@ function QuestionStep({
 
       {q.kind === "checklist" && (
         <SelectAll
-          all={picked.length === q.options.length}
+          all={options.every((o) => picked.includes(o.id))}
           some={picked.length > 0}
-          onToggle={(on) => onChange(on ? q.options.map((o) => o.id) : [])}
+          onToggle={(on) => onChange(on ? options.map((o) => o.id) : [])}
         />
       )}
 
@@ -1091,6 +1134,65 @@ function finderHref(profile: ReadinessProfile, answers: ReadinessAnswers) {
   return qs ? `/universities?${qs}` : "/universities";
 }
 
+const fmtMonth = (d: Date) =>
+  d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+
+/** Month-by-month route to the intake; past steps are flagged to catch up. */
+function PlanTimeline({ profile, now }: { profile: ReadinessProfile; now: Date }) {
+  const plan = planFor(profile, now);
+  if (!plan) return null;
+  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  return (
+    <div className="mt-5 rounded-card bg-white p-5.5 sm:p-6.5">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <h3 className="font-display text-[28px] tracking-[-0.02em] text-ink">
+          Your month-by-month plan
+        </h3>
+        <span className="font-body text-[13px] text-sub">
+          Worked back from your start date
+        </span>
+      </div>
+      <ol className="mt-5 grid list-none gap-0 p-0 sm:grid-cols-3 lg:grid-cols-9">
+        {plan.map((m, i) => {
+          const late = m.date < thisMonth;
+          const current = m.date.getTime() === thisMonth.getTime();
+          return (
+            <li
+              key={m.title}
+              className="relative border-l-2 border-dashed border-line pb-5 pl-4 lg:border-l-0 lg:border-t-2 lg:pb-0 lg:pl-0 lg:pr-3 lg:pt-4"
+            >
+              <span
+                aria-hidden
+                className={`absolute -left-[7px] top-0.5 h-3 w-3 rounded-full lg:-top-[7px] lg:left-0 ${
+                  late ? "bg-red" : current ? "bg-[#E8A317]" : i === plan.length - 1 ? "bg-ink" : "bg-[#1F9D61]"
+                }`}
+              />
+              <div className="font-label text-[11.5px] uppercase tracking-[0.08em] text-sub">
+                {fmtMonth(m.date)}
+              </div>
+              {(late || current) && (
+                <span
+                  className={`mt-1 inline-block rounded-pill px-2 py-0.5 font-body text-[11.5px] ${
+                    late ? "bg-[#FFE8E6] text-[#C2343E]" : "bg-[#FFF3D6] text-[#9A6A00]"
+                  }`}
+                >
+                  {late ? "Catch up now" : "This month"}
+                </span>
+              )}
+              <div className="mt-1 font-body text-[14.5px] font-semibold leading-snug text-ink">
+                {m.title}
+              </div>
+              <p className="mt-1 font-body text-[12.5px] leading-relaxed text-sub">
+                {m.detail}
+              </p>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 function Results({
   answers,
   profile,
@@ -1245,6 +1347,7 @@ function Results({
           )}
         </div>
       </div>
+      <PlanTimeline profile={profile} now={now} />
     </>
   );
 }
@@ -1263,7 +1366,9 @@ export function ReadinessQuiz() {
   const profileValue = current.type === "profile" ? profile[current.key] : undefined;
   const canContinue =
     current.type === "profile"
-      ? Array.isArray(profileValue)
+      ? current.key === "background"
+        ? backgroundAnswered(profile)
+        : Array.isArray(profileValue)
         ? profileValue.length > 0
         : Boolean(profileValue)
       : isAnswered(answers, current.index, profile);
@@ -1313,6 +1418,10 @@ export function ReadinessQuiz() {
                         // A new field means new specialisations.
                         ...(current.key === "major" && value !== prev.major
                           ? { focus: undefined }
+                          : {}),
+                        // Situation questions depend on the degree.
+                        ...(current.key === "degree" && value !== prev.degree
+                          ? { background: undefined }
                           : {}),
                         // Intakes differ by country, so pick again.
                         ...(current.key === "country" && value !== prev.country

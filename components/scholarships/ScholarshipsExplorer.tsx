@@ -17,20 +17,12 @@ import { ScholarshipStats } from "@/components/scholarships/ScholarshipStats";
 import { ScholarshipCalendarView } from "@/components/scholarships/ScholarshipCalendarView";
 import { ScholarshipListView } from "@/components/scholarships/ScholarshipListView";
 
-type ViewMode = "calendar" | "list";
-
-const VIEW_OPTIONS: { value: ViewMode; label: string }[] = [
-  { value: "calendar", label: "Calendar view" },
-  { value: "list", label: "List view" },
-];
-
 export function ScholarshipsExplorer({
   scholarships: rawScholarships,
 }: {
   scholarships: Scholarship[];
 }) {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [view, setView] = useState<ViewMode>("calendar");
 
   const scholarships = useMemo(
     () => withUpcomingDeadlines(rawScholarships),
@@ -60,13 +52,10 @@ export function ScholarshipsExplorer({
   return (
     <section className="bg-soft py-14">
       <div className="mx-auto max-w-7xl px-6">
-        <ScholarshipStats scholarships={scholarships} />
+        {/* The calendar is the heart of this page, so it comes first. */}
+        <ScholarshipCalendarView scholarships={results} />
 
-        <div className="mt-8">
-          <ScholarshipClosingSoonStrip scholarships={nextDeadlines} />
-        </div>
-
-        <div className="mt-8">
+        <div className="mt-10">
           <ScholarshipFilterBar
             filters={filters}
             onChange={setFilters}
@@ -83,7 +72,15 @@ export function ScholarshipsExplorer({
           </span>
         </p>
 
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8">
+          <ScholarshipClosingSoonStrip scholarships={nextDeadlines} />
+        </div>
+
+        <div className="mt-8">
+          <ScholarshipStats scholarships={scholarships} />
+        </div>
+
+        <div className="mt-10">
           <p className="font-body text-sm text-sub">
             <span className="font-semibold text-ink">{results.length}</span>{" "}
             {results.length === 1 ? "scholarship" : "scholarships"} match your filters
@@ -97,30 +94,11 @@ export function ScholarshipsExplorer({
               </button>
             )}
           </p>
-
-          <div className="inline-flex items-center gap-1 self-start rounded-pill border border-line bg-white p-1">
-            {VIEW_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setView(option.value)}
-                className={`rounded-pill px-3.5 py-1.5 font-label text-[11px] font-semibold uppercase tracking-[0.04em] transition-colors ${
-                  view === option.value ? "bg-blue text-white" : "text-sub hover:text-ink"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
         </div>
 
         {results.length > 0 ? (
           <div className="mt-6">
-            {view === "calendar" ? (
-              <ScholarshipCalendarView scholarships={results} />
-            ) : (
-              <ScholarshipListView scholarships={results} />
-            )}
+            <ScholarshipListView scholarships={results} />
           </div>
         ) : (
           <div className="mt-6 rounded-card border border-dashed border-line bg-white px-6 py-14 text-center">

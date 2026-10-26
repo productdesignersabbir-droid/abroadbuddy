@@ -419,6 +419,8 @@ export type ReadinessProfile = {
   focus?: string[];
   country?: Country | typeof UNDECIDED;
   intake?: string;
+  /** "Your situation" answers, stored as `${questionId}:${optionId}`. */
+  background?: string[];
 };
 
 export type ProfileKey = keyof ReadinessProfile;
@@ -531,6 +533,10 @@ export const PROFILE_QUESTIONS: Record<ProfileKey, { question: string; hint: str
   intake: {
     question: "When do you want to start?",
     hint: "We'll work out how much time you have left.",
+  },
+  background: {
+    question: "Tell us about your situation",
+    hint: "Gaps, work and family change what universities and visa officers ask for.",
   },
 };
 

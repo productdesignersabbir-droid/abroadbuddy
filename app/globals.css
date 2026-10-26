@@ -28,9 +28,9 @@
   --font-body: var(--font-stack-sans), system-ui, sans-serif;
   --font-label: var(--font-stack-sans), system-ui, sans-serif;
 
-  --radius-card: 24px;
-  --radius-button: 99px;
-  --radius-pill: 99px;
+  --radius-card: 0px;
+  --radius-button: 0px;
+  --radius-pill: 0px;
 
   --animate-marquee: marquee 22s linear infinite;
   --animate-rise: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -473,4 +473,11 @@ input:focus-visible {
     -webkit-mask: radial-gradient(circle at 0 10px, transparent 6px, #000 6.5px) 0 0 / 100% 20px repeat-y;
     mask: radial-gradient(circle at 0 10px, transparent 6px, #000 6.5px) 0 0 / 100% 20px repeat-y;
   }
+}
+
+/* Brand rule: sharp corners everywhere — boxes, buttons, pills, images, inputs. */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
 }

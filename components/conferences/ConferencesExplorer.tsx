@@ -14,6 +14,7 @@ import { ConferenceFilterBar } from "@/components/conferences/ConferenceFilterBa
 import { ConferenceCard } from "@/components/conferences/ConferenceCard";
 import { ClosingSoonStrip } from "@/components/conferences/ClosingSoonStrip";
 import { ConferenceDetailsModal } from "@/components/conferences/ConferenceDetailsModal";
+import { ConferenceCalendarView } from "@/components/conferences/ConferenceCalendarView";
 
 const PAGE_SIZE = 12;
 
@@ -68,10 +69,15 @@ export function ConferencesExplorer({ conferences }: { conferences: Conference[]
   return (
     <section className="bg-soft py-14">
       <div className="mx-auto max-w-7xl px-6">
-        <ClosingSoonStrip conferences={closingSoon} onOpen={setSelected} />
+        {/* The calendar is the heart of this page, so it comes first. */}
+        <ConferenceCalendarView conferences={results} onOpen={setSelected} />
+
+        <div className="mt-10">
+          <ConferenceFilterBar filters={filters} onChange={setFilters} />
+        </div>
 
         <div className="mt-6">
-          <ConferenceFilterBar filters={filters} onChange={setFilters} />
+          <ClosingSoonStrip conferences={closingSoon} onOpen={setSelected} />
         </div>
 
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
