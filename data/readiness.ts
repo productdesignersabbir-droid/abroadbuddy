@@ -456,6 +456,8 @@ export const UNDECIDED = "undecided";
 export type ReadinessProfile = {
   degree?: DegreeLevel;
   major?: Major | typeof UNDECIDED;
+  /** Up to three specialisations inside the major, or [UNDECIDED]. */
+  focus?: string[];
   country?: Country | typeof UNDECIDED;
   intake?: string;
 };
@@ -492,6 +494,10 @@ export const PROFILE_QUESTIONS: Record<ProfileKey, { question: string; hint: str
   major: {
     question: "Which field are you aiming for?",
     hint: "Pick the closest match. You can change it later in University Finder.",
+  },
+  focus: {
+    question: "Which areas interest you most?",
+    hint: "Pick up to three. Not sure yet is fine too.",
   },
   country: {
     question: "Where would you most like to go?",

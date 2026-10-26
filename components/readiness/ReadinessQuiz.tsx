@@ -17,6 +17,7 @@ import {
   COUNTRIES,
   COUNTRY_INFO,
   MAJORS,
+  type Major,
   type Country,
 } from "@/data/universities";
 import {
@@ -26,6 +27,7 @@ import {
   scoreAnswers,
   type ReadinessAnswers,
 } from "@/lib/readiness-score";
+import { SPECIALISATIONS } from "@/data/specialisations";
 import { BDT_PER_USD } from "@/lib/university-match";
 import { Button } from "@/components/ui/Button";
 
@@ -95,12 +97,31 @@ function CheckMark() {
 type Step =
   { type: "profile"; key: ProfileKey } | { type: "score"; index: number };
 
-const PROFILE_ORDER: ProfileKey[] = ["degree", "major", "country", "intake"];
-
-const STEPS: Step[] = [
-  ...PROFILE_ORDER.map((key) => ({ type: "profile" as const, key })),
-  ...READINESS_QUESTIONS.map((_, index) => ({ type: "score" as const, index })),
+const PROFILE_ORDER: ProfileKey[] = [
+  "degree",
+  "major",
+  "focus",
+  "country",
+  "intake",
 ];
+
+const MAX_FOCUS = 3;
+
+const hasMajor = (profile: ReadinessProfile) =>
+  Boolean(profile.major && profile.major !== UNDECIDED);
+
+// The specialisation gate only shows once a field is picked.
+function stepsFor(profile: ReadinessProfile): Step[] {
+  return [
+    ...PROFILE_ORDER.filter((key) => key !== "focus" || hasMajor(profile)).map(
+      (key) => ({ type: "profile" as const, key }),
+    ),
+    ...READINESS_QUESTIONS.map((_, index) => ({
+      type: "score" as const,
+      index,
+    })),
+  ];
+}
 
 // Midpoint of each CGPA band, used to prefill University Finder.
 const CGPA_FOR_FINDER: Record<string, number> = {
@@ -120,15 +141,16 @@ const POPULAR_FIRST: Country[] = [
   "Japan",
 ];
 
-function Progress({ step }: { step: number }) {
+function Progress({ steps, step }: { steps: Step[]; step: number }) {
+  const profileCount = steps.filter((s) => s.type === "profile").length;
   return (
     <div className="flex gap-1.5" aria-hidden>
-      {STEPS.map((s, i) => (
+      {steps.map((s, i) => (
         <div
           key={i}
           className={`h-1.5 flex-1 rounded-pill transition-colors duration-300 ${
             i <= step ? "bg-[#1F9D61]" : "bg-softer"
-          } ${i === PROFILE_ORDER.length ? "ml-2" : ""}`}
+          } ${i === profileCount ? "ml-2" : ""}`}
         />
       ))}
     </div>
@@ -168,18 +190,23 @@ function Chip({
   selected,
   onClick,
   children,
+  role = "radio",
+  disabled = false,
 }: {
   selected: boolean;
   onClick: () => void;
   children: React.ReactNode;
+  role?: "radio" | "checkbox";
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
-      role="radio"
+      role={role}
       aria-checked={selected}
+      disabled={disabled}
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-pill border-[1.5px] px-3 py-1.5 font-body text-[13px] transition-colors sm:px-3.5 sm:py-2 sm:text-[14px] ${
+      className={`inline-flex items-center gap-1.5 rounded-pill border-[1.5px] px-3 py-1.5 font-body text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-40 sm:px-3.5 sm:py-2 sm:text-[14px] ${
         selected
           ? "border-[#1F9D61] bg-[#E3F4EA] text-ink"
           : "border-line bg-white text-ink hover:border-[#1F9D61]/40"
@@ -199,13 +226,58 @@ function ProfileStep({
   field: ProfileKey;
   profile: ReadinessProfile;
   now: Date;
-  onChange: (value: string) => void;
+  onChange: (value: string | string[]) => void;
 }) {
-  const { question, hint } = PROFILE_QUESTIONS[field];
+  const { hint } = PROFILE_QUESTIONS[field];
+  let { question } = PROFILE_QUESTIONS[field];
   const value = profile[field];
 
   let body: React.ReactNode;
-  if (field === "degree") {
+  if (field === "focus") {
+    const major = profile.major as Major;
+    question = `Which part of ${major} interests you most?`;
+    const picked = profile.focus ?? [];
+    const unsure = picked.includes(UNDECIDED);
+    const full = !unsure && picked.length >= MAX_FOCUS;
+    const toggle = (item: string) =>
+      onChange(
+        picked.includes(item)
+          ? picked.filter((p) => p !== item)
+          : [...picked.filter((p) => p !== UNDECIDED), item],
+      );
+    body = (
+      <div>
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          {SPECIALISATIONS[major].map((item) => {
+            const on = picked.includes(item);
+            return (
+              <Chip
+                key={item}
+                role="checkbox"
+                selected={on}
+                disabled={full && !on}
+                onClick={() => toggle(item)}
+              >
+                {item}
+              </Chip>
+            );
+          })}
+          <Chip
+            role="checkbox"
+            selected={unsure}
+            onClick={() => onChange(unsure ? [] : [UNDECIDED])}
+          >
+            Not sure yet
+          </Chip>
+        </div>
+        <p className="mt-4 font-body text-[12.5px] text-sub" aria-live="polite">
+          {unsure
+            ? "No problem. You can explore labs and professors to find your area."
+            : `${picked.length} of ${MAX_FOCUS} picked`}
+        </p>
+      </div>
+    );
+  } else if (field === "degree") {
     body = (
       <div className="grid gap-2.5 sm:grid-cols-2">
         {DEGREE_OPTIONS.map((d) => {
@@ -329,7 +401,11 @@ function ProfileStep({
   return (
     <div>
       <StepHeading id={field} question={question} hint={hint} />
-      <div role="radiogroup" aria-labelledby={`q-${field}`} className="mt-6">
+      <div
+        role={field === "focus" ? "group" : "radiogroup"}
+        aria-labelledby={`q-${field}`}
+        className="mt-6"
+      >
         {body}
       </div>
     </div>
@@ -502,7 +578,8 @@ function PlanStrip({ profile, now }: { profile: ReadinessProfile; now: Date }) {
   const chips = [
     degree && degree.id !== "unsure" ? degree.label : "Degree to decide",
     profile.major && profile.major !== UNDECIDED
-      ? profile.major
+      ? [profile.major, ...(profile.focus ?? []).filter((f) => f !== UNDECIDED)]
+          .join(" · ")
       : "Field to decide",
     country
       ? `${COUNTRY_INFO[country].flag} ${country}`
@@ -756,11 +833,15 @@ export function ReadinessQuiz() {
   // Fixed once, so month counts don't shift between renders.
   const [now] = useState(() => new Date());
 
-  const current = STEPS[step];
-  const isLast = step === STEPS.length - 1;
+  const steps = stepsFor(profile);
+  const current = steps[step];
+  const isLast = step === steps.length - 1;
+  const profileValue = current.type === "profile" ? profile[current.key] : undefined;
   const canContinue =
     current.type === "profile"
-      ? Boolean(profile[current.key])
+      ? Array.isArray(profileValue)
+        ? profileValue.length > 0
+        : Boolean(profileValue)
       : isAnswered(answers, current.index);
   const label =
     current.type === "profile"
@@ -788,13 +869,13 @@ export function ReadinessQuiz() {
           <div className="overflow-hidden rounded-card bg-white">
             <div className="flex items-center justify-between border-b-2 border-dashed border-line px-6 py-4 font-label text-[11.5px] uppercase tracking-[0.1em] text-sub">
               <span>
-                Gate {step + 1} of {STEPS.length}
+                Gate {step + 1} of {steps.length}
               </span>
               <span className="text-[#13804D]">{label}</span>
             </div>
 
             <div className="p-6 sm:p-8">
-              <Progress step={step} />
+              <Progress steps={steps} step={step} />
               <div className="mt-7">
                 {current.type === "profile" ? (
                   <ProfileStep
@@ -802,7 +883,14 @@ export function ReadinessQuiz() {
                     profile={profile}
                     now={now}
                     onChange={(value) =>
-                      setProfile((prev) => ({ ...prev, [current.key]: value }))
+                      setProfile((prev) => ({
+                        ...prev,
+                        [current.key]: value,
+                        // A new field means new specialisations.
+                        ...(current.key === "major" && value !== prev.major
+                          ? { focus: undefined }
+                          : {}),
+                      }))
                     }
                   />
                 ) : (
