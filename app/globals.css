@@ -936,3 +936,52 @@ input:focus-visible {
   .hero-door .hd-tick { opacity: 1; }
   .hero-door .hd-plane { transform: rotate(-4deg); }
 }
+
+/* Home journey (components/home/Journey.tsx): each stage's cards rise in,
+   one after another, the first time the stage scrolls into view. */
+.jr-card {
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.jr-wait .jr-card {
+  opacity: 0;
+  transform: translateY(32px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .jr-card { transition: none; }
+  .jr-wait .jr-card { opacity: 1; transform: none; }
+}
+
+/* Home "Easi today, abroad tomorrow" (components/home/TodayTomorrow.tsx):
+   the mistakes slide in, the arrow turns up, then each outcome is checked. */
+.tt-mistake,
+.tt-turn,
+.tt-outcome,
+.tt-check {
+  transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-color 0.35s ease, border-color 0.35s ease;
+}
+.tt-outcome .tt-check {
+  transition-delay: inherit;
+}
+.tt-in .tt-check {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+}
+.tt-wait .tt-mistake {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+.tt-turn.tt-wait {
+  opacity: 0;
+  transform: scale(0.5);
+}
+.tt-wait .tt-outcome {
+  opacity: 0.3;
+}
+.tt-wait .tt-check svg,
+.tt-wait .tt-check {
+  color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tt-mistake, .tt-turn, .tt-outcome, .tt-check { transition: none; }
+}
