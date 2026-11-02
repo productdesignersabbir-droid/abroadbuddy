@@ -519,115 +519,420 @@ input:focus-visible {
   }
 }
 
-/* Home hero: the door that opens onto the journey (components/home/HeroDoor.tsx).
-   One 10s loop: walk in, open the door, milestones step out, reset. */
-.hero-door .hd-walker {
-  animation: hd-walk 10s ease-in-out infinite;
+/* Home hero: the departure gate (components/home/HeroDoor.tsx).
+   Everything is sized in cqw on a 100 × 84 stage so it scales as one piece.
+   One 12s loop: walk up, the gate swings open, the milestones fly out and get
+   checked off, the student steps through, the gate closes. */
+.hero-door {
+  container-type: inline-size;
 }
-.hero-door .hd-leg {
-  transform-origin: 0 336px;
+.hd-stage {
+  --cl: 49cqw;
+  --cw: 49cqw;
+  --ch: 9.4cqw;
+  position: relative;
+  aspect-ratio: 100 / 84;
+  perspective: 140cqw;
 }
-.hero-door .hd-leg-a {
-  animation: hd-step-a 10s linear infinite;
-}
-.hero-door .hd-leg-b {
-  animation: hd-step-b 10s linear infinite;
-}
-.hero-door .hd-arm {
-  transform-origin: 8px 276px;
-  animation: hd-arm 10s ease-in-out infinite;
-}
-.hero-door .hd-door {
-  transform-origin: 270px 256px;
-  animation: hd-open 10s cubic-bezier(0.6, 0, 0.3, 1) infinite;
-}
-.hero-door .hd-light {
-  animation: hd-glow 10s ease-in-out infinite;
-}
-.hero-door .hd-wow {
-  animation: hd-wow 10s ease-in-out infinite;
-}
-.hero-door .hd-card {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation-duration: 10s;
-  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
-  animation-iteration-count: infinite;
+@container (max-width: 460px) {
+  .hd-stage {
+    --cl: 43cqw;
+    --cw: 56cqw;
+    --ch: 10.4cqw;
+  }
 }
 
-@keyframes hd-walk {
-  0% { transform: translateX(-20px); opacity: 0; }
-  4% { opacity: 1; }
-  28%, 92% { transform: translateX(112px); opacity: 1; }
-  100% { transform: translateX(112px); opacity: 0; }
+/* The gate sign above the door. */
+.hd-sign {
+  position: absolute;
+  left: 9cqw;
+  top: 5.6cqw;
+  width: 32cqw;
+  height: 5cqw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.8cqw;
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-label);
+  font-size: max(1.7cqw, 7px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
-@keyframes hd-step-a {
-  0%, 8%, 16%, 24% { transform: rotate(12deg); }
-  4%, 12%, 20% { transform: rotate(-12deg); }
-  28%, 100% { transform: rotate(0); }
+.hd-sign i {
+  display: inline-block;
+  width: 0.9cqw;
+  height: 0.9cqw;
+  margin-right: 0.9cqw;
+  background: var(--color-red);
+  animation: hd-blink 1.2s steps(2, jump-none) infinite;
 }
-@keyframes hd-step-b {
-  0%, 8%, 16%, 24% { transform: rotate(-12deg); }
-  4%, 12%, 20% { transform: rotate(12deg); }
-  28%, 100% { transform: rotate(0); }
+
+/* The doorway: frame, the world beyond, light, and the door leaf. */
+.hd-frame {
+  position: absolute;
+  left: 11.2cqw;
+  top: 13.2cqw;
+  width: 27.6cqw;
+  height: 56.8cqw;
+  border: 0.8cqw solid var(--color-ink);
+  border-bottom: 0;
 }
-@keyframes hd-arm {
-  0%, 28% { transform: rotate(0); }
-  34%, 92% { transform: rotate(-62deg); }
-  100% { transform: rotate(0); }
+.hd-opening {
+  position: absolute;
+  left: 12cqw;
+  top: 14cqw;
+  width: 26cqw;
+  height: 56cqw;
+  overflow: hidden;
+  background: #0b2fe8;
+  perspective: 90cqw;
+}
+.hd-world {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hd-flood {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(255 236 200 / 0) 30%, rgb(255 236 200 / 0.55));
+  animation: hd-light 12s ease-in-out infinite;
+}
+.hd-leaf {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  background: var(--color-blue);
+  animation: hd-open 12s cubic-bezier(0.55, 0, 0.25, 1) infinite;
+}
+.hd-leaf::before,
+.hd-leaf::after {
+  content: "";
+  position: absolute;
+  left: 13%;
+  right: 13%;
+  border: 0.32cqw solid rgb(255 255 255 / 0.26);
+}
+.hd-leaf::before {
+  top: 6%;
+  height: 34%;
+  background: linear-gradient(180deg, rgb(255 236 200 / 0.42), rgb(255 236 200 / 0.12));
+}
+.hd-leaf::after {
+  top: 48%;
+  height: 44%;
+}
+.hd-handle {
+  position: absolute;
+  right: 7%;
+  top: 50%;
+  width: 1.1cqw;
+  height: 6cqw;
+  background: var(--color-paper);
+}
+.hd-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(11 18 32 / 0), rgb(11 18 32 / 0.45));
+  animation: hd-shade 12s cubic-bezier(0.55, 0, 0.25, 1) infinite;
+}
+.hd-crack {
+  position: absolute;
+  left: 12cqw;
+  top: 69.4cqw;
+  width: 26cqw;
+  height: 0.6cqw;
+  background: #ffe2a8;
+  box-shadow: 0 0 2.4cqw 0.6cqw rgb(255 214 140 / 0.7);
+  animation: hd-crack 12s ease-in-out infinite;
+}
+
+/* Light on the wall and floor once the gate opens. */
+.hd-glow,
+.hd-spill {
+  animation: hd-light 12s ease-in-out infinite;
+}
+.hd-stars {
+  animation: hd-twinkle 3s ease-in-out infinite alternate;
+}
+.hd-cloud {
+  animation: hd-drift 12s ease-in-out infinite alternate;
+}
+.hd-plane {
+  transform-origin: 130px 580px;
+  animation: hd-takeoff 12s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+
+/* The student. */
+.hd-walker {
+  position: absolute;
+  left: 17.2cqw;
+  top: 31.1cqw;
+  width: 15.6cqw;
+  height: 50.6cqw;
+  transform-origin: 50% 76.9%;
+  animation: hd-walk 12s linear infinite;
+}
+.hd-walker svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.hd-body {
+  animation: hd-bob 12s linear infinite;
+}
+.hd-leg-a {
+  animation: hd-step-a 12s linear infinite;
+}
+.hd-leg-b {
+  animation: hd-step-b 12s linear infinite;
+}
+.hd-arm {
+  transform-origin: 30.5px 38px;
+  animation: hd-reach 12s ease-in-out infinite;
+}
+.hd-long-shadow {
+  animation: hd-light 12s ease-in-out infinite;
+}
+
+/* The milestones: boarding-pass tickets with a stub that gets checked. */
+.hd-card {
+  position: absolute;
+  left: var(--cl);
+  top: var(--ct);
+  width: var(--cw);
+  height: var(--ch);
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid var(--color-line);
+  box-shadow: 0 1.2cqw 3.2cqw rgb(11 18 32 / 0.08);
+  opacity: 0;
+  animation-duration: 12s;
+  animation-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1.08);
+  animation-iteration-count: infinite;
+}
+.hd-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--ch);
+  color: #fff;
+}
+.hd-ico svg {
+  width: 44%;
+  height: 44%;
+}
+.hd-txt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35cqw;
+  padding: 0 2cqw;
+}
+.hd-lbl {
+  font-family: var(--font-label);
+  font-size: 1.55cqw;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-sub);
+}
+.hd-ttl {
+  font-family: var(--font-body);
+  font-size: 2.45cqw;
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hd-stub {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 7.4cqw;
+  border-left: 1px dashed var(--color-line);
+}
+.hd-stub::before,
+.hd-stub::after {
+  content: "";
+  position: absolute;
+  left: -0.75cqw;
+  width: 1.5cqw;
+  height: 0.75cqw;
+  background: var(--color-paper);
+}
+.hd-stub::before {
+  top: -1px;
+  border-bottom: 1px solid var(--color-line);
+}
+.hd-stub::after {
+  bottom: -1px;
+  border-top: 1px solid var(--color-line);
+}
+.hd-tick {
+  display: grid;
+  place-items: center;
+  width: 3.6cqw;
+  height: 3.6cqw;
+  background: var(--color-blue);
+  color: #fff;
+  opacity: 0;
+  animation-duration: 12s;
+  animation-timing-function: cubic-bezier(0.3, 1.6, 0.5, 1);
+  animation-iteration-count: infinite;
+}
+.hd-tick svg {
+  width: 62%;
+  height: 62%;
+}
+@container (max-width: 460px) {
+  .hd-lbl {
+    font-size: 2.1cqw;
+  }
+  .hd-ttl {
+    font-size: 3.15cqw;
+  }
+  .hd-stub {
+    width: 8.6cqw;
+  }
+  .hd-tick {
+    width: 4.4cqw;
+    height: 4.4cqw;
+  }
+}
+
+@keyframes hd-blink {
+  50% { opacity: 0.25; }
 }
 @keyframes hd-open {
-  0%, 33% { transform: scaleX(1); }
-  44%, 92% { transform: scaleX(0.12); }
-  100% { transform: scaleX(1); }
+  0%, 24% { transform: rotateY(0); }
+  34%, 85% { transform: rotateY(74deg); }
+  94%, 100% { transform: rotateY(0); }
 }
-@keyframes hd-glow {
-  0%, 33% { opacity: 0.12; }
-  46%, 92% { opacity: 1; }
-  100% { opacity: 0.12; }
+@keyframes hd-shade {
+  0%, 24% { opacity: 0; }
+  34%, 85% { opacity: 1; }
+  94%, 100% { opacity: 0; }
 }
-@keyframes hd-wow {
-  0%, 42% { opacity: 0; }
-  48%, 90% { opacity: 1; }
-  96%, 100% { opacity: 0; }
+@keyframes hd-crack {
+  0%, 24% { opacity: 1; }
+  30%, 92% { opacity: 0; }
+  98%, 100% { opacity: 1; }
 }
-/* Each card has its own keyframes so all six stay in step with the door. */
+@keyframes hd-light {
+  0%, 24% { opacity: 0; }
+  36%, 85% { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+@keyframes hd-twinkle {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+@keyframes hd-drift {
+  from { transform: translateX(-14px); }
+  to { transform: translateX(14px); }
+}
+@keyframes hd-takeoff {
+  0%, 38% { transform: rotate(-30deg); opacity: 0; }
+  42% { opacity: 1; }
+  80% { opacity: 1; }
+  86%, 100% { transform: rotate(24deg); opacity: 0; }
+}
+@keyframes hd-walk {
+  0% { transform: translateX(-22cqw); opacity: 0; }
+  4% { opacity: 1; }
+  22%, 64% { transform: none; opacity: 1; }
+  77% { transform: translateY(-2.4cqw) scale(0.7); opacity: 0; }
+  100% { transform: translateX(-22cqw); opacity: 0; }
+}
+@keyframes hd-bob {
+  0%, 5.5%, 11%, 16.5%, 22%, 64%, 68.5%, 73%, 77.5% { transform: none; }
+  2.75%, 8.25%, 13.75%, 19.25%, 66.25%, 70.75%, 75.25% { transform: translateY(-1.6px); }
+}
+@keyframes hd-step-a {
+  0%, 5.5%, 11%, 16.5%, 22%, 64%, 73%, 100% { transform: none; }
+  2.75%, 13.75%, 68.5% { transform: translateY(-3px); }
+}
+@keyframes hd-step-b {
+  0%, 11%, 22%, 68.5%, 77.5%, 100% { transform: none; }
+  8.25%, 19.25%, 73% { transform: translateY(-3px); }
+}
+@keyframes hd-reach {
+  0%, 21% { transform: none; }
+  25%, 30% { transform: rotate(-34deg); }
+  35%, 100% { transform: none; }
+}
+
+/* Each ticket has its own keyframes so all five stay in step with the gate:
+   ticket n leaves the doorway at 34 + 5.5n %, and its stub is checked 7% later. */
 @keyframes hd-card-0 {
-  0%, 43.0% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
-  53.0%, 90% { opacity: 1; transform: none; }
-  95%, 100% { opacity: 0; transform: none; }
+  0%, 34% { opacity: 0; transform: translate(calc(25cqw - var(--cl) - var(--cw) / 2), calc(42cqw - var(--ct) - var(--ch) / 2)) scale(0.2); }
+  36% { opacity: 1; }
+  42%, 87% { opacity: 1; transform: none; }
+  93%, 100% { opacity: 0; transform: translateY(-1.5cqw); }
 }
 @keyframes hd-card-1 {
-  0%, 46.8% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
-  56.8%, 90% { opacity: 1; transform: none; }
-  95%, 100% { opacity: 0; transform: none; }
+  0%, 39.5% { opacity: 0; transform: translate(calc(25cqw - var(--cl) - var(--cw) / 2), calc(42cqw - var(--ct) - var(--ch) / 2)) scale(0.2); }
+  41.5% { opacity: 1; }
+  47.5%, 87.5% { opacity: 1; transform: none; }
+  93.5%, 100% { opacity: 0; transform: translateY(-1.5cqw); }
 }
 @keyframes hd-card-2 {
-  0%, 50.6% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
-  60.6%, 90% { opacity: 1; transform: none; }
-  95%, 100% { opacity: 0; transform: none; }
+  0%, 45% { opacity: 0; transform: translate(calc(25cqw - var(--cl) - var(--cw) / 2), calc(42cqw - var(--ct) - var(--ch) / 2)) scale(0.2); }
+  47% { opacity: 1; }
+  53%, 88% { opacity: 1; transform: none; }
+  94%, 100% { opacity: 0; transform: translateY(-1.5cqw); }
 }
 @keyframes hd-card-3 {
-  0%, 54.4% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
-  64.4%, 90% { opacity: 1; transform: none; }
-  95%, 100% { opacity: 0; transform: none; }
+  0%, 50.5% { opacity: 0; transform: translate(calc(25cqw - var(--cl) - var(--cw) / 2), calc(42cqw - var(--ct) - var(--ch) / 2)) scale(0.2); }
+  52.5% { opacity: 1; }
+  58.5%, 88.5% { opacity: 1; transform: none; }
+  94.5%, 100% { opacity: 0; transform: translateY(-1.5cqw); }
 }
 @keyframes hd-card-4 {
-  0%, 58.2% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
-  68.2%, 90% { opacity: 1; transform: none; }
-  95%, 100% { opacity: 0; transform: none; }
+  0%, 56% { opacity: 0; transform: translate(calc(25cqw - var(--cl) - var(--cw) / 2), calc(42cqw - var(--ct) - var(--ch) / 2)) scale(0.2); }
+  58% { opacity: 1; }
+  64%, 89% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: translateY(-1.5cqw); }
 }
-@keyframes hd-card-5 {
-  0%, 62.0% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
-  72.0%, 90% { opacity: 1; transform: none; }
-  95%, 100% { opacity: 0; transform: none; }
+@keyframes hd-tick-0 {
+  0%, 41% { opacity: 0; transform: scale(0.3); }
+  44%, 100% { opacity: 1; transform: none; }
+}
+@keyframes hd-tick-1 {
+  0%, 46.5% { opacity: 0; transform: scale(0.3); }
+  49.5%, 100% { opacity: 1; transform: none; }
+}
+@keyframes hd-tick-2 {
+  0%, 52% { opacity: 0; transform: scale(0.3); }
+  55%, 100% { opacity: 1; transform: none; }
+}
+@keyframes hd-tick-3 {
+  0%, 57.5% { opacity: 0; transform: scale(0.3); }
+  60.5%, 100% { opacity: 1; transform: none; }
+}
+@keyframes hd-tick-4 {
+  0%, 63% { opacity: 0; transform: scale(0.3); }
+  66%, 100% { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-door * {
+  .hero-door *,
+  .hero-door *::before,
+  .hero-door *::after {
     animation: none !important;
   }
-  .hero-door .hd-walker { transform: translateX(112px); }
-  .hero-door .hd-arm { transform: rotate(-62deg); }
-  .hero-door .hd-door { transform: scaleX(0.12); }
+  .hero-door .hd-leaf { transform: rotateY(74deg); }
+  .hero-door .hd-crack { opacity: 0; }
+  .hero-door .hd-card,
+  .hero-door .hd-tick { opacity: 1; }
+  .hero-door .hd-plane { transform: rotate(-4deg); }
 }
