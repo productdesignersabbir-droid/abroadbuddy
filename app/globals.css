@@ -518,3 +518,116 @@ input:focus-visible {
     min-height: 0 !important;
   }
 }
+
+/* Home hero: the door that opens onto the journey (components/home/HeroDoor.tsx).
+   One 10s loop: walk in, open the door, milestones step out, reset. */
+.hero-door .hd-walker {
+  animation: hd-walk 10s ease-in-out infinite;
+}
+.hero-door .hd-leg {
+  transform-origin: 0 336px;
+}
+.hero-door .hd-leg-a {
+  animation: hd-step-a 10s linear infinite;
+}
+.hero-door .hd-leg-b {
+  animation: hd-step-b 10s linear infinite;
+}
+.hero-door .hd-arm {
+  transform-origin: 8px 276px;
+  animation: hd-arm 10s ease-in-out infinite;
+}
+.hero-door .hd-door {
+  transform-origin: 270px 256px;
+  animation: hd-open 10s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+}
+.hero-door .hd-light {
+  animation: hd-glow 10s ease-in-out infinite;
+}
+.hero-door .hd-wow {
+  animation: hd-wow 10s ease-in-out infinite;
+}
+.hero-door .hd-card {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-duration: 10s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  animation-iteration-count: infinite;
+}
+
+@keyframes hd-walk {
+  0% { transform: translateX(-20px); opacity: 0; }
+  4% { opacity: 1; }
+  28%, 92% { transform: translateX(112px); opacity: 1; }
+  100% { transform: translateX(112px); opacity: 0; }
+}
+@keyframes hd-step-a {
+  0%, 8%, 16%, 24% { transform: rotate(12deg); }
+  4%, 12%, 20% { transform: rotate(-12deg); }
+  28%, 100% { transform: rotate(0); }
+}
+@keyframes hd-step-b {
+  0%, 8%, 16%, 24% { transform: rotate(-12deg); }
+  4%, 12%, 20% { transform: rotate(12deg); }
+  28%, 100% { transform: rotate(0); }
+}
+@keyframes hd-arm {
+  0%, 28% { transform: rotate(0); }
+  34%, 92% { transform: rotate(-62deg); }
+  100% { transform: rotate(0); }
+}
+@keyframes hd-open {
+  0%, 33% { transform: scaleX(1); }
+  44%, 92% { transform: scaleX(0.12); }
+  100% { transform: scaleX(1); }
+}
+@keyframes hd-glow {
+  0%, 33% { opacity: 0.12; }
+  46%, 92% { opacity: 1; }
+  100% { opacity: 0.12; }
+}
+@keyframes hd-wow {
+  0%, 42% { opacity: 0; }
+  48%, 90% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+/* Each card has its own keyframes so all six stay in step with the door. */
+@keyframes hd-card-0 {
+  0%, 43.0% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
+  53.0%, 90% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
+}
+@keyframes hd-card-1 {
+  0%, 46.8% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
+  56.8%, 90% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
+}
+@keyframes hd-card-2 {
+  0%, 50.6% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
+  60.6%, 90% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
+}
+@keyframes hd-card-3 {
+  0%, 54.4% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
+  64.4%, 90% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
+}
+@keyframes hd-card-4 {
+  0%, 58.2% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
+  68.2%, 90% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
+}
+@keyframes hd-card-5 {
+  0%, 62.0% { opacity: 0; transform: translate(var(--hd-dx), var(--hd-dy)) scale(0.35); }
+  72.0%, 90% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-door * {
+    animation: none !important;
+  }
+  .hero-door .hd-walker { transform: translateX(112px); }
+  .hero-door .hd-arm { transform: rotate(-62deg); }
+  .hero-door .hd-door { transform: scaleX(0.12); }
+}

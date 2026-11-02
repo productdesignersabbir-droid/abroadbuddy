@@ -1,18 +1,10 @@
 import { Accent, PageHeader } from "@/components/PageHeader";
-import { ReadinessQuiz } from "@/components/readiness/ReadinessQuiz";
+import { ReadinessFromUrl } from "@/components/readiness/ReadinessFromUrl";
 
-type SearchParams = Promise<Record<string, string | string[] | undefined>>;
-
-const DEGREES = ["bachelors", "masters", "phd"] as const;
-
-export default async function ReadinessPage({ searchParams }: { searchParams: SearchParams }) {
-  // University Finder links here with the degree already chosen.
-  const { degree } = await searchParams;
-  const initialDegree = DEGREES.find((d) => d === degree);
+export default function ReadinessPage() {
   return (
     <>
-      <ReadinessQuiz
-        initialDegree={initialDegree}
+      <ReadinessFromUrl
         header={
           <PageHeader
             kicker="Study Abroad Readiness"

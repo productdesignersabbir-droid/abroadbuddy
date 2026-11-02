@@ -1,17 +1,7 @@
 import { Accent, PageHeader } from "@/components/PageHeader";
-import { ApplicationStudio } from "@/components/application-studio/ApplicationStudio";
-import type { DocId, StudioDegree } from "@/data/application-studio";
+import { ApplicationStudioFromUrl } from "@/components/application-studio/ApplicationStudioFromUrl";
 
-type SearchParams = Promise<Record<string, string | string[] | undefined>>;
-
-const DOCS: DocId[] = ["cv", "statement", "proposal", "reference"];
-const DEGREES: StudioDegree[] = ["bachelors", "masters", "phd"];
-
-export default async function ApplicationStudioPage({ searchParams }: { searchParams: SearchParams }) {
-  // Other pages can open a specific document, e.g. ?doc=proposal.
-  const { doc, degree } = await searchParams;
-  const initialDoc = DOCS.find((d) => d === doc);
-  const initialDegree = DEGREES.find((d) => d === degree);
+export default function ApplicationStudioPage() {
   return (
     <>
       <PageHeader
@@ -25,10 +15,7 @@ export default async function ApplicationStudioPage({ searchParams }: { searchPa
         imageSrc="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80&auto=format&fit=crop"
         imageAlt="Close-up of a pen writing on lined paper"
       />
-      <ApplicationStudio
-        initialDoc={initialDoc}
-        initialDegree={initialDoc === "proposal" && !initialDegree ? "phd" : initialDegree}
-      />
+      <ApplicationStudioFromUrl />
     </>
   );
 }

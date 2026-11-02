@@ -4,8 +4,23 @@
     {
       "name": "abroadbuddy-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "abroadbuddy-static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve@14.2.4",
+        "out",
+        "-l",
+        "4000"
+      ],
+      "port": 4000
     }
   ]
 }

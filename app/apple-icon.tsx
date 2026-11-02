@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
+export const dynamic = "force-static";
 
 // Same mark as app/icon.svg, drawn as a PNG for iOS home screens and link previews.
 const MARK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
