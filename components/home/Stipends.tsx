@@ -11,7 +11,7 @@ const TOP = ROWS[0].taka;
 
 export function Stipends() {
   return (
-    <section className="bg-paper py-20 sm:py-24">
+    <section className="bg-paper pb-20 pt-2 sm:pb-24">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead
           kicker="What a funded place pays you"

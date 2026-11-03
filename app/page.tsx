@@ -14,10 +14,10 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <WhereNow />
-      <TodayTomorrow />
       <Stipends />
       <Journey />
+      <WhereNow />
+      <TodayTomorrow />
       <JourneyTicket />
       <Steps />
       <RankingPlatforms />

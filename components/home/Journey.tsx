@@ -230,7 +230,7 @@ export function Journey() {
   const goTo = (i: number) => stageRefs.current[i]?.scrollIntoView({ block: "start", behavior: "smooth" });
 
   return (
-    <section id="features" className="bg-paper pb-24 pt-12 sm:pt-24">
+    <section id="features" className="bg-paper pb-24 pt-4">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-end">
           <div>

@@ -23,7 +23,7 @@ export function Hero() {
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-24 pt-14 sm:pt-20 md:grid-cols-[1.1fr_0.9fr] md:gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
         <div>
           <div style={rise(0)} className="animate-rise">
-            <Kicker>Built for your next chapter</Kicker>
+            <Kicker>For Bangladeshi students aiming for funded places abroad</Kicker>
           </div>
 
           <h1 className="mt-6 font-display text-[clamp(42px,5.6vw,76px)] leading-[1.02] tracking-[-0.045em] text-ink">
@@ -38,19 +38,27 @@ export function Hero() {
             </span>
           </h1>
 
-          <p style={rise(3)} className="mt-6 max-w-120 animate-rise font-body text-[19px] leading-relaxed text-sub">
-            Check how ready you are, find universities and professors that fit, and never
-            miss a scholarship or conference deadline.
-          </p>
+          <div style={rise(3)} className="animate-rise">
+            <p className="mt-6 font-display text-[clamp(24px,2.6vw,34px)] leading-[1.15] tracking-[-0.02em] text-blue">
+              Get paid to earn your master&apos;s or PhD.
+            </p>
+            <p className="mt-4 max-w-120 font-body text-[19px] leading-relaxed text-sub">
+              Funded places cover your tuition and pay you a monthly stipend. We help you find them, apply for them
+              and get there, one clear step at a time.
+            </p>
+          </div>
 
           <div style={rise(4)} className="mt-8 grid max-w-[34rem] animate-rise grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-3">
             <Button href="/readiness" variant="primary" className="justify-center px-6.5 py-3.5 text-[17px]">
               Start Abroad Readiness
             </Button>
-            <Button href="#how-it-works" variant="ghost" className="justify-center px-6.5 py-3.5 text-[17px]">
-              How it works
+            <Button href="/application-studio" variant="ghost" className="justify-center px-6.5 py-3.5 text-[17px]">
+              Explore Application Studio
             </Button>
           </div>
+          <p style={rise(4)} className="mt-3 animate-rise font-body text-[14px] text-sub">
+            Free · nine quick questions
+          </p>
 
           <div style={rise(5)} className="mt-14 hidden animate-rise sm:block">
             <p className="font-body text-[14px] text-sub">Scholarships we track, with official links:</p>
