@@ -246,7 +246,8 @@ function buildLabs(perField: number): Lab[] {
 
   for (const [field, topics] of Object.entries(TOPICS) as [Major, Topic[]][]) {
     // Spread each field across different universities that teach it.
-    const hosts = UNIVERSITIES.filter((u) => u.majors.includes(field));
+    // Only universities we profile in full, not those listed with typical figures.
+    const hosts = UNIVERSITIES.filter((u) => !u.typical && u.majors.includes(field));
     const pool = [...hosts];
     for (let k = pool.length - 1; k > 0; k--) {
       const j = Math.floor(rand() * (k + 1));
@@ -306,7 +307,7 @@ function buildLabs(perField: number): Lab[] {
         acceptingNote,
         positions,
         labSize: 4 + Math.floor(rand() * (senior ? 18 : 10)),
-        bdAlumni: Math.floor(rand() * (uni.intlPct > 20 ? 6 : 3)),
+        bdAlumni: Math.floor(rand() * ((uni.intlPct ?? 0) > 20 ? 6 : 3)),
         hIndex: senior ? 30 + Math.floor(rand() * 40) : 10 + Math.floor(rand() * 25),
         subScores: { mentorship: score(), funding: score(), workLifeBalance: score(), publishing: score() },
         fundingInfo: FUNDING[uni.country],

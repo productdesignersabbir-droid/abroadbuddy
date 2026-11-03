@@ -13,7 +13,7 @@ export default function UniversitiesPage() {
             Find the university that <Accent>actually</Accent> fits you
           </>
         }
-        description={`Compare ${UNIVERSITIES.length} universities across ${COUNTRIES.length} countries. Pick your degree, then set your grades, destination, major and budget to see a ranked shortlist with admissions, costs, scholarships and visa details for each.`}
+        description={`Compare ${UNIVERSITIES.length.toLocaleString("en-US")} universities across ${COUNTRIES.length} countries. Pick your degree, then set your grades, destination, major and budget to see a ranked shortlist with admissions, costs, scholarships and visa details for each.`}
         media={<TopUniversitiesCarousel />}
       />
       <UniversitiesFromUrl />

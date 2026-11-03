@@ -33,6 +33,11 @@ function Fact({ label, value, sub }: { label: string; value: string; sub?: strin
   );
 }
 
+function feeLabel(fee: number | undefined) {
+  if (fee === undefined) return "See the university's website";
+  return fee === 0 ? "Free" : formatUsd(fee);
+}
+
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-6 border-b border-line py-3 last:border-b-0">
@@ -118,7 +123,7 @@ export function UniversityDetailsModal({
             <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-7.5">
               <div className="flex items-center gap-1.5 font-body text-[13.5px] text-white/85">
                 <span aria-hidden>{info.flag}</span>
-                {uni.city} · {uni.country}
+                {uni.city ? `${uni.city} · ${uni.country}` : uni.country}
               </div>
               <h2
                 id="university-modal-title"
@@ -177,15 +182,39 @@ export function UniversityDetailsModal({
               <div className="grid gap-7">
                 <p className="font-body text-[15.5px] leading-relaxed text-ink">{uni.description}</p>
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <Fact label="World ranking" value={`#${uni.worldRanking}`} sub="QS, approx." />
-                  <Fact label="Type" value={uni.type} sub={`Founded ${uni.founded}`} />
-                  <Fact label="Students" value={formatCount(uni.students)} sub={`${uni.intlPct}% international`} />
-                  <Fact label="Acceptance" value={`~${uni.acceptanceRate}%`} sub={uni.difficulty} />
-                </div>
+                {uni.typical ? (
+                  <p className="rounded-[14px] bg-[#fff6dc] px-4 py-3 font-body text-[13.5px] leading-relaxed text-ink">
+                    We list this university with figures that are typical for {uni.country}: the entry bar, English
+                    score, tuition and subjects. Its ranking and intake numbers aren&apos;t shown because we
+                    haven&apos;t checked them. Confirm everything on{" "}
+                    <a href={uni.website} target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-4">
+                      its official website
+                    </a>{" "}
+                    before you apply.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {uni.worldRanking !== undefined && (
+                      <Fact label="World ranking" value={`#${uni.worldRanking}`} sub="QS, approx." />
+                    )}
+                    {uni.type && (
+                      <Fact label="Type" value={uni.type} sub={uni.founded ? `Founded ${uni.founded}` : undefined} />
+                    )}
+                    {uni.students !== undefined && (
+                      <Fact
+                        label="Students"
+                        value={formatCount(uni.students)}
+                        sub={uni.intlPct !== undefined ? `${uni.intlPct}% international` : undefined}
+                      />
+                    )}
+                    {uni.acceptanceRate !== undefined && (
+                      <Fact label="Acceptance" value={`~${uni.acceptanceRate}%`} sub={uni.difficulty} />
+                    )}
+                  </div>
+                )}
 
                 <div>
-                  <div className={kicker}>Why students pick it</div>
+                  <div className={kicker}>{uni.typical ? `Studying in ${uni.country}` : "Why students pick it"}</div>
                   <ul className="mt-3 grid list-none gap-2.5 p-0">
                     {uni.highlights.map((h) => (
                       <li key={h} className="flex items-start gap-2.75 font-body text-[14.5px] leading-relaxed text-ink">
@@ -197,7 +226,9 @@ export function UniversityDetailsModal({
                 </div>
 
                 <div>
-                  <div className={kicker}>Majors offered ({uni.majors.length})</div>
+                  <div className={kicker}>
+                    {uni.typical ? "Subjects universities like this usually teach" : `Majors offered (${uni.majors.length})`}
+                  </div>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {uni.majors.map((m) => (
                       <span
@@ -237,7 +268,7 @@ export function UniversityDetailsModal({
                     <Row label="Main deadline" value={uni.deadline} />
                     <Row
                       label="Application fee"
-                      value={uni.applicationFee === 0 ? "Free" : formatUsd(uni.applicationFee)}
+                      value={feeLabel(uni.applicationFee)}
                     />
                   </div>
                   <p className="mt-3 rounded-[14px] bg-[#fff6dc] px-4 py-3 font-body text-[13px] leading-relaxed text-ink">
@@ -284,7 +315,7 @@ export function UniversityDetailsModal({
                 <div>
                   <div className={kicker}>Other costs to plan for</div>
                   <div className="mt-2">
-                    <Row label="Application fee" value={uni.applicationFee === 0 ? "Free" : formatUsd(uni.applicationFee)} />
+                    <Row label="Application fee" value={feeLabel(uni.applicationFee)} />
                     <Row label="Visa" value={info.visa} />
                     <Row label="Health insurance" value="Usually required — $500–$2,500 a year" />
                     <Row label="Flights from Dhaka" value="About $600–$1,400 one way" />
@@ -299,6 +330,11 @@ export function UniversityDetailsModal({
 
             {tab === "Scholarships" && (
               <div className="grid gap-6">
+                {uni.scholarships.length === 0 && (
+                  <p className="font-body text-[14.5px] leading-relaxed text-ink">
+                    Check the university&apos;s website for its own scholarships. Country-wide awards are below.
+                  </p>
+                )}
                 <ul className="grid list-none gap-3 p-0">
                   {uni.scholarships.map((s) => (
                     <li

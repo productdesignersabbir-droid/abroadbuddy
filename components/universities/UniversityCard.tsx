@@ -71,15 +71,17 @@ export function UniversityCard({
           className="object-cover"
           sizes="(min-width: 768px) 260px, 100vw"
         />
-        <span className="absolute left-3 top-3 rounded-pill bg-white/95 px-2.75 py-1 font-body text-[12px] font-semibold text-ink backdrop-blur-sm">
-          World #{uni.worldRanking}
-        </span>
+        {(uni.worldRanking || uni.typical) && (
+          <span className="absolute left-3 top-3 rounded-pill bg-white/95 px-2.75 py-1 font-body text-[12px] font-semibold text-ink backdrop-blur-sm">
+            {uni.worldRanking ? `World #${uni.worldRanking}` : `Typical for ${uni.country}`}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col px-3.5 py-3 md:py-4">
         <div className="flex items-center gap-1.5 font-body text-[13px] text-sub">
           <span aria-hidden>{info.flag}</span>
-          {uni.city} · {uni.country}
+          {uni.city ? `${uni.city} · ${uni.country}` : uni.country}
         </div>
         <h3 className="mt-1 font-display text-[26px] leading-tight tracking-[-0.02em] text-ink">
           {uni.name}
@@ -89,9 +91,11 @@ export function UniversityCard({
           <span className={`rounded-pill px-2.5 py-1 font-body text-[12px] font-medium ${DIFFICULTY_STYLES[uni.difficulty]}`}>
             {uni.difficulty}
           </span>
-          <span className="rounded-pill bg-soft px-2.5 py-1 font-body text-[12px] font-medium text-ink">
-            {uni.type}
-          </span>
+          {uni.type && (
+            <span className="rounded-pill bg-soft px-2.5 py-1 font-body text-[12px] font-medium text-ink">
+              {uni.type}
+            </span>
+          )}
           <span className="rounded-pill bg-soft px-2.5 py-1 font-body text-[12px] font-medium text-ink">
             {uni.intakes.join(" · ")}
           </span>
@@ -109,7 +113,11 @@ export function UniversityCard({
             <Stat label="Typical CGPA" value={`${uni.minCgpa.toFixed(2)}+`} />
           )}
           <Stat label="IELTS" value={`${uni.ielts.toFixed(1)}+`} />
-          <Stat label="Acceptance" value={`~${uni.acceptanceRate}%`} />
+          {uni.acceptanceRate !== undefined ? (
+            <Stat label="Acceptance" value={`~${uni.acceptanceRate}%`} />
+          ) : (
+            <Stat label="GRE" value={uni.gre} />
+          )}
         </dl>
       </div>
 

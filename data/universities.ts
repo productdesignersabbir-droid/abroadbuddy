@@ -2,6 +2,7 @@ import { MORE_NORTH_AMERICA } from "@/data/more-universities/north-america";
 import { MORE_EUROPE } from "@/data/more-universities/europe";
 import { MORE_EUROPE_2 } from "@/data/more-universities/europe-2";
 import { MORE_ASIA_PACIFIC } from "@/data/more-universities/asia-pacific";
+import { TYPICAL_UNIVERSITIES } from "@/data/more-universities/typical";
 
 export type Difficulty = "Highly Competitive" | "Competitive" | "Moderate";
 
@@ -519,15 +520,18 @@ export type University = {
   id: string;
   name: string;
   country: Country;
+  /** Empty when only the country is known. */
   city: string;
-  worldRanking: number;
-  type: "Public" | "Private";
-  founded: number;
-  students: number;
+  // The profile facts below are left out for universities that only carry
+  // typical figures for their country (see `typical`), rather than guessed.
+  worldRanking?: number;
+  type?: "Public" | "Private";
+  founded?: number;
+  students?: number;
   /** Share of international students, in percent. */
-  intlPct: number;
+  intlPct?: number;
   /** Overall acceptance rate, in percent. */
-  acceptanceRate: number;
+  acceptanceRate?: number;
   minCgpa: number;
   ielts: number;
   toefl: number;
@@ -535,7 +539,7 @@ export type University = {
   majors: Major[];
   tuitionMin: number;
   tuitionMax: number;
-  applicationFee: number;
+  applicationFee?: number;
   intakes: string[];
   deadline: string;
   difficulty: Difficulty;
@@ -545,6 +549,11 @@ export type University = {
   description: string;
   highlights: string[];
   scholarships: UniversityScholarship[];
+  /**
+   * Entry bar, English score, tuition and subjects are typical for the
+   * country, not checked for this university. Shown with a label.
+   */
+  typical?: boolean;
 };
 
 const photo = (id: string) =>
@@ -606,7 +615,9 @@ const CITY_PHOTOS: Partial<Record<Country, [string, string]>> = {
   "Saudi Arabia": ["1586724237569-f3d0c1dee8c6", "Riyadh skyline"],
 };
 
-function difficultyFor(acceptanceRate: number): Difficulty {
+function difficultyFor(acceptanceRate: number | undefined, minCgpa: number): Difficulty {
+  // Without an acceptance rate, go by how high the typical grade bar is.
+  if (acceptanceRate === undefined) return minCgpa >= 3.5 ? "Competitive" : "Moderate";
   if (acceptanceRate <= 15) return "Highly Competitive";
   if (acceptanceRate <= 45) return "Competitive";
   return "Moderate";
@@ -633,13 +644,18 @@ function uni({ tuition, intakes, toefl, cityPhoto, ...u }: UniInput): University
   const city = CITY_PHOTOS[u.country];
   const [id, alt] =
     useCity && city ? city : CAMPUS_PHOTOS[campusIndex++ % CAMPUS_PHOTOS.length];
+  const info = COUNTRY_INFO[u.country];
   return {
     ...u,
+    // With only typical figures, the highlights are facts about the country.
+    highlights: u.typical
+      ? [`Post-study work: ${info.postStudyWork}`, `Work while studying: ${info.workWhileStudying}`, `Visa: ${info.visa}`]
+      : u.highlights,
     tuitionMin: tuition[0],
     tuitionMax: tuition[1],
     intakes: intakes ?? COUNTRY_INFO[u.country].intakes,
     toefl: toefl ?? Math.round(u.ielts * 14 - 6),
-    difficulty: difficultyFor(u.acceptanceRate),
+    difficulty: difficultyFor(u.acceptanceRate, u.minCgpa),
     imageSrc: photo(id),
     imageAlt: alt,
   };
@@ -3190,4 +3206,5 @@ export const UNIVERSITIES: University[] = [
     scholarships: [{ name: "KSU International Scholarship", amount: "Free tuition + housing + allowance" }],
   }),
   ...[...MORE_NORTH_AMERICA, ...MORE_EUROPE, ...MORE_EUROPE_2, ...MORE_ASIA_PACIFIC].map(uni),
+  ...TYPICAL_UNIVERSITIES.map(uni),
 ];

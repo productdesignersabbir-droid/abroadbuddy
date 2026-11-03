@@ -80,6 +80,27 @@ export function UniversitiesExplorer({
 
   const countryCount = new Set(results.map((r) => r.uni.country)).size;
 
+  // With no exact match, loosen one filter at a time so the student still sees
+  // the nearest options: the same subject anywhere, then anything in the
+  // country, then the same picks over budget.
+  const nearest = useMemo(() => {
+    if (results.length > 0) return null;
+    const { country, major, budget } = DEFAULT_FILTERS;
+    const tries: { note: string; next: UniversityFilters; when: boolean }[] = [
+      { note: `${filters.major} in other countries`, next: { ...filters, country }, when: filters.country !== country },
+      { note: `other subjects in ${filters.country}`, next: { ...filters, major }, when: filters.major !== major },
+      { note: "the same picks over your budget", next: { ...filters, budget }, when: filters.budget !== budget },
+      { note: "any subject, any country", next: { ...filters, country, major, budget }, when: true },
+    ];
+    for (const t of tries.filter((t) => t.when)) {
+      const found = universities
+        .filter((uni) => passesHardFilters(uni, t.next))
+        .map((uni) => ({ uni, match: computeMatch(uni, filters) }));
+      if (found.length > 0) return { ...t, results: sortResults(found, filters.sort).slice(0, PAGE_SIZE) };
+    }
+    return null;
+  }, [results.length, universities, filters]);
+
   function update(next: UniversityFilters) {
     setFilters(next);
     setVisible(PAGE_SIZE);
@@ -98,7 +119,7 @@ export function UniversitiesExplorer({
 
         <div className="mt-8 flex items-center justify-between">
           <p className="font-body text-sm text-sub">
-            <span className="font-semibold text-ink">{results.length}</span>{" "}
+            <span className="font-semibold text-ink">{results.length.toLocaleString("en-US")}</span>{" "}
             {results.length === 1 ? "university" : "universities"} in{" "}
             <span className="font-semibold text-ink">{countryCount}</span>{" "}
             {countryCount === 1 ? "country" : "countries"} match your profile
@@ -147,7 +168,7 @@ export function UniversitiesExplorer({
               No universities match those filters
             </p>
             <p className="mt-2 font-body text-sm text-sub">
-              Try widening your budget or switching to &quot;All Countries&quot;.
+              {nearest ? "Here are the closest ones instead." : "Try widening your budget or switching to \"All Countries\"."}
             </p>
             <button
               type="button"
@@ -156,6 +177,32 @@ export function UniversitiesExplorer({
             >
               Reset filters
             </button>
+          </div>
+        )}
+
+        {nearest && (
+          <div className="mt-8">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <p className="font-display text-[22px] leading-tight text-ink">Closest options: {nearest.note}</p>
+              <button
+                type="button"
+                onClick={() => update(nearest.next)}
+                className="font-body text-[13px] font-semibold text-blue underline underline-offset-4"
+              >
+                Use these filters
+              </button>
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-4">
+              {nearest.results.map(({ uni, match }) => (
+                <UniversityCard
+                  key={uni.id}
+                  uni={uni}
+                  match={match}
+                  filters={nearest.next}
+                  onViewDetails={() => setSelected(uni)}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

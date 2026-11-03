@@ -125,8 +125,8 @@ export function fitReasons(uni: University, filters: UniversityFilters): FitReas
     {
       label:
         filters.major === ALL_MAJORS
-          ? `${uni.majors.length} majors offered`
-          : `Offers ${filters.major}`,
+          ? uni.typical ? `${uni.majors.length} usual subjects` : `${uni.majors.length} majors offered`
+          : uni.typical ? `Usually teaches ${filters.major}` : `Offers ${filters.major}`,
       ok: true,
     },
     {
@@ -155,10 +155,12 @@ export function sortResults<T extends { uni: University; match: number }>(
   results: T[],
   sort: UniversitySort
 ) {
+  // Universities without a ranking (those with typical figures only) go last on ties.
+  const rank = (u: University) => u.worldRanking ?? Number.MAX_SAFE_INTEGER;
   return [...results].sort((a, b) => {
-    if (sort === "rank") return a.uni.worldRanking - b.uni.worldRanking;
-    if (sort === "tuition") return a.uni.tuitionMin - b.uni.tuitionMin || a.uni.worldRanking - b.uni.worldRanking;
-    return b.match - a.match || a.uni.worldRanking - b.uni.worldRanking;
+    if (sort === "rank") return rank(a.uni) - rank(b.uni);
+    if (sort === "tuition") return a.uni.tuitionMin - b.uni.tuitionMin || rank(a.uni) - rank(b.uni);
+    return b.match - a.match || rank(a.uni) - rank(b.uni);
   });
 }
 
