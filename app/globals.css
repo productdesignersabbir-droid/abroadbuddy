@@ -985,3 +985,8 @@ input:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .tt-mistake, .tt-turn, .tt-outcome, .tt-check { transition: none; }
 }
+
+/* Scholarship logo row: fade the edges so logos slide in and out softly. */
+.logo-strip {
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}

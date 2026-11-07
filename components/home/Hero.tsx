@@ -21,7 +21,7 @@ export function Hero() {
   return (
     <section className="bg-paper">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 pb-24 pt-14 sm:pt-20 md:grid-cols-[1.1fr_0.9fr] md:gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
-        <div>
+        <div className="min-w-0">
           <div style={rise(0)} className="animate-rise">
             <Kicker>For Bangladeshi students aiming for funded places abroad</Kicker>
           </div>
@@ -62,20 +62,23 @@ export function Hero() {
 
           <div style={rise(5)} className="mt-14 hidden animate-rise sm:block">
             <p className="font-body text-[14px] text-sub">Scholarships we track, with official links:</p>
-            <ul className="mt-4 flex list-none flex-wrap items-center gap-x-8 gap-y-4 p-0">
-              {SOURCES.map((s) => (
-                <li key={s.name}>
-                  <Image
-                    src={s.src}
-                    alt={s.name}
-                    width={s.w}
-                    height={s.h}
-                    unoptimized
-                    className={`${s.cls} w-auto opacity-60 grayscale transition-[filter,opacity] duration-300 hover:opacity-100 hover:grayscale-0`}
-                  />
-                </li>
-              ))}
-            </ul>
+            {/* One row that drifts sideways, like a programme strip, instead of wrapping. */}
+            <div className="logo-strip mt-4 overflow-hidden">
+              <ul className="animate-marquee flex w-max list-none items-center p-0 [animation-duration:36s] hover:[animation-play-state:paused]">
+                {[...SOURCES, ...SOURCES, ...SOURCES].map((s, i) => (
+                  <li key={i} aria-hidden={i >= SOURCES.length || undefined} className="flex h-14 shrink-0 items-center pr-12">
+                    <Image
+                      src={s.src}
+                      alt={i < SOURCES.length ? s.name : ""}
+                      width={s.w}
+                      height={s.h}
+                      unoptimized
+                      className={`${s.cls} w-auto opacity-60 grayscale transition-[filter,opacity] duration-300 hover:opacity-100 hover:grayscale-0`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 

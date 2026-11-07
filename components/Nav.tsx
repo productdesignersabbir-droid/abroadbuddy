@@ -149,7 +149,7 @@ export function Nav() {
       <div className="mx-auto flex max-w-7xl items-center justify-between rounded-[18px] border border-line bg-soft/90 py-2.5 pl-4.5 pr-2.5 backdrop-blur-md">
         <Logo />
 
-        <nav className="hidden items-center gap-0.5 xl:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV_ENTRIES.map((entry) =>
             isNavGroup(entry) ? (
               <DesktopNavGroup
@@ -182,7 +182,7 @@ export function Nav() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="grid h-9.5 w-9.5 place-items-center rounded-[10px] bg-blue text-white xl:hidden"
+            className="grid h-9.5 w-9.5 place-items-center rounded-[10px] bg-blue text-white lg:hidden"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
               {open ? (
@@ -206,7 +206,7 @@ export function Nav() {
       </div>
 
       {open && (
-        <nav className="mx-auto mt-2 max-w-7xl rounded-[18px] border border-line bg-soft px-4 py-4 xl:hidden">
+        <nav className="mx-auto mt-2 max-w-7xl rounded-[18px] border border-line bg-soft px-4 py-4 lg:hidden">
           <ul className="grid gap-1">
             {NAV_ENTRIES.map((entry) =>
               isNavGroup(entry) ? (
