@@ -22,6 +22,12 @@ const FIELDS = [
   { label: "Destinations covered", value: "30" },
 ];
 
+const PASS_DETAILS = [
+  { label: "Passenger", value: "You" },
+  { label: "Class", value: "Funded" },
+  { label: "Gate", value: "Readiness" },
+];
+
 const STUB_POINTS = [
   "Nine quick questions",
   "Readiness score out of 100",
@@ -73,7 +79,7 @@ function Board({ code, animate }: { code: string; animate: boolean }) {
 /** Dashed flight path with a plane flying it on a loop. */
 function FlightPath({ still }: { still: boolean }) {
   return (
-    <svg viewBox="0 0 220 70" className="h-auto w-full max-w-60" aria-hidden>
+    <svg viewBox="0 0 220 70" className="h-auto w-full" aria-hidden>
       <path id="ticket-route" d="M8 58 Q110 -14 212 58" fill="none" stroke="#D9D2C6" strokeWidth="2" strokeDasharray="5 6" />
       <circle cx="8" cy="58" r="4" fill="#0B1220" />
       <circle cx="212" cy="58" r="4" fill="#fff" stroke="#0B1220" strokeWidth="2" />
@@ -163,7 +169,7 @@ export function JourneyTicket() {
   }, [reduced]);
 
   return (
-    <section className="bg-paper py-24">
+    <section className="bg-paper py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-180 text-center">
           <Kicker>About EasiAbroad</Kicker>
@@ -176,7 +182,7 @@ export function JourneyTicket() {
 
         <div
           ref={ticketRef}
-          className="mx-auto mt-14 grid max-w-6xl grid-cols-1 lg:grid-cols-[1fr_340px]"
+          className="mx-auto mt-10 grid max-w-6xl grid-cols-1 lg:grid-cols-[1fr_340px]"
           style={{ "--tilt": reduced ? 0.6 : 0 } as CSSProperties}
         >
           {/* Main pass */}
@@ -186,14 +192,22 @@ export function JourneyTicket() {
               <span className="font-body text-[13px] text-sub">Boarding pass · Flight EA 2026</span>
             </div>
 
-            <div className="grid grid-cols-[auto_1fr_auto] items-end gap-3 px-6 pb-8 pt-9 sm:gap-6 sm:px-8">
+            <div className="grid grid-cols-[auto_1fr_auto] items-end gap-3 px-6 pb-7 pt-8 sm:gap-6 sm:px-8">
               <div>
                 <Board code="DAC" animate={false} />
                 <p className="mt-2.5 font-body text-[14px] text-sub">Dhaka, where you are now</p>
               </div>
               <div className="flex flex-col items-center pb-8">
                 <FlightPath still={reduced} />
-                <span className="mt-1 hidden font-body text-[12.5px] text-sub sm:block">Clear next steps</span>
+                {/* Pass details fill the gap between the two cities. */}
+                <dl className="mt-3 hidden w-full grid-cols-3 gap-2 text-center sm:grid">
+                  {PASS_DETAILS.map((d) => (
+                    <div key={d.label}>
+                      <dt className="font-body text-[11.5px] uppercase tracking-[0.08em] text-sub">{d.label}</dt>
+                      <dd className="mt-1 font-display text-[16px] leading-tight text-ink">{d.value}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
               <div className="text-right">
                 <Board code={dest.code} animate={!reduced} />
@@ -252,7 +266,7 @@ export function JourneyTicket() {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
           {PILLARS.map((p, i) => (
             <div key={p.title} className={i > 0 ? "sm:border-l sm:border-line sm:pl-8" : ""}>
               <h3 className="font-body text-[17px] font-medium text-ink">{p.title}</h3>

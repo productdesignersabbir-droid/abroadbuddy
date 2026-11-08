@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { NAV_ENTRIES, isNavGroup, type NavGroup } from "@/lib/routes";
+import { JOURNEY_STAGES, NAV_ENTRIES, isNavGroup, type NavGroup } from "@/lib/routes";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/Button";
 
@@ -206,7 +206,7 @@ export function Nav() {
       </div>
 
       {open && (
-        <nav className="mx-auto mt-2 max-w-7xl rounded-[18px] border border-line bg-soft px-4 py-4 lg:hidden">
+        <nav className="mx-auto mt-2 max-h-[calc(100dvh-6rem)] max-w-7xl overflow-y-auto overscroll-contain rounded-[18px] border border-line bg-soft px-4 py-4 lg:hidden">
           <ul className="grid gap-1">
             {NAV_ENTRIES.map((entry) =>
               isNavGroup(entry) ? (
@@ -229,6 +229,22 @@ export function Nav() {
               )
             )}
           </ul>
+
+          {/* The same five stages as the home page, for finding a tool by where you are. */}
+          <div className="mt-4 border-t border-line pt-4">
+            <p className="px-3 pb-1 font-body text-[12px] font-medium uppercase tracking-[0.08em] text-sub">
+              Your journey
+            </p>
+            <ul className="grid gap-1">
+              {JOURNEY_STAGES.map((stage, i) => (
+                <MobileNavGroup
+                  key={stage.label}
+                  group={{ ...stage, label: `0${i + 1}  ${stage.label}` }}
+                  active={false}
+                />
+              ))}
+            </ul>
+          </div>
           <div className="mt-4 sm:hidden">
             <Button href="/readiness" variant="dark" className="w-full">
               Start Abroad Readiness

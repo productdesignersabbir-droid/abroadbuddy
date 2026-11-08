@@ -17,47 +17,35 @@ const I = ({ d }: { d: string[] }) => (
   </svg>
 );
 
-const MISTAKES: { title: string; cost: string; fix: string; href: string; icon: ReactNode }[] = [
+const MISTAKES: { title: string; cost: string; icon: ReactNode }[] = [
   {
     title: "Missed a scholarship deadline",
     cost: "+1 year",
-    fix: "Scholarship Calendar",
-    href: "/scholarships",
     icon: <I d={["M4 5.5h16v14H4z", "M4 10h16M8.5 3.5v4M15.5 3.5v4", "M10 13.5l4 4M14 13.5l-4 4"]} />,
   },
   {
     title: "English score below the cut-off",
     cost: "Rejected",
-    fix: "Test preparation",
-    href: "/ielts",
     icon: <I d={["M4 17a8 8 0 0 1 16 0", "M12 17l-3.5-6"]} />,
   },
   {
     title: "Applied where you don't fit",
     cost: "Fees wasted",
-    fix: "University Finder",
-    href: "/universities",
     icon: <I d={["M3 9.5L12 5l9 4.5-9 4.5z", "M7 12v4c0 1.2 2.2 2.5 5 2.5s5-1.3 5-2.5v-4"]} />,
   },
   {
     title: "Emailed the wrong professors",
     cost: "No replies",
-    fix: "Find your Professor",
-    href: "/lab-kemon",
     icon: <I d={["M3.5 6h17v12.5h-17z", "M4.5 7.5l7.5 6 7.5-6"]} />,
   },
   {
     title: "No paper or poster on your CV",
     cost: "Weak profile",
-    fix: "Conference Calendar",
-    href: "/conferences",
     icon: <I d={["M7 3.5h7l4 4v13H6.5v-17z", "M14 3.5V8h4", "M9.5 12.5h5M9.5 16h3"]} />,
   },
   {
     title: "Weak proof of funds for the visa",
     cost: "Visa refused",
-    fix: "Visa stories",
-    href: "/visa-stories",
     icon: <I d={["M3.5 6.5h17v12h-17z", "M3.5 10.5h17M7.5 15h3"]} />,
   },
 ];
@@ -131,28 +119,18 @@ export function TodayTomorrow() {
             <ul className="mt-8 grid list-none gap-2.5 p-0">
               {MISTAKES.map((m, i) => (
                 <li key={m.title} className="tt-mistake" style={{ transitionDelay: `${0.15 + i * MISTAKE_STEP}s` }}>
-                  <Link
-                    href={m.href}
-                    className="group flex items-center gap-3.5 border border-line bg-white p-3 pr-3.5 no-underline transition-colors duration-200 hover:border-ink sm:p-3.5"
-                  >
+                  {/* Problem only: the tools themselves live in "Where are you right now?". */}
+                  <div className="flex items-center gap-3.5 border border-line bg-white p-3 pr-3.5 sm:p-3.5">
                     <span className="grid h-10 w-10 shrink-0 place-items-center bg-soft text-ink [&>svg]:h-5 [&>svg]:w-5">
                       {m.icon}
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-body text-[14.5px] font-medium leading-snug text-ink sm:text-[15px]">
-                        {m.title}
-                      </span>
-                      <span className="block font-body text-[12.5px] text-sub transition-colors group-hover:text-blue">
-                        Fix · {m.fix} →
-                      </span>
-                      <span className="mt-1.5 inline-block bg-[#FFE3DE] px-2 py-0.5 font-body text-[11.5px] font-medium text-[#D9302B] sm:hidden">
-                        {m.cost}
-                      </span>
+                    <span className="min-w-0 flex-1 font-body text-[14.5px] font-medium leading-snug text-ink sm:text-[15px]">
+                      {m.title}
                     </span>
-                    <span className="hidden shrink-0 bg-[#FFE3DE] sm:block px-2.5 py-1 font-body text-[12px] font-medium text-[#D9302B]">
+                    <span className="shrink-0 bg-[#FFE3DE] px-2.5 py-1 font-body text-[12px] font-medium text-[#D9302B]">
                       {m.cost}
                     </span>
-                  </Link>
+                  </div>
                 </li>
               ))}
             </ul>

@@ -15,9 +15,9 @@ export default function Home() {
     <>
       <Hero />
       <Stipends />
+      <TodayTomorrow />
       <Journey />
       <WhereNow />
-      <TodayTomorrow />
       <JourneyTicket />
       <Steps />
       <RankingPlatforms />

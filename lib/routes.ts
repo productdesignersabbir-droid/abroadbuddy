@@ -192,3 +192,13 @@ export const CALENDAR_GROUP: NavGroup = {
 };
 
 export const NAV_ENTRIES: NavEntry[] = [READINESS_ROUTE, FINDER_GROUP, CALENDAR_GROUP, PREPARE_GROUP];
+
+// The five journey stages from the home page, so the phone menu can offer the
+// same path: each stage opens to the tools that help with it.
+export const JOURNEY_STAGES: NavGroup[] = [
+  { label: "Plan", items: [READINESS_ROUTE, RESEARCH_DIRECTION_ROUTE, IELTS_ROUTE] },
+  { label: "Find", items: [UNIVERSITIES_ROUTE, LAB_KEMON_ROUTE, SCHOLARSHIPS_ROUTE, CONFERENCES_ROUTE] },
+  { label: "Apply", items: [APPLICATION_STUDIO_ROUTE, MENTORING_ROUTE, RESEARCH_MENTORING_ROUTE] },
+  { label: "Go", items: [VISA_STORIES_ROUTE, RESOURCES_ROUTE] },
+  { label: "Grow", items: [STORIES_ROUTE] },
+];
